@@ -78,7 +78,7 @@ const SapperPage = () => {
         if (!isPlay) {
             if (bet) {
                 const numericBet = Number(bet);
-                if (!isNaN(numericBet) && numericBet > 0 && numericBet < 1000) {
+                if (!isNaN(numericBet) && numericBet > 0 && numericBet < 10000) {
                     if (numericBet <= balance) {
                         await editBalance(Math.round((balance - numericBet) * 100) / 100);
                         setBalance(prev => Math.round((prev - numericBet) * 100) / 100);
@@ -104,7 +104,6 @@ const SapperPage = () => {
                 if (step !== 0) {
                     setBalance(prev => Math.round((prev + win) * 100) / 100);
                     await editBalance(Math.round((balance + win) * 100) / 100);
-                    setBet("");
                     setWin(0);
                     setStep(-1);
                     setBetError("");
@@ -131,7 +130,6 @@ const SapperPage = () => {
             if (mines.includes(cellId)) {
                 setExplodedMines(mines);
                 setIsPlay(false);
-                setBet("");
                 setWin(0);
                 setStep(-1);
                 setTimeout(() => {
@@ -160,7 +158,6 @@ const SapperPage = () => {
         await editBalance(newBalance);
         setBalance(newBalance);
         setIsPlay(false);
-        setBet("");
         setBetError("");
         setWin(0);
         setStep(-1);
