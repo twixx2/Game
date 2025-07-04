@@ -257,6 +257,8 @@ const SapperPage = () => {
                                     : "Начать игру"}
                             </button>
 
+                            <span className="tg_channel">@verybutterfly tgk ya znayu vsem poh</span>
+
 
                         </div>
                     </div>

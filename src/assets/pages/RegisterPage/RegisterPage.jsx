@@ -77,8 +77,6 @@ const RegisterPage = () => {
             setPassword("")
             setConfirmPassword("")
             navigate('/sapper')
-
-            // eslint-disable-next-line no-unused-vars
         } catch (err) {
             console.log(err);
             toast.error("Возникла ошибка")
