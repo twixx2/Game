@@ -1,0 +1,232 @@
+@import '../../style/reset.scss';
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../../fonts/Ubuntu-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+$dark-gray: #141414;
+$gray-cell: #292929;
+
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-betwen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin font($size, $weight, $family) {
+    font-size: $size;
+    font-weight: $weight;
+    font-family: $family;
+}
+
+body {
+    background: #292929;
+}
+
+.nav {
+    width: 100%;
+    padding: 15px 0;
+    background: $dark-gray;
+
+    &_content {
+        @include flex-betwen();
+
+        &_logo {
+            @include font(1.8rem, 500, "Ubuntu");
+            color: white;
+        }
+
+        .balance_info {
+            min-width: 90px;
+            width: auto;
+            min-height: 40px;
+            border-radius: 10px;
+            background: #505050;
+            @include flex-center();
+            cursor: pointer;
+            transition: .5s;
+            padding: 0 10px;
+
+            &:hover {
+                background: #6A6A68; // #d4d4d2
+            }
+
+            .balance_user {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+
+                span {
+                    @include font(.875rem, 500, "Ubuntu");
+                    font-size: .875rem;
+                    color: white;
+                }
+            }
+        }
+    }
+}
+
+.sapper_game {
+    width: 100%;
+    padding: 30px 10px;
+
+    .sapper_content {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .sapper_mines {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            .sapper_grid {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 10px;
+                max-width: max-content;
+                margin: 0 auto;
+                transition: .5s;
+
+                .sapper_cell {
+                    width: 60px;
+                    height: 60px;
+                    background: #6A6A68;
+                    transition: .5s;
+                    border-radius: 15px;
+                    cursor: pointer;
+
+                    &:hover {
+                        background: #d4d4d2;
+                    }
+
+                    &.mine {
+                        background: #ef5350;
+                    }
+
+                    &.coin {
+                        background: #4CAF50;
+                    }
+                }
+
+
+
+            }
+
+            .sapper_coefs {
+                display: flex;
+                align-items: center;
+                overflow-x: auto;
+                white-space: nowrap;
+
+                .sapper_coef {
+                    flex: 0 0 auto;
+                    width: 100px;
+                    height: 45px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-right: 5px;
+                    background: rgba(85, 88, 103, .1);
+                    ;
+                    border-radius: 15px;
+                    color: white;
+                    font-size: 18px;
+                    font-family: 'Ubuntu';
+
+                    &.coef_prev {
+                        background: rgba(31, 74, 57, .38);
+                        color: #36c971;
+                    }
+
+                    &.coef_current {
+                        background: #36c971;
+                    }
+                }
+            }
+
+            .sapper_mines_info {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+
+                span {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    color: white;
+                    font-size: 20px;
+                    font-weight: 400;
+
+                }
+
+            }
+
+            .sapper_options {
+                display: flex;
+
+                .sapper_bet {
+                    width: 50%;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+
+                    .sapper_bet_info {
+                        color: white;
+                        font-size: 18px;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                        font-family: 'Ubuntu';
+                    }
+
+                    .sapper_bet_input {
+                        width: 100%;
+                        background: #6A6A68;
+                        border-radius: 20px;
+                        padding: 15px;
+                        color: white;
+                        font-size: 14px;
+                        font-family: 'Ubuntu';
+                    }
+
+                    .error {
+                        display: none;
+                        font-size: 16px;
+                        color: red;
+                        font-family: 'Ubuntu';
+
+                        &.active {
+                            display: inline-block;
+                        }
+                    }
+                }
+            }
+
+            .sapper_start_game {
+                width: 100%;
+                min-height: 70px;
+                padding: 14px;
+                border-radius: 20px;
+                background: rgb(62, 62, 228);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.5rem;
+                font-family: 'Ubuntu';
+                cursor: pointer;
+            }
+        }
+    }
+}
