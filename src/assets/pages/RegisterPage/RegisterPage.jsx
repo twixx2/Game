@@ -13,15 +13,29 @@ const RegisterPage = () => {
     const [loginError, setLoginError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [matchError, setMatchError] = useState("");
+    const [isAuth, setIsAuth] = useState(false);
     const navigate = useNavigate();
     const url = import.meta.env.VITE_USER_API_URL;
     const token = localStorage.getItem("token")
 
     useEffect(() => {
-        if (token) {
-            navigate("/sapper")
+        const fetchUser = async () => {
+            if (token) {
+                try {
+                    const res = await axios.get(`${url}/auth_me`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    setIsAuth(true);
+                } catch (err) {
+                    setIsAuth(false);
+                }
+            }
         }
-    }, [token, navigate])
+
+        fetchUser();
+    }, [])
 
 
     const validate = () => {
@@ -29,6 +43,13 @@ const RegisterPage = () => {
         setLoginError("");
         setPasswordError("");
         setMatchError("");
+
+        if (isAuth) {
+            toast.error("Вы уже зарегистрированы");
+            valid = false;
+            return valid;
+        }
+
         if (!login.trim()) {
             setLoginError("Логин обязателен");
             valid = false;
@@ -48,11 +69,6 @@ const RegisterPage = () => {
             valid = false;
         }
 
-        if (token) {
-            setLoginError("Вы уже зарегистрированы")
-            valid = false;
-        }
-
         return valid;
     }
 
@@ -60,7 +76,6 @@ const RegisterPage = () => {
         if (!validate()) {
             return;
         }
-
         try {
             const registrationDateISO = new Date().toISOString().slice(0, 16);
             const emailUser = `${login}@example.com`
@@ -78,7 +93,6 @@ const RegisterPage = () => {
             setConfirmPassword("")
             navigate('/sapper')
         } catch (err) {
-            console.log(err);
             toast.error("Возникла ошибка")
         }
     }

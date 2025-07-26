@@ -4,6 +4,8 @@ import RegisterPage from "./assets/pages/RegisterPage/RegisterPage.jsx";
 import SapperPage from "./assets/pages/SapperPage/SapperPage.jsx";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
+import HomePage from "./assets/pages/HomePage/HomePage.jsx";
+import AuthPage from "./assets/pages/AuthPage/AuthPage.jsx";
 
 
 const App = () => {
@@ -11,9 +13,10 @@ const App = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<Auth />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<AuthPage />} />
                 <Route path="/sapper" element={<SapperPage />} />
-                <Route path="/" element={<RegisterPage />} />
             </Routes>
             <Toaster position="top-right" reverseOrder={false} />
         </BrowserRouter>

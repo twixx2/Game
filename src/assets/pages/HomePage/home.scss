@@ -1,0 +1,26 @@
+@import '../../style/reset.scss';
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('../../fonts/Ubuntu-Regular.ttf');
+    font-weight: 400;
+    font-style: normal;
+}
+
+.home {
+    width: 100%;
+    min-height: 100vh;
+    background: #fff;
+
+    &_nav {
+        width: 100%;
+        padding: 15px 0;
+        background: gray;
+        
+        &_content{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}

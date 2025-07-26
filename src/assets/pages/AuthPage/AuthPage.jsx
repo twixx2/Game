@@ -16,11 +16,11 @@ const AuthPage = () => {
     const url = import.meta.env.VITE_USER_API_URL;
     const token = localStorage.getItem("token");
 
-    useEffect(() => {
-        if (token) {
-            navigate("/sapper")
-        }
-    }, [token, navigate])
+    // useEffect(() => {
+    //     if (token) {
+    //         navigate("/sapper")
+    //     }
+    // }, [token, navigate])
 
     const validate = () => {
         let valid = true;
@@ -44,7 +44,7 @@ const AuthPage = () => {
         }
 
         if (token) {
-            setLoginError("Вы уже зарегистрированы");
+            toast.error("Вы уже зарегистрированы!")
             valid = false;
         }
         return valid;

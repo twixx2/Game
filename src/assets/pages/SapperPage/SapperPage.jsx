@@ -47,7 +47,7 @@ const SapperPage = () => {
                 setUserId(res.data.id)
 
             } catch (err) {
-                navigate("/")
+                navigate("/register")
             }
         }
 
