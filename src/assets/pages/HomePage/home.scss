@@ -156,9 +156,8 @@
 
 .home {
     width: 100%;
-    height: auto;
+    min-height: 100vh;
     background: black;
-    flex: 0 0 auto;
 
     &_nav {
         width: 100%;
