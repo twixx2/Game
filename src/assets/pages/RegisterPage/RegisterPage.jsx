@@ -13,15 +13,28 @@ const RegisterPage = () => {
     const [loginError, setLoginError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [matchError, setMatchError] = useState("");
+    const [isAuth, setIsAuth] = useState(false);
     const navigate = useNavigate();
     const url = import.meta.env.VITE_USER_API_URL;
     const token = localStorage.getItem("token")
 
     useEffect(() => {
-        if (token) {
-            navigate("/sapper")
+        const fetchUser = async () => {
+            if (!token) return;
+            try {
+                const res = await axios.get(`${url}/auth_me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setIsAuth(true);
+                void res;
+            } catch (err) {
+                void err;
+            }
         }
-    }, [token, navigate])
+        fetchUser();
+    }, [])
 
 
     const validate = () => {
@@ -29,6 +42,14 @@ const RegisterPage = () => {
         setLoginError("");
         setPasswordError("");
         setMatchError("");
+
+        if (isAuth) {
+            toast.error("Вы уже зарегистрированы");
+            navigate("/");
+            valid = false;
+            return valid;
+        }
+
         if (!login.trim()) {
             setLoginError("Логин обязателен");
             valid = false;
@@ -48,11 +69,6 @@ const RegisterPage = () => {
             valid = false;
         }
 
-        if (token) {
-            setLoginError("Вы уже зарегистрированы")
-            valid = false;
-        }
-
         return valid;
     }
 
@@ -60,10 +76,9 @@ const RegisterPage = () => {
         if (!validate()) {
             return;
         }
-
         try {
             const registrationDateISO = new Date().toISOString().slice(0, 16);
-            const emailUser = `${login}@example.com`
+            const emailUser = `${login}@example.com`;
             const hashedPassword = SHA256(password).toString();
             const res = await axios.post(`${url}/register`, {
                 fullName: login,
@@ -72,14 +87,14 @@ const RegisterPage = () => {
                 balance: 1000,
                 registeredAt: registrationDateISO,
             });
-            localStorage.setItem("token", res.data.token)
-            setLogin("")
-            setPassword("")
-            setConfirmPassword("")
-            navigate('/sapper')
+            localStorage.setItem("token", res.data.token);
+            setLogin("");
+            setPassword("");
+            setConfirmPassword("");
+            navigate('/');
         } catch (err) {
-            console.log(err);
-            toast.error("Возникла ошибка")
+            toast.error("Возникла ошибка");
+            void err;
         }
     }
 
@@ -129,6 +144,7 @@ const RegisterPage = () => {
                 <div className="register-page__footer">
                     <p>Есть аккаунт?</p>
                     <Link to="/login">Войти</Link>
+                    <Link to="/">На главную</Link>
                 </div>
             </div>
         </div>

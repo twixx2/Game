@@ -37,8 +37,18 @@ body {
     padding: 15px 0;
     background: $dark-gray;
 
+
     &_content {
         @include flex-betwen();
+
+        .nav_back {
+            @include flex-center();
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            background: #6A6A68;
+            border-radius: 10px;
+        }
 
         &_logo {
             @include font(1.8rem, 500, "Ubuntu");
@@ -126,6 +136,8 @@ body {
                 display: flex;
                 align-items: center;
                 overflow-x: auto;
+                scrollbar-width: thin;
+                scrollbar-color: #888 transparent;
                 white-space: nowrap;
 
                 .sapper_coef {
@@ -166,13 +178,49 @@ body {
                     color: white;
                     font-size: 20px;
                     font-weight: 400;
-
                 }
 
             }
 
             .sapper_options {
                 display: flex;
+                align-items: flex-start;
+                gap: 20px;
+
+                .mines_options {
+                    width: 50%;
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                    min-height: 44px;
+
+                    .opt {
+                        font-size: 1.2rem;
+                        font-family: 'Ubuntu';
+                        width: 44px;
+                        height: 44px;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        background: #33353b;
+                        color: white;
+                        transition: .5s background;
+
+                        &:hover {
+                            background: #4a4c50;
+                        }
+
+                        &--active {
+                            background: white;
+                            color: #33353b;
+
+                            &:hover {
+                                background: white;
+                            }
+                        }
+                    }
+                }
+
 
                 .sapper_bet {
                     width: 50%;
@@ -192,11 +240,11 @@ body {
 
                     .sapper_bet_input {
                         width: 100%;
-                        background: #6A6A68;
+                        background: #33353b;
                         border-radius: 20px;
                         padding: 15px;
                         color: white;
-                        font-size: 14px;
+                        font-size: 16px;
                         font-family: 'Ubuntu';
                     }
 
@@ -210,6 +258,23 @@ body {
                             display: inline-block;
                         }
                     }
+                }
+
+            }
+
+            .autoclick_btn {
+                min-height: 47px;
+                width: 50%;
+                border-radius: 10px;
+                font-size: 1.5rem;
+                font-family: 'Ubuntu';
+                color: white;
+                transition: .5s;
+                background: #33353b;
+                cursor: pointer;
+
+                &:hover {
+                    background: rgb(72, 75, 84);
                 }
             }
 
@@ -228,11 +293,12 @@ body {
                 cursor: pointer;
             }
 
-            .tg_channel{
+            .tg_channel {
                 font-family: 'Ubuntu';
                 color: white;
                 font-size: 16px;
                 transform: skewX(-15deg);
+                display: none;
             }
         }
     }
