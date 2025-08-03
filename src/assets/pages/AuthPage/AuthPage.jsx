@@ -12,20 +12,40 @@ const AuthPage = () => {
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState("")
     const [passwordError, setPasswordError] = useState("")
+    const [isAuth, setIsAuth] = useState(false)
     const navigate = useNavigate();
     const url = import.meta.env.VITE_USER_API_URL;
-    const token = localStorage.getItem("token");
+    const userToken = localStorage.getItem("token");
 
-    // useEffect(() => {
-    //     if (token) {
-    //         navigate("/sapper")
-    //     }
-    // }, [token, navigate])
+    useEffect(() => {
+        const checkAuth = async () => {
+            if (!userToken) return;
+            try {
+                const res = await axios.get(`${url}/auth_me`, {
+                    headers: {
+                        Authorization: `Bearer ${userToken}`
+                    }
+                });
+                setIsAuth(true);
+                void res;
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        checkAuth();
+    }, [])
 
     const validate = () => {
         let valid = true;
         setLoginError("");
         setPasswordError("");
+
+        if (isAuth) {
+            toast.error("Вы уже зарегистрированы");
+            navigate("/");
+            valid = false;
+            return valid;
+        }
 
         if (!login.trim()) {
             setLoginError("Логин обязателен");
@@ -43,10 +63,6 @@ const AuthPage = () => {
             valid = false;
         }
 
-        if (token) {
-            toast.error("Вы уже зарегистрированы!")
-            valid = false;
-        }
         return valid;
     }
 
@@ -65,13 +81,11 @@ const AuthPage = () => {
             localStorage.setItem("token", res.data.token)
             setLogin("")
             setPassword("")
-            navigate("/sapper")
-
+            navigate("/")
 
         } catch (err) {
             if (axios.isAxiosError(err) && err.response) {
                 const status = err.response.status;
-
                 if (status === 400) {
                     toast.error("Неверные данные, повторите попытку еще раз");
                 } else if (status === 401) {
@@ -79,12 +93,9 @@ const AuthPage = () => {
                 } else if (status === 403) {
                     toast.error("Аутентификация временно недоступна");
                 }
-
             }
         }
     }
-
-
 
 
     return (
@@ -122,6 +133,7 @@ const AuthPage = () => {
                 <div className="auth-page__footer">
                     <p>Нет аккаунта?</p>
                     <Link to="/register">Зарегистрироваться</Link>
+                    <Link to="/">На главную</Link>
                 </div>
             </div>
         </div>

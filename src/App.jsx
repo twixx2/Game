@@ -1,8 +1,6 @@
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom"
-import Auth from "./assets/pages/AuthPage/AuthPage.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 import RegisterPage from "./assets/pages/RegisterPage/RegisterPage.jsx";
 import SapperPage from "./assets/pages/SapperPage/SapperPage.jsx";
-import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import HomePage from "./assets/pages/HomePage/HomePage.jsx";
 import AuthPage from "./assets/pages/AuthPage/AuthPage.jsx";

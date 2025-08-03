@@ -20,20 +20,19 @@ const RegisterPage = () => {
 
     useEffect(() => {
         const fetchUser = async () => {
-            if (token) {
-                try {
-                    const res = await axios.get(`${url}/auth_me`, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-                    setIsAuth(true);
-                } catch (err) {
-                    setIsAuth(false);
-                }
+            if (!token) return;
+            try {
+                const res = await axios.get(`${url}/auth_me`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                setIsAuth(true);
+                void res;
+            } catch (err) {
+                void err;
             }
         }
-
         fetchUser();
     }, [])
 
@@ -46,6 +45,7 @@ const RegisterPage = () => {
 
         if (isAuth) {
             toast.error("Вы уже зарегистрированы");
+            navigate("/");
             valid = false;
             return valid;
         }
@@ -78,7 +78,7 @@ const RegisterPage = () => {
         }
         try {
             const registrationDateISO = new Date().toISOString().slice(0, 16);
-            const emailUser = `${login}@example.com`
+            const emailUser = `${login}@example.com`;
             const hashedPassword = SHA256(password).toString();
             const res = await axios.post(`${url}/register`, {
                 fullName: login,
@@ -87,13 +87,14 @@ const RegisterPage = () => {
                 balance: 1000,
                 registeredAt: registrationDateISO,
             });
-            localStorage.setItem("token", res.data.token)
-            setLogin("")
-            setPassword("")
-            setConfirmPassword("")
-            navigate('/sapper')
+            localStorage.setItem("token", res.data.token);
+            setLogin("");
+            setPassword("");
+            setConfirmPassword("");
+            navigate('/');
         } catch (err) {
-            toast.error("Возникла ошибка")
+            toast.error("Возникла ошибка");
+            void err;
         }
     }
 
@@ -143,6 +144,7 @@ const RegisterPage = () => {
                 <div className="register-page__footer">
                     <p>Есть аккаунт?</p>
                     <Link to="/login">Войти</Link>
+                    <Link to="/">На главную</Link>
                 </div>
             </div>
         </div>

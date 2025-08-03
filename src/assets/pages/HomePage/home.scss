@@ -1,26 +1,419 @@
 @import '../../style/reset.scss';
 
 @font-face {
-    font-family: 'Ubuntu';
-    src: url('../../fonts/Ubuntu-Regular.ttf');
-    font-weight: 400;
+    font-family: 'MrRobot';
+    src: url('../../fonts/MrRobot.ttf');
+    font-weight: normal;
     font-style: normal;
+}
+
+@font-face {
+    font-family: 'TikTok';
+    src: url('../../fonts/TikTokSans-Bold.ttf');
+    font-weight: normal;
+    font-style: normal;
+}
+
+::selection {
+    background: yellow;
+    color: black;
+}
+
+:root {
+    --bg: #000000;
+    --clr-1: #00c2ff;
+    --clr-2: #33ff8c;
+    --clr-3: #ffc640;
+    --clr-4: #e54cff;
+
+    --blur: 1rem;
+    --fs: 2.5rem;
+    --ls: clamp(-1.75px, -0.25vw, -3.5px);
+}
+
+@keyframes aurora-1 {
+    0% {
+        top: 0;
+        right: 0;
+    }
+
+    50% {
+        top: 100%;
+        right: 75%;
+    }
+
+    75% {
+        top: 100%;
+        right: 25%;
+    }
+
+    100% {
+        top: 0;
+        right: 0;
+    }
+}
+
+@keyframes aurora-2 {
+    0% {
+        top: -50%;
+        left: 0%;
+    }
+
+    60% {
+        top: 100%;
+        left: 75%;
+    }
+
+    85% {
+        top: 100%;
+        left: 25%;
+    }
+
+    100% {
+        top: -50%;
+        left: 0%;
+    }
+}
+
+@keyframes aurora-3 {
+    0% {
+        bottom: 0;
+        left: 0;
+    }
+
+    40% {
+        bottom: 100%;
+        left: 75%;
+    }
+
+    65% {
+        bottom: 40%;
+        left: 50%;
+    }
+
+    100% {
+        bottom: 0;
+        left: 0;
+    }
+}
+
+@keyframes aurora-4 {
+    0% {
+        bottom: -50%;
+        right: 0;
+    }
+
+    50% {
+        bottom: 0%;
+        right: 40%;
+    }
+
+    90% {
+        bottom: 50%;
+        right: 25%;
+    }
+
+    100% {
+        bottom: -50%;
+        right: 0;
+    }
+}
+
+@keyframes aurora-border {
+    0% {
+        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+    }
+
+    25% {
+        border-radius: 47% 29% 39% 49% / 61% 19% 66% 26%;
+    }
+
+    50% {
+        border-radius: 57% 23% 47% 72% / 63% 17% 66% 33%;
+    }
+
+    75% {
+        border-radius: 28% 49% 29% 100% / 93% 20% 64% 25%;
+    }
+
+    100% {
+        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+    }
+}
+
+
+@keyframes bg-spin {
+    to {
+        --border-angle: 1turn;
+    }
+}
+
+@property --border-angle {
+    syntax: "<angle>";
+    inherits: true;
+    initial-value: 0turn;
 }
 
 .home {
     width: 100%;
     min-height: 100vh;
-    background: #fff;
+    background: black;
 
     &_nav {
         width: 100%;
-        padding: 15px 0;
-        background: gray;
-        
-        &_content{
+        padding: 20px 0;
+        border-radius: 20px;
+
+        &_content {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+
+            &_logo {
+                font-size: 2.7rem;
+                color: #e71b36;
+                filter: blur(2px);
+                font-family: 'MrRobot';
+                white-space: nowrap;
+            }
+        }
+    }
+
+    &_main {
+        margin-top: 30px;
+        width: 100%;
+        padding: 0 25px;
+        min-height: 900px;
+        border-radius: 30px;
+        background: black;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+        .home_games {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+
+            &_title {
+                font-size: 34px;
+                color: white;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            }
+
+            &_content {
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+
+                .home_game_card {
+                    width: 100%;
+                    min-height: 70px;
+                    border-radius: 30px;
+                    padding: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 22px;
+                    color: white;
+                    cursor: pointer;
+                    --border-angle: 0turn; // For animation.
+                    --main-bg: conic-gradient(from var(--border-angle),
+                            black);
+                    border: solid 5px transparent;
+                    border-radius: 2em;
+                    background:
+                        // padding-box clip this background in to the overall element except the border.
+                        var(--main-bg) padding-box,
+                        // border-box extends this background to the border space
+                        var(--gradient-border) border-box,
+                        // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
+                        var(--main-bg) border-box;
+                    background-position: center center;
+                    animation: bg-spin 3s linear infinite;
+
+                    &.home_card_one {
+                        --gradient-border:
+                            conic-gradient(from var(--border-angle), transparent 50%, #7e00a6, #d2ff28 70%, transparent);
+                    }
+
+                    &.home_card_two {
+                        --gradient-border:
+                            conic-gradient(from var(--border-angle), transparent 50%, #ffffff, #cb0000 70%, transparent);
+                    }
+
+                    &.home_card_three {
+                        --gradient-border:
+                            conic-gradient(from var(--border-angle), transparent 50%, #00ff99, #ff6600 70%, transparent);
+                    }
+
+                    &:hover {
+                        animation-play-state: paused;
+                    }
+
+                    & svg {
+                        transition: 0.5s;
+                        transform: translateX(-20px);
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+
+                    &:hover svg {
+                        transform: translateX(0);
+                        opacity: 1;
+                        pointer-events: auto;
+                    }
+                }
+            }
+        }
+
+        .home_auth {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+
+            &_title {
+                font-size: 34px;
+                color: white;
+                font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            }
+
+            &_content {
+                display: flex;
+                flex-direction: column;
+                gap: 25px;
+
+                .home_auth_card {
+                    width: 100%;
+                    min-height: 70px;
+                    border-radius: 30px;
+                    padding: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-size: 22px;
+                    color: white;
+                    cursor: pointer;
+                    --border-angle: 0turn; // For animation.
+                    --main-bg: conic-gradient(from var(--border-angle),
+                            black);
+                    border: solid 5px transparent;
+                    border-radius: 2em;
+                    background:
+                        // padding-box clip this background in to the overall element except the border.
+                        var(--main-bg) padding-box,
+                        // border-box extends this background to the border space
+                        var(--gradient-border) border-box,
+                        // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
+                        var(--main-bg) border-box;
+                    background-position: center center;
+                    animation: bg-spin 3s linear infinite;
+
+                    &.home_auth_one {
+                        --gradient-border:
+                            conic-gradient(from var(--border-angle), transparent 50%, #5b55d9, #fff 70%, transparent);
+                    }
+
+                    &.home_auth_two {
+                        --gradient-border:
+                            conic-gradient(from var(--border-angle), transparent 50%, #fff, #5b55d9 70%, transparent);
+                    }
+
+                    &:hover {
+                        animation-play-state: paused;
+                    }
+
+                    & svg {
+                        transition: 0.5s;
+                        transform: translateX(-15px);
+                        opacity: 0;
+                        pointer-events: none;
+                    }
+
+                    &:hover svg {
+                        transform: translateX(0);
+                        opacity: 1;
+                        pointer-events: auto;
+                    }
+                }
+            }
+
+
+        }
+
+        .home_title_section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+            text-align: center;
+
+            .home_title {
+                font-size: var(--fs);
+                font-weight: 800;
+                letter-spacing: var(--ls);
+                position: relative;
+                overflow: hidden;
+                background: var(--bg);
+                color: white;
+                font-family: 'TikTok';
+
+                .aurora {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 2;
+                    mix-blend-mode: darken;
+                    pointer-events: none;
+
+                    .aurora__item {
+                        overflow: hidden;
+                        position: absolute;
+                        width: 60vw;
+                        height: 60vw;
+                        background-color: var(--clr-1);
+                        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
+                        filter: blur(var(--blur));
+                        mix-blend-mode: overlay;
+                    }
+
+                    .aurora__item:nth-of-type(1) {
+                        top: -50%;
+                        animation: aurora-border 6s ease-in-out infinite,
+                            aurora-1 12s ease-in-out infinite alternate;
+                    }
+
+                    .aurora__item:nth-of-type(2) {
+                        background-color: var(--clr-3);
+                        right: 0;
+                        top: 0;
+                        animation: aurora-border 6s ease-in-out infinite,
+                            aurora-2 12s ease-in-out infinite alternate;
+                    }
+
+                    .aurora__item:nth-of-type(3) {
+                        background-color: var(--clr-2);
+                        left: 0;
+                        bottom: 0;
+                        animation: aurora-border 6s ease-in-out infinite,
+                            aurora-3 8s ease-in-out infinite alternate;
+                    }
+
+                    .aurora__item:nth-of-type(4) {
+                        background-color: var(--clr-4);
+                        right: 0;
+                        bottom: -50%;
+                        animation: aurora-border 6s ease-in-out infinite,
+                            aurora-4 24s ease-in-out infinite alternate;
+                    }
+                }
+
+
+            }
         }
     }
 }
