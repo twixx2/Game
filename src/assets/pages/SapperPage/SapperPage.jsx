@@ -181,6 +181,7 @@ const SapperPage = () => {
     const handleClick = (cellId) => {
         if (!isPlay) return;
         if (explodedCoins.includes(cellId)) return;
+        setTimeout(() => { }, 500);
         if (mines.includes(cellId)) {
             // Если была выбрата мина - игра заканчивается 
             setExplodedMines(mines);

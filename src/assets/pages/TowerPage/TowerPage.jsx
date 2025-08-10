@@ -154,26 +154,29 @@ const TowerPage = () => {
     const handlePick = (idx, choise) => {
         if (!isPlay || idx !== step) return;
         const safeSide = tower[idx];
+        setTimeout(() => { }, 500);
 
         if (choise === safeSide) {
-            // Если правильный выбор
-            setCorrectPicks(prev => [...prev, idx]);
-            const nextStep = step + 1;
-            const newWin = Number(bet) * coeffs[nextStep - 1];
-            setStep(nextStep);
-            setWin(newWin);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                isPlay: true,
-                bet,
-                tower,
-                correctPicks,
-                step: nextStep,
-                win: newWin
-            })); // Обновление состояния
+            setCorrectPicks(prev => {
+                const next = [...prev, idx];
+                const nextStep = step + 1;
+                const newWin = Number(bet) * coeffs[nextStep - 1];
+                setStep(nextStep);
+                setWin(newWin);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                    isPlay: true,
+                    bet,
+                    tower,
+                    correctPicks: next,
+                    step: nextStep,
+                    win: newWin
+                })); // Обновление состояния
 
-            if (nextStep === totalSteps) {
-                finishGame(newWin); // Полный проход игры
-            }
+                if (nextStep === totalSteps) {
+                    finishGame(newWin); // Полный проход игры
+                }
+                return next;
+            });
 
         } else {
             // Если выбрана неправильная сторона
