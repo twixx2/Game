@@ -151,10 +151,12 @@ const TowerPage = () => {
         }
     };
 
-    const handlePick = (idx, choise) => {
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    const handlePick = async (idx, choise) => {
         if (!isPlay || idx !== step) return;
         const safeSide = tower[idx];
-        setTimeout(() => { }, 500);
+        await delay(65);
 
         if (choise === safeSide) {
             setCorrectPicks(prev => {
