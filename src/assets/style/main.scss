@@ -1,0 +1,7 @@
+@import './fonts.scss';
+@import './reset.scss';
+
+::selection {
+    background: yellow;
+    color: black;
+}

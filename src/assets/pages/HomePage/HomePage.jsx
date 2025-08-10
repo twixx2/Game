@@ -44,11 +44,12 @@ const HomePage = () => {
             <main className="home_main">
 
                 {isAuth ? <section className="home_games">
-                    <motion.h2
+                    <motion.h2 className='home_games_title'
                         initial={{ opacity: 0, x: -120 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1.2, delay: 0.3 }}
-                        className='home_games_title'>Развлечение</motion.h2>
+                        transition={{ duration: 1.2, delay: 0.3 }}>
+                        Entertainment
+                    </motion.h2>
 
                     <div className="home_games_content">
 
@@ -57,7 +58,7 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, delay: 0.2 }}
                             className="home_game_card home_card_one" onClick={() => navigate("/sapper")}>
-                            Сапер
+                            Sapper
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -68,12 +69,12 @@ const HomePage = () => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, delay: 0.4 }}
                             className="home_game_card home_card_two" onClick={() => {
-                                const tostLoading = toast.loading("В разработке");
+                                const tostLoading = toast.loading("Not committed yet");
                                 setTimeout(() => {
                                     toast.dismiss(tostLoading);
                                 }, 1500)
                             }}>
-                            Кейсы
+                            Cases
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -83,13 +84,8 @@ const HomePage = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 1, delay: 0.6 }}
-                            className="home_game_card home_card_three" onClick={() => {
-                                const tostLoading = toast.loading("В разработке");
-                                setTimeout(() => {
-                                    toast.dismiss(tostLoading);
-                                }, 1500)
-                            }}>
-                            Башня
+                            className="home_game_card home_card_three" onClick={() => navigate("/tower")}>
+                            Tower
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -104,7 +100,7 @@ const HomePage = () => {
                             initial={{ opacity: 0, x: -120 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ duration: 1.2, delay: 0.3 }}
-                            className='home_games_title'>Авторизация</motion.h2>
+                            className='home_games_title'>Who are you?</motion.h2>
                         <div className="home_auth_content">
 
                             <motion.div
@@ -112,7 +108,7 @@ const HomePage = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 1, delay: 0.2 }}
                                 className="home_auth_card home_auth_one" onClick={() => navigate("/register")}>
-                                Регистрация
+                                Registration
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
@@ -123,7 +119,7 @@ const HomePage = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 1, delay: 0.6 }}
                                 className="home_auth_card home_auth_two" onClick={() => navigate("/login")}>
-                                Вход
+                                Authorization
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>

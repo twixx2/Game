@@ -36,7 +36,6 @@ const RegisterPage = () => {
         fetchUser();
     }, [])
 
-
     const validate = () => {
         let valid = true;
         setLoginError("");
@@ -84,7 +83,7 @@ const RegisterPage = () => {
                 fullName: login,
                 password: hashedPassword,
                 email: emailUser,
-                balance: 1000,
+                balance: 5000,
                 registeredAt: registrationDateISO,
             });
             localStorage.setItem("token", res.data.token);
