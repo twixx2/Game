@@ -1,4 +1,3 @@
-
 import './sapper.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +19,7 @@ const SapperPage = () => {
     const [explodedMines, setExplodedMines] = useState([]);
     const [betError, setBetError] = useState("");
     const [userId, setUserId] = useState();
+    const [username, setUsername] = useState();
     const [mineCount, setMineCount] = useState(3);
     const mineOptions = [3, 5, 7, 13, 19, 24]
     const coeffsMap = {
@@ -73,8 +73,8 @@ const SapperPage = () => {
                     }
                 });
                 setBalance(res.data.balance);
-                setUserId(res.data.id)
-
+                setUserId(res.data.id);
+                setUsername(res.data.fullName);
             } catch (err) {
                 void err;
                 navigate("/register")
@@ -84,6 +84,32 @@ const SapperPage = () => {
         fetchMines();
         fetchUser();
     }, [])
+
+    useEffect(() => {
+        if (!username) return;
+        const getDate = () => {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            return `${day}.${month}.2025, ${hours}:${minutes}:${seconds} on /sapper`;
+        }
+        const lastCeen = async () => {
+            try {
+                const lastceen = getDate();
+                const res = await axios.post(`${url}/lastceens`, {
+                    lastceen: lastceen,
+                    name: username
+                });
+                void res;
+            } catch (err) {
+                void err;
+            }
+        }
+        lastCeen();
+    }, [username])
 
     const generateMines = () => {
         const mines = new Set();
@@ -109,9 +135,9 @@ const SapperPage = () => {
         if (!isPlay) {
             if (!bet) return setBetError("Введите ставку");
             const numericBet = Number(bet);
-            if (isNaN(numericBet)) return setBetError("Ставка неккоректная");
-            if (numericBet < 1) return setBetError("Ставка не может быть меньше нуля");
-            if (numericBet > 10000) return setBetError("Макс ставка - 9999")
+            if (isNaN(numericBet) || bet.startsWith('+') || bet.startsWith("-")) return setBetError("Ставка неккоректная");
+            if (numericBet < 1) return setBetError(`Ставка ${numericBet} не поддерживается`);
+            if (numericBet > 2000) return setBetError("Макс ставка - 2000")
             if (numericBet > balance) return toast.error("Недостаточный баланс");
             // Начало игры 
             await editBalance(Math.round((balance - numericBet) * 100) / 100);
@@ -220,12 +246,17 @@ const SapperPage = () => {
                             <path d="M15 19L8 12L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
+
                     <a href="#" className="nav_content_logo">Sapper</a>
+
                     <div className="balance_info">
                         <div className="balance_user">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="#ffffff" d="M8 13v4H6v2h3v2h2v-2h2v2h2v-2.051c1.968-.249 3.5-1.915 3.5-3.949c0-1.32-.65-2.484-1.64-3.213A3.982 3.982 0 0 0 18 9c0-1.858-1.279-3.411-3-3.858V3h-2v2h-2V3H9v2H6v2h2zm6.5 4H10v-4h4.5c1.103 0 2 .897 2 2s-.897 2-2 2M10 7h4c1.103 0 2 .897 2 2s-.897 2-2 2h-4z" /></svg>                            <span className="balance_user_coins">{balance}</span>
+                            <span className="balance_user_coins">
+                                {balance} w$
+                            </span>
                         </div>
                     </div>
+
                 </div>
             </nav>
 
@@ -288,6 +319,7 @@ const SapperPage = () => {
                                         className='sapper_bet_input'
                                         value={bet}
                                         onChange={(e) => setBet(e.target.value)}
+                                        readOnly={isPlay}
                                     />
 
                                     <span className={`error ${betError ? "active" : ""}`}>

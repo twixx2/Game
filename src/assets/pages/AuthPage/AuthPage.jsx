@@ -29,7 +29,7 @@ const AuthPage = () => {
                 setIsAuth(true);
                 void res;
             } catch (error) {
-                console.log(error);
+                void error;
             }
         };
         checkAuth();
@@ -96,7 +96,6 @@ const AuthPage = () => {
             }
         }
     }
-
 
     return (
         <div className="auth-page">

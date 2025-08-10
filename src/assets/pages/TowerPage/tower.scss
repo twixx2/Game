@@ -1,0 +1,151 @@
+@import '../../style/main.scss';
+
+.tower_overlay {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
+    &_main {
+        width: 100%;
+        padding: 0 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+
+        .tower_cells {
+            width: 100%;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 15px;
+
+
+            .tower_row {
+                display: flex;
+                gap: 15px;
+
+                .tower_cell {
+                    width: 100%;
+                    max-width: 180px;
+                    min-height: 64px;
+                    background: rgba(73, 74, 82, .35);
+                    border-radius: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 1rem;
+                    transition: .5s;
+                    cursor: pointer;
+                    font-family: "Rubik";
+
+                    &:hover {
+                        background: #474950;
+                    }
+
+                    &.cell_passed {
+                        cursor: not-allowed;
+                    }
+
+                    &.cell_safe {
+                        background: #5aed90;
+                    }
+
+                    &.cell_error {
+                        background: #ef5350;
+                        cursor: not-allowed;
+                    }
+
+                    &.cell_disabled {
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+
+        .tower_options {
+            display: flex;
+            gap: 20px;
+
+            &.options_center {
+                align-items: center;
+            }
+
+            &.options_end {
+                align-items: flex-end;
+            }
+
+            .tower_bet {
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+
+
+                .tower_bet_info {
+                    color: white;
+                    font-size: 18px;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    font-family: "Rubik";
+                }
+
+                .tower_bet_input {
+                    width: 100%;
+                    background: #33353b;
+                    border-radius: 20px;
+                    padding: 15px;
+                    color: white;
+                    font-size: 16px;
+                    font-family: "Rubik";
+                }
+
+                .error {
+                    display: none;
+                    font-size: 16px;
+                    color: red;
+                    font-family: "Rubik";
+
+                    &.active {
+                        display: inline-block;
+                    }
+                }
+            }
+
+            .autoclick_btn {
+                min-height: 47px;
+                width: 50%;
+                border-radius: 10px;
+                font-size: 1.5rem;
+                font-family: "Rubik";
+                color: white;
+                transition: .5s;
+                background: #33353b;
+                cursor: pointer;
+
+                &:hover {
+                    background: rgb(72, 75, 84);
+                }
+            }
+
+        }
+
+        .tower_start_game {
+            width: 100%;
+            min-height: 70px;
+            padding: 14px;
+            border-radius: 20px;
+            background: rgb(62, 62, 228);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-family: "Rubik";
+            cursor: pointer;
+        }
+    }
+}
