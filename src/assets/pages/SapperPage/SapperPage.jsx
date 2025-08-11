@@ -136,8 +136,8 @@ const SapperPage = () => {
             if (!bet) return setBetError("Введите ставку");
             const numericBet = Number(bet);
             if (isNaN(numericBet) || bet.startsWith('+') || bet.startsWith("-")) return setBetError("Ставка неккоректная");
-            if (numericBet < 1) return setBetError(`Ставка ${numericBet} не поддерживается`);
-            if (numericBet > 2000) return setBetError("Макс ставка - 2000")
+            if (numericBet < 1) return setBetError(`Ставка не может быть меньше 1`);
+            if (numericBet > 10000) return setBetError("Макс ставка - 10.000");
             if (numericBet > balance) return toast.error("Недостаточный баланс");
             // Начало игры 
             await editBalance(Math.round((balance - numericBet) * 100) / 100);
