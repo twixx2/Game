@@ -145,7 +145,7 @@ const TowerPage = () => {
             setBalance(prev => Math.round((prev + win) * 100) / 100);
             await editBalance(Math.round((balance + win) * 100) / 100);
             setIsPlay(false);
-            setCorrectPicks([]);
+            clearAll();
             localStorage.removeItem(STORAGE_KEY);
         }
     };
