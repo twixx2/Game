@@ -126,7 +126,6 @@ const TowerPage = () => {
                 Math.random() < 0.5 ? "left" : "right"
             );
             setTower(newTower);
-            console.log(newTower);
             setWin(0);
             setStep(0);
             setIsPlay(true);
