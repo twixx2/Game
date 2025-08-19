@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import HomePage from "./assets/pages/HomePage/HomePage.jsx";
 import AuthPage from "./assets/pages/AuthPage/AuthPage.jsx";
 import TowerPage from "./assets/pages/TowerPage/TowerPage.jsx";
+import CasesPage from "./assets/pages/CasesPage/CasesPage.jsx";
+import CaseDetail from "./assets/pages/CaseDetail/CaseDetail.jsx";
 
 
 const App = () => {
@@ -17,6 +19,8 @@ const App = () => {
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/sapper" element={<SapperPage />} />
                 <Route path="/tower" element={<TowerPage />} />
+                <Route path="/cases" element={<CasesPage />} />
+                <Route path="/cases/:caseId" element={<CaseDetail />} />
             </Routes>
             <Toaster position="top-right" reverseOrder={false} />
         </BrowserRouter>

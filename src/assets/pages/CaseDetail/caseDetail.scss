@@ -1,0 +1,300 @@
+/* src/pages/caseDetail.scss */
+.case_detail {
+  display: flex;
+  flex-direction: column;
+
+
+  &_main {
+    margin-top: 30px;
+    padding: 0 10px;
+
+    .roulette_frame {
+      width: 100%;
+      max-width: 648px;
+      height: auto;
+      margin: 1rem auto;
+      overflow: hidden;
+      border-radius: 8px;
+
+      .roulette_track {
+        display: flex;
+        transform: translateX(0);
+
+        .slot {
+          width: 195px;
+          height: 170px;
+          margin: 4px;
+          flex-shrink: 0;
+          border-radius: 6px;
+          display: flex;
+          flex-direction: column;
+
+          &_image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+
+            & img {
+              max-width: 100%;
+              max-height: 100%;
+              object-fit: contain;
+            }
+          }
+
+          &_info{
+            width: 100%;
+            padding: 0 5px;
+            margin-bottom: 5px;
+
+            & span{
+              font-size: 14px;
+              color: white;
+              font-family: 'Rubik';
+              font-weight: 500;
+            }
+          }
+
+          &.mythic {
+            background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(191, 147, 31, .2) 54.17%, rgba(255, 185, 0, .2));
+          }
+
+          &.legendary {
+            background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(192, 57, 219, .2) 52.37%, rgba(213, 0, 255, .2));
+          }
+
+          &.epic {
+            background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(105, 64, 186, .2) 45.94%, rgba(135, 75, 255, .2));
+          }
+
+          &.rare {
+            background: linear-gradient(180deg, #26326d, #221f1e);
+          }
+
+          &.uncommon {
+            background: linear-gradient(180deg, #304e6c, #221f1e);
+          }
+
+          &.common {
+            background: linear-gradient(2deg, #221f1e 1.61%, #383838 98.42%, #363636 98.43%);
+          }
+
+        }
+
+      }
+
+    }
+
+    .case_detail_info {
+      width: 100%;
+      max-height: 360px;
+      padding: 10px;
+      border-radius: 25px;
+      background: rgba(34, 34, 34, 0.685);
+
+      &_image {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        & img {
+          max-width: 360px;
+          max-height: 360px;
+          object-fit: cover;
+          display: block;
+        }
+      }
+    }
+
+    .case_detail_options {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 30px;
+
+      .open_btn {
+        font-family: 'Rubik';
+        width: 100%;
+        padding: .75rem 1.5rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px;
+        background: #4caf50;
+        color: #fff;
+        cursor: pointer;
+        transition: .2s;
+
+        &:hover {
+          background: #2e8032;
+        }
+      }
+
+      .loading_text {
+        font-family: 'Rubik';
+        font-size: 1.5rem;
+        color: #fff;
+        text-align: center;
+      }
+
+      .case_detail_options_result {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .sell_btn {
+          width: 100%;
+          padding: .75rem 1.5rem;
+          font-size: 1rem;
+          border: none;
+          border-radius: 4px;
+          background: #5f665f;
+          color: #fff;
+          cursor: pointer;
+          transition: .2s;
+          font-family: 'Rubik';
+
+          &:hover {
+            background: #434a43;
+          }
+        }
+      }
+    }
+
+    .case_detail_drop {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      margin-top: 30px;
+
+      .case_drop_title {
+        font-family: 'Rubik';
+        font-size: 1.2rem;
+        color: #fff;
+      }
+
+      .case_drop_items {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        row-gap: 8px;
+
+        .case_drop_item {
+          width: 100%;
+          max-width: 185px;
+          height: auto;
+          max-height: 150px;
+          border-radius: 10px;
+          position: relative;
+          overflow: hidden;
+
+          &:hover {
+            .case_drop_item_content_overlay {
+              opacity: 1;
+            }
+
+            .case_drop_item_content_info {
+              filter: blur(12px);
+            }
+          }
+
+          &.mythic {
+            background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(191, 147, 31, .2) 54.17%, rgba(255, 185, 0, .2));
+          }
+
+          &.legendary {
+            background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(192, 57, 219, .2) 52.37%, rgba(213, 0, 255, .2));
+          }
+
+          &.epic {
+            background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(105, 64, 186, .2) 45.94%, rgba(135, 75, 255, .2));
+          }
+
+          &.rare {
+            background: linear-gradient(180deg, #26326d, #221f1e);
+          }
+
+          &.uncommon {
+            background: linear-gradient(180deg, #304e6c, #221f1e);
+          }
+
+          &.common {
+            background: linear-gradient(2deg, #221f1e 1.61%, #383838 98.42%, #363636 98.43%);
+          }
+
+          &_content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 10px;
+            position: relative;
+
+            &_info {
+              position: relative;
+              z-index: 2;
+              transition: .3s;
+              display: flex;
+              flex-direction: column;
+
+              &_image {
+                height: 74px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                & img {
+                  max-width: 100%;
+                  max-height: 100%;
+                  object-fit: cover;
+                }
+              }
+
+              &_name {
+                font-family: 'Rubik';
+                font-size: 12px;
+                font-weight: 300;
+                color: #fff;
+                margin-top: 5px;
+              }
+            }
+
+            &_overlay {
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              border-radius: 10px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              flex-direction: column;
+              gap: 5px;
+              opacity: 0;
+              z-index: 3;
+              transition: opacity .3s ease;
+
+              &_price {
+                font-size: 13px;
+                font-family: 'Rubik';
+                font-weight: 400;
+                color: white;
+                text-align: center;
+              }
+
+              &_chance {
+                font-size: 13px;
+                font-family: 'Rubik';
+                font-weight: 400;
+                color: white;
+                text-align: center;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
