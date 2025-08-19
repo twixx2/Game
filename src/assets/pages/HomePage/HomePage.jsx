@@ -29,7 +29,6 @@ const HomePage = () => {
         fetchUser();
     }, []);
 
-    navigate("/cases");
 
     return (
         <div className="home">
