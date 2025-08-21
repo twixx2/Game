@@ -43,12 +43,12 @@
             }
           }
 
-          &_info{
+          &_info {
             width: 100%;
             padding: 0 5px;
             margin-bottom: 5px;
 
-            & span{
+            & span {
               font-size: 14px;
               color: white;
               font-family: 'Rubik';
@@ -169,6 +169,8 @@
       flex-direction: column;
       gap: 25px;
       margin-top: 30px;
+      width: max-content;
+      margin: 0 auto;
 
       .case_drop_title {
         font-family: 'Rubik';
@@ -179,7 +181,7 @@
       .case_drop_items {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        row-gap: 8px;
+        gap: 8px;
 
         .case_drop_item {
           width: 100%;
