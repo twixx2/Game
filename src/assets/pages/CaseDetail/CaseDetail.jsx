@@ -287,7 +287,7 @@ export default function CaseDetail() {
                           {it.value} w$
                         </p>
                         <p className="case_drop_item_content_overlay_chance">
-                          %{(it.weight / 100) * 100}
+                          %{it.weight}
                         </p>
                       </div>
 
