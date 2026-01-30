@@ -1,11 +1,12 @@
-import TextField from '../../components/TextField/TextField';
 import './register.scss';
-import { Link } from 'react-router-dom';
-import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { SHA256 } from 'crypto-js';
+import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import axios from "axios";
+import TextField from '../../components/TextField/TextField';
 const RegisterPage = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -13,28 +14,9 @@ const RegisterPage = () => {
     const [loginError, setLoginError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [matchError, setMatchError] = useState("");
-    const [isAuth, setIsAuth] = useState(false);
-    const navigate = useNavigate();
     const url = import.meta.env.VITE_USER_API_URL;
-    const token = localStorage.getItem("token")
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            if (!token) return;
-            try {
-                const res = await axios.get(`${url}/auth_me`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                setIsAuth(true);
-                void res;
-            } catch (err) {
-                void err;
-            }
-        }
-        fetchUser();
-    }, [])
+    const { isAuth, setToken } = useAuth();
+    const navigate = useNavigate();
 
     const validate = () => {
         let valid = true;
@@ -45,8 +27,7 @@ const RegisterPage = () => {
         if (isAuth) {
             toast.error("Вы уже зарегистрированы");
             navigate("/");
-            valid = false;
-            return valid;
+            return false;
         }
 
         if (!login.trim()) {
@@ -83,13 +64,11 @@ const RegisterPage = () => {
                 fullName: login,
                 password: hashedPassword,
                 email: emailUser,
-                balance: 5000,
+                balance: 45000,
                 registeredAt: registrationDateISO,
             });
             localStorage.setItem("token", res.data.token);
-            setLogin("");
-            setPassword("");
-            setConfirmPassword("");
+            setToken(res.data.token)
             navigate('/');
         } catch (err) {
             toast.error("Возникла ошибка");

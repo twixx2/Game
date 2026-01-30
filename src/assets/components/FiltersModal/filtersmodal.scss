@@ -1,0 +1,12 @@
+.f_modal_overlay{
+    position: fixed;
+    inset: 0;
+    background: black;
+    z-index: 999;
+    border-radius: 16px 16px 0 0;
+
+    .f_modal{
+        position: absolute;
+        inset: 0;
+    }
+}

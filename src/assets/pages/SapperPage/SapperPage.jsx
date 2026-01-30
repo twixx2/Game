@@ -1,25 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './sapper.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from "react";
 import toast from 'react-hot-toast';
+import Loader from '../../components/Loader/Loader';
+import { useAuth } from '../../context/AuthContext';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 
 const SapperPage = () => {
     const url = import.meta.env.VITE_USER_API_URL;
-    const userToken = localStorage.getItem("token");
     const navigate = useNavigate();
     const [cells, setCells] = useState([]);
-    const [balance, setBalance] = useState(0);
     const [bet, setBet] = useState("");
     const [win, setWin] = useState(0);
     const [step, setStep] = useState(-1);
     const [mines, setMines] = useState([]);
     const [isPlay, setIsPlay] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const { balance, headers, editBalance } = useAuth();
     const [explodedCoins, setExplodedCoins] = useState([]);
     const [explodedMines, setExplodedMines] = useState([]);
     const [betError, setBetError] = useState("");
-    const [userId, setUserId] = useState();
-    const [username, setUsername] = useState();
     const [mineCount, setMineCount] = useState(3);
     const mineOptions = [3, 5, 7, 13, 19, 24]
     const coeffsMap = {
@@ -49,67 +52,32 @@ const SapperPage = () => {
                 localStorage.removeItem(STORAGE_KEY);
             }
         }
-
-        const fetchMines = async () => {
-            try {
-                const res = await axios.get(`${url}/cells`, {
-                    headers: {
-                        Authorization: `Bearer ${userToken}`
+        let timer;
+        const fetchMines = () => {
+            setLoading(true);
+            axios
+                .get(`${url}/cells`, { headers: headers })
+                .then(res => {
+                    if (res.data.length === 25) {
+                        setCells(res.data);
+                    } else {
+                        throw new Error("No cells");
                     }
-                });
-                setCells(res.data)
-
-            } catch (err) {
-                void err;
-                navigate("/register")
-            }
-        }
-
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get(`${url}/auth_me`, {
-                    headers: {
-                        Authorization: `Bearer ${userToken}`
+                })
+                .catch(err => {
+                    if (err.response) {
+                        setError(err.response.status + " " + err.response.data.error);
+                    } else {
+                        setError(err.message);
                     }
+                })
+                .finally(() => {
+                    timer = setTimeout(() => setLoading(false), 500);
                 });
-                setBalance(res.data.balance);
-                setUserId(res.data.id);
-                setUsername(res.data.fullName);
-            } catch (err) {
-                void err;
-                navigate("/register")
-            }
         }
-
         fetchMines();
-        fetchUser();
-    }, [])
-
-    useEffect(() => {
-        if (!username) return;
-        const getDate = () => {
-            const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            return `${day}.${month}.2025, ${hours}:${minutes}:${seconds} on /sapper`;
-        }
-        const lastCeen = async () => {
-            try {
-                const lastceen = getDate();
-                const res = await axios.post(`${url}/lastceens`, {
-                    lastceen: lastceen,
-                    name: username
-                });
-                void res;
-            } catch (err) {
-                void err;
-            }
-        }
-        lastCeen();
-    }, [username])
+        return () => clearTimeout(timer);
+    }, []);
 
     const generateMines = () => {
         const mines = new Set();
@@ -118,17 +86,6 @@ const SapperPage = () => {
             mines.add(randomNum);
         }
         return Array.from(mines);
-    }
-
-    const editBalance = async (newBalance) => {
-        try {
-            const res = await axios.patch(`${url}/users/${userId}`, {
-                balance: newBalance
-            });
-            void res;
-        } catch (error) {
-            void error;
-        }
     }
 
     const startGame = async () => {
@@ -141,7 +98,6 @@ const SapperPage = () => {
             if (numericBet > balance) return toast.error("Недостаточный баланс");
             // Начало игры 
             await editBalance(Math.round((balance - numericBet) * 100) / 100);
-            setBalance(prev => Math.round((prev - numericBet) * 100) / 100);
             setWin(0);
             setStep(0);
             const newMines = generateMines();
@@ -163,7 +119,6 @@ const SapperPage = () => {
             if (step === -1) return toast.error("Игра еще не начата");
             if (step === 0) return toast.error("Сделайте хотя бы 1 ход"); // если игра начата но не сделан первый ход
             // Предварительно забрать выигрыш 
-            setBalance(prev => Math.round((prev + win) * 100) / 100);
             await editBalance(Math.round((balance + win) * 100) / 100);
             localStorage.removeItem(STORAGE_KEY);
             setIsPlay(false);
@@ -225,7 +180,6 @@ const SapperPage = () => {
     const finishGame = async (payout) => {
         const newBalance = Math.round((balance + payout) * 100) / 100;
         await editBalance(newBalance);
-        setBalance(newBalance);
         setIsPlay(false);
         localStorage.removeItem(STORAGE_KEY);
         clearAll();
@@ -238,6 +192,9 @@ const SapperPage = () => {
         } while (explodedCoins.includes(id) || explodedMines.includes(id));
         handleClick(id)
     }
+
+    if (loading) return <Loader />;
+    if (error) return <ErrorMessage message={error} />;
 
 
     return (
