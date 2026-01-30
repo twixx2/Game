@@ -1,31 +1,42 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+/* eslint-disable react-hooks/exhaustive-deps */
 import './cases.scss';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Loader from '../../components/Loader/Loader';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import { useAuth } from '../../context/AuthContext';
+
 export default function CasesPage() {
   const url = import.meta.env.VITE_USER_API_URL;
   const [cases, setCases] = useState([]);
-  const [balance, setBalance] = useState(0);
-  const token = localStorage.getItem('token');
-  const headers = { Authorization: `Bearer ${token}` };
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`${url}/auth_me`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setBalance(res.data.balance);
-      } catch (err) {
-        void err;
-        navigate("/register")
-      }
-    }
-    fetchUser();
-    axios.get(`${url}/cases`, { headers }).then(r => setCases(r.data));
-  }, []);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const { balance, headers } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let timer;
+    setLoading(true);
+    axios
+      .get(`${url}/cases?_select=-items`, { headers })
+      .then(r => {
+        setCases(r.data);
+      })
+      .catch(err => {
+        if (err.response) {
+          setError(err.response.status + " " + err.response.data.error);
+        } else {
+          setError(err.message);
+        }
+      })
+      .finally(() => { timer = setTimeout(() => setLoading(false), 500); });
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  if (loading) return <Loader />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
     <div className="cases_page">
@@ -77,12 +88,6 @@ export default function CasesPage() {
             </div>
           </div>
         ))}
-      </div>
-
-      <div className="test_case">
-        <span className="test_case_alert">
-          this is a test version. if anythings wrong, hit up enbanana
-        </span>
       </div>
 
     </div>

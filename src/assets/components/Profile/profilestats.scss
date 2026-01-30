@@ -1,0 +1,422 @@
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pr_tabs_profile {
+    font-family: 'Rubik';
+
+    .pr_profile_title {
+        font-size: 24px;
+        color: white;
+    }
+
+    .pr_inventory {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+
+        &_header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+
+            .pr_inv_header_options {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .pr_invenvory_search {
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                    border: 2px solid #fff;
+                    border-radius: 8px;
+                    padding: 0 5px;
+
+                    & input {
+                        background: transparent;
+                        border: none;
+                        outline: none;
+                        color: white;
+                        font-family: 'Rubik';
+                        height: 100%;
+                        font-size: 16px;
+
+                        &::placeholder {
+                            color: white;
+                        }
+                    }
+                }
+
+                .pr_inventory_btn {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 40px;
+                    height: 100%;
+                    border: none;
+                    background: transparent;
+                    cursor: pointer;
+                    border-radius: 10px;
+                }
+            }
+
+            .pr_inv_header_selected {
+                padding: 5px;
+                width: 100%;
+                background: #18191b;
+                border-radius: 10px;
+
+                .pr_inv_selected_top {
+                    min-height: 50px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    .pr_inv_selected_top_title {
+                        color: white;
+                        font-size: 18px;
+                    }
+
+                    .pr_inv_selected_top_btn {
+                        @include flex-center();
+                        background: transparent;
+                        cursor: pointer;
+
+                        svg {
+                            transition: .5s;
+                            transform: rotate(180deg);
+                        }
+
+
+                        &.lower {
+                            svg {
+                                transform: rotate(0deg);
+                            }
+                        }
+                    }
+                }
+
+                .pr_inv_selected_body {
+                    max-height: 0;
+                    border-radius: 0 0 10px 10px;
+                    transition: .5s;
+                    overflow: hidden;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    &.open {
+                        max-height: 500px;
+                    }
+
+                    .pr_inv_selected_body_options {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+
+                        .pr_inv_body_options_btns {
+                            display: flex;
+                            align-items: center;
+                            gap: 20px;
+
+                            .pr_inv_body_options_btn_text {
+                                font-size: 16px;
+                                font-family: 'Rubik';
+                                background: transparent;
+                                cursor: pointer;
+                            }
+
+                            button:nth-of-type(1) {
+                                color: #4CAF50;
+                            }
+
+                            button:nth-of-type(2) {
+                                color: #ef5350;
+                            }
+                        }
+
+                        .pr_inv_body_options_sell {
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            width: 100%;
+
+                            h4 {
+                                font-family: 'Rubik';
+                                font-size: 17px;
+                                background: linear-gradient(90deg, red, orange, yellow, green, blue);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                            }
+
+                            .pr_inv_body_options_sell_btn {
+                                width: 100%;
+                                max-width: 85px;
+                                color: white;
+                                background: #4CAF50;
+                                padding: 6px 10px;
+                                border-radius: 10px;
+                                cursor: pointer;
+                                font-family: 'Rubik';
+                                font-size: 14px;
+                            }
+                        }
+                    }
+
+                    .pr_inv_selected_body_items {
+                        max-height: 250px;
+                        overflow-y: auto;
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 6px;
+                        scrollbar-width: none;
+                        -ms-overflow-style: none;
+                        -webkit-overflow-scrolling: touch;
+
+                        ::-webkit-scrollbar {
+                            display: none;
+                        }
+
+
+                        .pr_inv_selected_body_item {
+                            width: 100%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+
+
+                            .pr_selected_body_item_image {
+                                width: 40px;
+                                height: 40px;
+
+                                img {
+                                    width: 100%;
+                                    height: 100%;
+                                    object-fit: contain;
+                                }
+                            }
+
+                            .pr_selected_body_item_name {
+                                color: white;
+                                font-size: 12px;
+                                font-family: 'Rubik';
+                            }
+
+                            .pr_selected_body_item_price {
+                                background: linear-gradient(90deg, red, orange, yellow, green, blue);
+                                -webkit-background-clip: text;
+                                -webkit-text-fill-color: transparent;
+                                font-size: 12px;
+                                font-family: "Rubik";
+                            }
+                        }
+                    }
+
+                    .pr_inv_selected_body_title_extra {
+                        color: white;
+                        font-size: 16px;
+                        font-family: "Rubik";
+                        text-align: center;
+                        margin-top: 10px;
+                    }
+                }
+            }
+        }
+
+        &_cards {
+            max-height: 450px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            -webkit-overflow-scrolling: touch;
+            gap: 8px;
+
+
+            ::-webkit-scrollbar {
+                display: none;
+            }
+
+            & .pr_inv_card {
+                box-sizing: border-box;
+                width: 100%;
+                min-height: 130px;
+                padding: 5px;
+                border-radius: 8px;
+                overflow: hidden;
+                position: relative;
+                transition: box-shadow .5s ease;
+                appearance: none;
+
+                &.selected {
+                    overflow: visible;
+                    --border-radius: 8px;
+                    --border-width: 2px;
+
+                    &::after {
+                        --m-i: linear-gradient(#000, #000);
+                        --m-o: content-box, padding-box;
+                        content: "";
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        padding: var(--border-width);
+                        border-radius: var(--border-radius);
+                        background-image: conic-gradient(#488cfb,
+                                #29dbbc,
+                                #ddf505,
+                                #ff9f0e,
+                                #e440bb,
+                                #655adc,
+                                #488cfb);
+
+                        mask-image: var(--m-i), var(--m-i);
+                        mask-origin: var(--m-o);
+                        mask-clip: var(--m-o);
+                        mask-composite: exclude;
+                        -webkit-mask-composite: destination-out;
+                        filter: hue-rotate(0);
+                        animation: hue linear 3s infinite;
+                    }
+                }
+
+                .pr_inv_card_bg {
+                    border-radius: 8px;
+                    position: absolute;
+                    z-index: 1;
+                    top: 0;
+                    left: 0;
+                    inset: 0;
+                    width: 100%;
+                    height: 100%;
+
+                    &.mythic {
+                        background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(191, 147, 31, .2) 54.17%, rgba(255, 185, 0, .2));
+                    }
+
+                    &.legendary {
+                        background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(192, 57, 219, .2) 52.37%, rgba(213, 0, 255, .2));
+                    }
+
+                    &.epic {
+                        background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(105, 64, 186, .2) 45.94%, rgba(135, 75, 255, .2));
+                    }
+
+                    &.rare {
+                        background: linear-gradient(180deg, rgba(38, 50, 109, 0.8), rgba(34, 31, 30, 0.3) 50%, rgba(77, 100, 180, 0.6));
+                    }
+
+                    &.uncommon {
+                        background: linear-gradient(180deg, rgba(48, 78, 108, 0.8), rgba(34, 31, 30, 0.25) 47%, rgba(80, 120, 160, 0.55));
+                    }
+
+                    &.common {
+                        background: linear-gradient(2deg, rgba(34, 31, 30, 0.7) 2%, rgba(56, 56, 56, 0.5) 50%, rgba(54, 54, 54, 0.45) 98%);
+                    }
+
+                }
+
+                .pr_inv_card_content {
+                    position: absolute;
+                    z-index: 2;
+                    inset: 5px;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+
+                    .pr_inv_card_count {
+                        position: absolute;
+                        top: 0;
+                        right: 0;
+                        color: white;
+                        font-family: 'Rubik';
+                        font-size: 16px;
+                        @include flex-center();
+                    }
+
+                    .pr_inv_card_header {
+                        display: flex;
+
+                        & span {
+                            margin-left: auto;
+                            margin-top: auto;
+                            font-size: 16px;
+                            font-family: 'Rubik';
+                            color: cyan;
+                        }
+
+                        .pr_inv_card_image {
+                            width: 60px;
+                            height: 60px;
+
+                            & img {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: contain;
+                            }
+                        }
+
+                    }
+
+                    .pr_inv_card_main {
+
+                        & span {
+                            font-family: 'Rubik';
+                            color: white;
+                            font-size: 12px;
+                        }
+
+                    }
+
+                    .pr_inv_card_range {
+                        width: 100%;
+                        position: absolute;
+                        z-index: 3;
+                        bottom: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+
+                        .pr_inv_card_options {
+                            display: flex;
+                            align-items: center;
+                            gap: 4px;
+
+                            .pr_inv_range_btn {
+                                @include flex-center();
+                                background: transparent;
+                                width: 22px;
+                                height: 22px;
+                                cursor: pointer;
+                            }
+
+                        }
+
+                        & span {
+                            color: #fff;
+                            font-family: 'Rubik';
+                            font-size: 12px;
+                        }
+                    }
+
+                    .pr_inv_card_item_value {
+                        margin: 0 auto;
+                        font-size: 16px;
+                        font-family: 'Rubik';
+                        color: cyan;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,262 @@
+@mixin flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@-moz-keyframes shine {
+    0% {
+        background-position: 0;
+    }
+
+    60% {
+        background-position: 150px;
+    }
+
+    100% {
+        background-position: 170px;
+    }
+}
+
+@-webkit-keyframes shine {
+    0% {
+        background-position: 0;
+    }
+
+    60% {
+        background-position: 150px;
+    }
+
+    100% {
+        background-position: 170px;
+    }
+}
+
+@-o-keyframes shine {
+    0% {
+        background-position: 0;
+    }
+
+    60% {
+        background-position: 150px;
+    }
+
+    100% {
+        background-position: 170px;
+    }
+}
+
+@keyframes shine {
+    0% {
+        background-position: 0;
+    }
+
+    60% {
+        background-position: 150px;
+    }
+
+    100% {
+        background-position: 170px;
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.profile {
+    width: 100%;
+    min-height: 100vh;
+    background: black;
+
+    .pr_nav {
+        width: 100%;
+        padding: 15px 0;
+        border-radius: 20px;
+
+        &_content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            .pr_nav_back {
+                @include flex-center();
+                cursor: pointer;
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                transition: box-shadow .5s ease;
+
+                &:hover {
+                    box-shadow: 0 0 8px 2px white;
+                }
+            }
+
+            .pr_nav_title {
+                font-family: 'Rubik';
+                font-size: 1.6rem;
+                padding: 12px;
+                color: white;
+                background: linear-gradient(to right, #9f9f9f 0, #fff 10%, #868686 20%);
+                background-position: 0;
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation-fill-mode: forwards;
+                -webkit-text-size-adjust: none;
+                animation: shine 2s infinite linear;
+            }
+        }
+    }
+
+    .pr_main {
+        width: 100%;
+
+        &_card {
+            width: 100%;
+            max-width: 300px;
+            height: 80px;
+            margin: 0 auto;
+            padding: 5px;
+            border-radius: 10px;
+            margin-top: 20px;
+            backdrop-filter: blur(30px);
+            box-shadow: 0px 0px 30px rgba(227, 228, 237, 0.37);
+
+            &_content {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+
+                .pr_main_card_avatar {
+                    width: 70px;
+                    height: 70px;
+                    cursor: pointer;
+
+                    & img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                        border-radius: 8px;
+                    }
+
+                    & input {
+                        display: none;
+                    }
+
+                }
+
+                .pr_main_card_info {
+                    width: calc(100% - 80px);
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-around;
+
+                    &_header {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+
+                        .pr_main_card_username {
+                            font-size: 24px;
+                            font-family: 'Rubik';
+                            color: cyan;
+                            // #FF00FF (magenta)
+                            // #FF1493 (pink)
+                        }
+                    }
+
+                    .pr_main_card_balance_block {
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+
+                        .pr_main_card_balance {
+                            font-size: 18px;
+                            font-family: 'Rubik';
+                            color: white;
+                        }
+
+                        .pr_main_card_bal_btn {
+                            @include flex-center();
+                            background: transparent;
+                            width: 20px;
+                            height: 20px;
+                            cursor: pointer;
+                        }
+
+                    }
+
+
+                }
+            }
+
+            &.active {
+                animation: rotate ease-in-out 1.5s;
+            }
+        }
+
+        .pr_tabs_container {
+            margin-top: 30px;
+            width: 100%;
+            height: 100%;
+
+            .pr_tabs_header {
+                position: relative;
+                display: flex;
+
+
+                .pr_tab_btn {
+                    flex: 1;
+                    padding: 10px 0;
+                    background: none;
+                    cursor: pointer;
+                    font-size: 18px;
+                    color: #4d4d4d;
+                    font-family: 'Rubik';
+                    transition: .5s;
+
+                    &.active {
+                        color: #fff;
+                    }
+                }
+
+                .pr_tab_underline {
+                    position: absolute;
+                    background: white;
+                    bottom: 0;
+                    height: 3px;
+                    transition: .5s ease;
+                }
+            }
+
+            .pr_tabs_main {
+                margin-top: 30px;
+                padding: 0 10px;
+
+                .pr_tabs_content {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}
+
+
+
+
+@keyframes hue {
+    to {
+        filter: hue-rotate(1turn);
+    }
+}

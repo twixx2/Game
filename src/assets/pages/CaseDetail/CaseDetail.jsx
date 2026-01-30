@@ -1,10 +1,13 @@
-// src/pages/CaseDetail.jsx
-import { useParams, useNavigate } from 'react-router-dom';
+/* eslint-disable react-hooks/exhaustive-deps */
+import './caseDetail.scss';
 import { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import axios from 'axios';
 import Loader from '../../components/Loader/Loader';
-import './caseDetail.scss';
-import toast from 'react-hot-toast';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import { useAuth } from '../../context/AuthContext';
+import { useInv } from '../../context/InvContext';
 
 function weightedRandom(items) {
   const total = items.reduce((sum, i) => sum + (i.weight || 0), 0);
@@ -18,39 +21,21 @@ function weightedRandom(items) {
 
 export default function CaseDetail() {
   const { caseId } = useParams();
-  const navigate = useNavigate();
+  const { balance, headers, editBalance } = useAuth();
+  const { addItem } = useInv();
   const frameRef = useRef(null);
   const trackRef = useRef(null);
-  const url = import.meta.env.VITE_USER_API_URL;
   const [c, setCase] = useState(null);
   const [items, setItems] = useState([]);
   const [rolling, setRolling] = useState(false);
   const [queue, setQueue] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [win, setWin] = useState();
-  const [balance, setBalance] = useState(0);
-  const [userId, setUserId] = useState(null);
-  const token = localStorage.getItem('token');
-  const headers = { Authorization: `Bearer ${token}` };
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`${url}/auth_me`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        setBalance(res.data.balance);
-        setUserId(res.data.id);
-      } catch (err) {
-        void err;
-        navigate("/register")
-      }
-    }
-    fetchUser();
-  }, []);
+  const [win, setWin] = useState(null);
+  const [received, setReceived] = useState({});
+  const navigate = useNavigate();
+  const url = import.meta.env.VITE_USER_API_URL;
 
   useEffect(() => {
     setLoading(true);
@@ -59,22 +44,18 @@ export default function CaseDetail() {
       axios.get(`${url}/cases/${caseId}`, { headers }).then(r => setCase(r.data)),
       axios.get(`${url}/caseItems?caseId=${caseId}`, { headers }).then(r => setItems(r.data || []))
     ])
+      .catch(err => {
+        if (err.response) {
+          setError(err.response.status + " " + err.response.data.error);
+        } else {
+          setError(err.message);
+        }
+      })
       .finally(() => {
         timer = setTimeout(() => setLoading(false), 500); // минимум 0.5 сек лоадер
       });
     return () => clearTimeout(timer);
   }, [caseId]);
-
-  const editBalance = async (newBalance) => {
-    try {
-      const res = await axios.patch(`${url}/users/${userId}`, {
-        balance: newBalance
-      });
-      void res;
-    } catch (error) {
-      void error;
-    }
-  }
 
   const clearAnim = () => {
     setQueue([]);
@@ -84,17 +65,16 @@ export default function CaseDetail() {
     }
   }
 
-  const openAgain = (payout) => {
-    if (!payout) return toast.error("Ошибка продажи предмета");
-    setBalance(prev => prev + payout);
-    editBalance(balance + payout);
+  const openAgain = async () => {
+    addItem(received);
+    setWin(null);
+    setIsOpen(false);
     openCase();
   }
 
   const openCase = async () => {
     if (rolling || !c || !items.length) return;
     if (c.price > balance) return toast.error("Недостаточный баланс");
-    setBalance(prev => prev - c.price)
     editBalance(balance - c.price);
     setIsOpen(false);
     setRolling(true);
@@ -149,19 +129,26 @@ export default function CaseDetail() {
       setRolling(false);
       setIsOpen(true);
       setWin(winItem.value);
+      setReceived(winItem);
     }, 3200);
   };
 
-
   if (loading) return <Loader />;
-  if (!c) return null;
+  if (!c || error) return <ErrorMessage message={error} />;
+
   return (
     <div className="case_detail">
       <nav className="nav">
         <div className="nav_content container">
           <div className="nav_back" onClick={() => {
             if (rolling) return toast.error("Дождитесь прокрутки кейса");
-            if (isOpen) return toast.error("Выберите опцию");
+            if (isOpen) {
+              addItem(received);
+              clearAnim();
+              setRolling(false);
+              setIsOpen(false);
+              setWin(null);
+            }
             navigate(-1);
           }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -235,7 +222,6 @@ export default function CaseDetail() {
                   <div className="case_detail_options_result">
                     <button className="sell_btn"
                       onClick={() => {
-                        setBalance(prev => prev + win);
                         editBalance(balance + win);
                         clearAnim();
                         setRolling(false);
@@ -247,11 +233,24 @@ export default function CaseDetail() {
                     <button
                       className="open_btn"
                       onClick={() => {
-                        openAgain(win);
+                        openAgain();
                       }}
-                      disabled={rolling}
+                      disabled={rolling || !received}
                     >
                       Открыть кейс ещё раз
+                    </button>
+                    <button
+                      className="take_btn"
+                      onClick={() => {
+                        addItem(received);
+                        clearAnim();
+                        setRolling(false);
+                        setIsOpen(false);
+                        setWin(null);
+                      }}
+                      disabled={rolling || !received}
+                    >
+                      Забрать предмет
                     </button>
                   </div>
                   : null

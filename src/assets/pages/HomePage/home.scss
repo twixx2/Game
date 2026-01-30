@@ -122,7 +122,6 @@
     }
 }
 
-
 @keyframes bg-spin {
     to {
         --border-angle: 1turn;
@@ -169,84 +168,98 @@
         flex-direction: column;
         gap: 30px;
 
-        .home_games {
+        .home_all_content {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            width: 100%;
+            gap: 30px;
 
-            &_title {
-                font-size: 34px;
-                color: white;
-                font-family: 'Rubik';
-            }
-
-            &_content {
+            .home_games {
                 display: flex;
                 flex-direction: column;
-                gap: 25px;
+                gap: 15px;
+                width: 100%;
 
-                .home_game_card {
-                    width: 100%;
-                    min-height: 70px;
-                    border-radius: 30px;
-                    padding: 20px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    font-size: 22px;
+                &_title {
+                    font-size: 34px;
                     color: white;
-                    cursor: pointer;
-                    --border-angle: 0turn; // For animation.
-                    --main-bg: conic-gradient(from var(--border-angle),
-                            black);
-                    border: solid 5px transparent;
-                    border-radius: 2em;
-                    background:
-                        // padding-box clip this background in to the overall element except the border.
-                        var(--main-bg) padding-box,
-                        // border-box extends this background to the border space
-                        var(--gradient-border) border-box,
-                        // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
-                        var(--main-bg) border-box;
-                    background-position: center center;
-                    animation: bg-spin 3s linear infinite;
                     font-family: 'Rubik';
+                }
 
-                    &.home_card_one {
-                        --gradient-border:
-                            conic-gradient(from var(--border-angle), transparent 50%, #7e00a6, #d2ff28 70%, transparent);
-                    }
+                &_content {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 25px;
 
-                    &.home_card_two {
-                        --gradient-border:
-                            conic-gradient(from var(--border-angle), transparent 50%, #ffffff, #cb0000 70%, transparent);
-                    }
+                    .home_game_card {
+                        width: 100%;
+                        min-height: 70px;
+                        border-radius: 30px;
+                        padding: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        font-size: 22px;
+                        color: white;
+                        cursor: pointer;
+                        --border-angle: 0turn; // For animation.
+                        --main-bg: conic-gradient(from var(--border-angle),
+                                black);
+                        border: solid 5px transparent;
+                        border-radius: 2em;
+                        background:
+                            // padding-box clip this background in to the overall element except the border.
+                            var(--main-bg) padding-box,
+                            // border-box extends this background to the border space
+                            var(--gradient-border) border-box,
+                            // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
+                            var(--main-bg) border-box;
+                        background-position: center center;
+                        animation: bg-spin 3s linear infinite;
+                        font-family: 'Rubik';
 
-                    &.home_card_three {
-                        --gradient-border:
-                            conic-gradient(from var(--border-angle), transparent 50%, #00ff99, #ff6600 70%, transparent);
-                    }
+                        &.home_card_one {
+                            --gradient-border:
+                                conic-gradient(from var(--border-angle), transparent 50%, #7e00a6, #d2ff28 70%, transparent);
+                        }
 
-                    &:hover {
-                        animation-play-state: paused;
-                    }
+                        &.home_card_two {
+                            --gradient-border:
+                                conic-gradient(from var(--border-angle), transparent 50%, #ffffff, #cb0000 70%, transparent);
+                        }
 
-                    & svg {
-                        transition: 0.5s;
-                        transform: translateX(-20px);
-                        opacity: 0;
-                        pointer-events: none;
-                    }
+                        &.home_card_three {
+                            --gradient-border:
+                                conic-gradient(from var(--border-angle), transparent 50%, #00ff99, #ff6600 70%, transparent);
+                        }
 
-                    &:hover svg {
-                        transform: translateX(0);
-                        opacity: 1;
-                        pointer-events: auto;
+                        &.home_card_four {
+                            --gradient-border:
+                                conic-gradient(from var(--border-angle), transparent 50%, #ffffff, #3b3b3b 70%, transparent);
+                        }
+
+                        &:hover {
+                            animation-play-state: paused;
+                        }
+
+                        & svg {
+                            transition: 0.5s;
+                            transform: translateX(-20px);
+                            opacity: 0;
+                            pointer-events: none;
+                        }
+
+                        &:hover svg {
+                            transform: translateX(0);
+                            opacity: 1;
+                            pointer-events: auto;
+                        }
                     }
                 }
             }
+
         }
+
+
 
         .home_auth {
             display: flex;

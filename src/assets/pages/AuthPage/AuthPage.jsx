@@ -1,39 +1,21 @@
 import './auth.scss';
+import { useState } from "react";
 import { Link } from 'react-router-dom';
-import TextField from '../../components/TextField/TextField';
-import axios from "axios";
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { SHA256 } from 'crypto-js';
 import toast from 'react-hot-toast';
+import axios from "axios";
+import { SHA256 } from 'crypto-js';
+import { useAuth } from '../../context/AuthContext';
+import TextField from '../../components/TextField/TextField';
 
 const AuthPage = () => {
-    const [login, setLogin] = useState('')
-    const [password, setPassword] = useState('')
-    const [loginError, setLoginError] = useState("")
-    const [passwordError, setPasswordError] = useState("")
-    const [isAuth, setIsAuth] = useState(false)
-    const navigate = useNavigate();
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [loginError, setLoginError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const { isAuth, setToken } = useAuth();
     const url = import.meta.env.VITE_USER_API_URL;
-    const userToken = localStorage.getItem("token");
-
-    useEffect(() => {
-        const checkAuth = async () => {
-            if (!userToken) return;
-            try {
-                const res = await axios.get(`${url}/auth_me`, {
-                    headers: {
-                        Authorization: `Bearer ${userToken}`
-                    }
-                });
-                setIsAuth(true);
-                void res;
-            } catch (error) {
-                void error;
-            }
-        };
-        checkAuth();
-    }, [])
+    const navigate = useNavigate();
 
     const validate = () => {
         let valid = true;
@@ -43,8 +25,7 @@ const AuthPage = () => {
         if (isAuth) {
             toast.error("Вы уже зарегистрированы");
             navigate("/");
-            valid = false;
-            return valid;
+            return false;
         }
 
         if (!login.trim()) {
@@ -64,7 +45,7 @@ const AuthPage = () => {
         }
 
         return valid;
-    }
+    };
 
     const handleAuth = async () => {
         if (!validate()) {
@@ -74,14 +55,13 @@ const AuthPage = () => {
         try {
             const emailUser = `${login}@example.com`
             const hashedPassword = SHA256(password).toString();
-            const res = await axios.post(`${url}/auth`, {
+            const res = await axios.post(`${url}/auth`,  {
                 password: hashedPassword,
                 email: emailUser,
             });
-            localStorage.setItem("token", res.data.token)
-            setLogin("")
-            setPassword("")
-            navigate("/")
+            localStorage.setItem("token", res.data.token);
+            setToken(res.data.token);
+            navigate("/");
 
         } catch (err) {
             if (axios.isAxiosError(err) && err.response) {
@@ -93,9 +73,11 @@ const AuthPage = () => {
                 } else if (status === 403) {
                     toast.error("Аутентификация временно недоступна");
                 }
+            } else {
+                toast.error("Произошла ошибка. Попробуйте снова");
             }
         }
-    }
+    };
 
     return (
         <div className="auth-page">

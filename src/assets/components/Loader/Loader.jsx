@@ -2,16 +2,16 @@ import './loader.css';
 
 const Loader = () => {
     return (
-        <div class="ai-matrix-loader">
-            <div class="digit">0</div>
-            <div class="digit">1</div>
-            <div class="digit">0</div>
-            <div class="digit">1</div>
-            <div class="digit">1</div>
-            <div class="digit">0</div>
-            <div class="digit">0</div>
-            <div class="digit">1</div>
-            <div class="glow"></div>
+        <div className="ai-matrix-loader">
+            <div className="digit">0</div>
+            <div className="digit">1</div>
+            <div className="digit">0</div>
+            <div className="digit">1</div>
+            <div className="digit">0</div>
+            <div className="digit">1</div>
+            <div className="digit">0</div>
+            <div className="digit">1</div>
+            <div className="glow"></div>
         </div>
 
     );

@@ -1,13 +1,11 @@
 import './tower.scss'
-import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import { useAuth } from '../../context/AuthContext';
 
 const TowerPage = () => {
-    const url = import.meta.env.VITE_USER_API_URL;
-    const userToken = localStorage.getItem("token");
-    const [balance, setBalance] = useState(0);
     const [bet, setBet] = useState("");
     const [win, setWin] = useState(0);
     const [step, setStep] = useState(-1);
@@ -16,8 +14,7 @@ const TowerPage = () => {
     const [correctPicks, setCorrectPicks] = useState([]);
     const [loseStep, setLoseStep] = useState(null);
     const [betError, setBetError] = useState("");
-    const [userId, setUserId] = useState();
-    const [username, setUsername] = useState();
+    const { balance, editBalance, isAuth } = useAuth();
     const STORAGE_KEY = "tower-game-state";
     const coeffs = [1.9, 3.8, 7.6, 15.2, 30.4, 60.8, 121.6, 243.2]
     const totalSteps = 8;
@@ -38,61 +35,7 @@ const TowerPage = () => {
                 localStorage.removeItem(STORAGE_KEY);
             }
         }
-        const fetchUser = async () => {
-            try {
-                const res = await axios.get(`${url}/auth_me`, {
-                    headers: {
-                        Authorization: `Bearer ${userToken}`
-                    }
-                });
-                setBalance(res.data.balance);
-                setUserId(res.data.id);
-                setUsername(res.data.fullName);
-            } catch (err) {
-                void err;
-                navigate("/register");
-            }
-        }
-        fetchUser();
     }, []);
-
-    useEffect(() => {
-        if (!username) return;
-        const getDate = () => {
-            const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            return `${day}.${month}.2025, ${hours}:${minutes}:${seconds} on /tower`;
-        }
-        const lastCeen = async () => {
-            try {
-                const lastceen = getDate();
-                const res = await axios.post(`${url}/lastceens`, {
-                    lastceen: lastceen,
-                    name: username
-                });
-                void res;
-            } catch (err) {
-                void err;
-            }
-        }
-        lastCeen();
-    }, [username]);
-
-
-    const editBalance = async (newBalance) => {
-        try {
-            const res = await axios.patch(`${url}/users/${userId}`, {
-                balance: newBalance
-            });
-            void res;
-        } catch (error) {
-            void error;
-        }
-    };
 
     const clearAll = () => {
         setWin(0);
@@ -104,7 +47,6 @@ const TowerPage = () => {
     const finishGame = async (payout) => {
         const newBalance = Math.round((balance + payout) * 100) / 100;
         await editBalance(newBalance);
-        setBalance(newBalance);
         setIsPlay(false);
         localStorage.removeItem(STORAGE_KEY);
         clearAll();
@@ -121,7 +63,6 @@ const TowerPage = () => {
             if (numericBet > balance) return toast.error("Недостаточный баланс");
             // Начало игры 
             await editBalance(Math.round((balance - numericBet) * 100) / 100);
-            setBalance(prev => Math.round((prev - numericBet) * 100) / 100);
             const newTower = Array.from({ length: totalSteps }, () =>
                 Math.random() < 0.5 ? "left" : "right"
             );
@@ -142,7 +83,6 @@ const TowerPage = () => {
             if (step === -1) return toast.error("Подождите");
             if (step === 0) return toast.error("Сделайте хотя бы 1 ход"); // если игра начата но не сделан первый ход
             // Предварительно забрать выигрыш 
-            setBalance(prev => Math.round((prev + win) * 100) / 100);
             await editBalance(Math.round((balance + win) * 100) / 100);
             setIsPlay(false);
             clearAll();
@@ -199,6 +139,8 @@ const TowerPage = () => {
         const side = r > 0.5 ? "left" : "right";
         handlePick(step, side);
     };
+
+    if (!isAuth) return <ErrorMessage message={"401 Unauthorized"} />;
 
     return (
         <div className="tower_overlay">

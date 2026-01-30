@@ -1,0 +1,45 @@
+@charset "UTF-8";
+
+
+.error_page {
+    width: 100%;
+    height: 100vh;
+    background: black;
+    padding: 50px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .error_code {
+        font-size: 1.6rem;
+        color: #e71b36;
+        font-family: 'Rubik';
+        text-align: center;
+    }
+
+    .error_message {
+        font-size: 1.2rem;
+        font-family: 'Rubik';
+        text-align: center;
+        margin-top: 20px;
+        color: #e71b36;
+    }
+
+    .error_btn {
+        display: block;
+        margin: 20px auto;
+        font-family: 'Rubik';
+        width: 100%;
+        max-width: 300px;
+        padding: .75rem 1.5rem;
+        font-size: 1.1rem;
+        border: none;
+        border-radius: 4px;
+        background: #e71b36;
+        color: black;
+        cursor: pointer;
+        transition: .2s;
+    }
+
+}
