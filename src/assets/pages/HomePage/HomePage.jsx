@@ -138,7 +138,7 @@ const HomePage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1.2, delay: 1 }}
                         class="home_title">
-                        made with love by enbanana.psl
+                        made with love by ОптимусГенггг
                         <div class="aurora">
                             <div class="aurora__item"></div>
                             <div class="aurora__item"></div>
