@@ -252,43 +252,8 @@
                 padding: 5px;
                 border-radius: 8px;
                 overflow: hidden;
+
                 position: relative;
-                transition: box-shadow .5s ease;
-                appearance: none;
-
-                &.selected {
-                    overflow: visible;
-                    --border-radius: 8px;
-                    --border-width: 2px;
-
-                    &::after {
-                        --m-i: linear-gradient(#000, #000);
-                        --m-o: content-box, padding-box;
-                        content: "";
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        width: 100%;
-                        height: 100%;
-                        padding: var(--border-width);
-                        border-radius: var(--border-radius);
-                        background-image: conic-gradient(#488cfb,
-                                #29dbbc,
-                                #ddf505,
-                                #ff9f0e,
-                                #e440bb,
-                                #655adc,
-                                #488cfb);
-
-                        mask-image: var(--m-i), var(--m-i);
-                        mask-origin: var(--m-o);
-                        mask-clip: var(--m-o);
-                        mask-composite: exclude;
-                        -webkit-mask-composite: destination-out;
-                        filter: hue-rotate(0);
-                        animation: hue linear 3s infinite;
-                    }
-                }
 
                 .pr_inv_card_bg {
                     border-radius: 8px;
@@ -300,28 +265,54 @@
                     width: 100%;
                     height: 100%;
 
-                    &.mythic {
-                        background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(191, 147, 31, .2) 54.17%, rgba(255, 185, 0, .2));
-                    }
 
-                    &.legendary {
-                        background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(192, 57, 219, .2) 52.37%, rgba(213, 0, 255, .2));
-                    }
-
-                    &.epic {
-                        background: linear-gradient(0deg, rgba(77, 80, 92, .2), rgba(105, 64, 186, .2) 45.94%, rgba(135, 75, 255, .2));
-                    }
-
-                    &.rare {
-                        background: linear-gradient(180deg, rgba(38, 50, 109, 0.8), rgba(34, 31, 30, 0.3) 50%, rgba(77, 100, 180, 0.6));
+                    &.common {
+                        background: linear-gradient(135deg, rgba(100, 100, 100, 0.4) 0%, rgba(60, 60, 60, 0.6) 100%);
+                        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
                     }
 
                     &.uncommon {
-                        background: linear-gradient(180deg, rgba(48, 78, 108, 0.8), rgba(34, 31, 30, 0.25) 47%, rgba(80, 120, 160, 0.55));
+                        background: linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(0, 140, 255, 0.5) 100%);
+                        box-shadow: 0 0 5px rgba(0, 200, 255, 0.2);
                     }
 
-                    &.common {
-                        background: linear-gradient(2deg, rgba(34, 31, 30, 0.7) 2%, rgba(56, 56, 56, 0.5) 50%, rgba(54, 54, 54, 0.45) 98%);
+                    &.rare {
+                        background: linear-gradient(135deg, rgba(0, 80, 255, 0.3) 0%, rgba(0, 40, 200, 0.6) 100%);
+                        box-shadow: 0 0 8px rgba(0, 80, 255, 0.3);
+                    }
+
+                    &.epic {
+                        background: linear-gradient(135deg, rgba(160, 30, 255, 0.3) 0%, rgba(110, 0, 220, 0.6) 100%);
+                        box-shadow: 0 0 8px rgba(160, 30, 255, 0.3);
+                    }
+
+                    &.legendary {
+                        background: linear-gradient(135deg, rgba(255, 0, 150, 0.3) 0%, rgba(200, 0, 100, 0.6) 100%);
+                        box-shadow: 0 0 10px rgba(255, 0, 150, 0.4);
+                    }
+
+                    &.mythic {
+                        background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.5) 100%);
+                        box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+                    }
+
+                    &.divine {
+                        background: linear-gradient(120deg,
+                                rgba(0, 0, 0, 0.9) 10%,
+                                rgba(100, 100, 100, 0.5) 50%,
+                                rgba(0, 0, 0, 0.9) 90%);
+
+                        box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+                    }
+
+                    &.prismatic {
+                        background: linear-gradient(45deg,
+                                rgba(130, 50, 255, 0.25),
+                                rgba(50, 150, 255, 0.25),
+                                rgba(50, 255, 150, 0.25),
+                                rgba(255, 50, 150, 0.25));
+                        box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1);
+
                     }
 
                 }
