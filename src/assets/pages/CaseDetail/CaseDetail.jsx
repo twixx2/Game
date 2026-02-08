@@ -212,7 +212,7 @@ export default function CaseDetail() {
                 onClick={openCase}
                 disabled={rolling}
               >
-                Открыть кейс за {c.price} w$
+                Открыть кейс за {new Intl.NumberFormat('ru').format(c.price)} w$
               </button>
               : rolling ?
                 <p className="loading_text">
@@ -228,7 +228,7 @@ export default function CaseDetail() {
                         setIsOpen(false);
                         setWin();
                       }}>
-                      Продать за {win} w$
+                      Продать за {new Intl.NumberFormat('ru').format(win)} w$
                     </button>
                     <button
                       className="open_btn"
@@ -283,7 +283,7 @@ export default function CaseDetail() {
 
                       <div className="case_drop_item_content_overlay">
                         <p className="case_drop_item_content_overlay_price">
-                          {it.value} w$
+                          {new Intl.NumberFormat('ru').format(it.value)} w$
                         </p>
                         <p className="case_drop_item_content_overlay_chance">
                           %{it.weight}
