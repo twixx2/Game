@@ -8,6 +8,7 @@ import Loader from '../../components/Loader/Loader';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { useAuth } from '../../context/AuthContext';
 import { useInv } from '../../context/InvContext';
+import caseSoundFile from '../../sounds/case.mp3'
 
 function weightedRandom(items) {
   const total = items.reduce((sum, i) => sum + (i.weight || 0), 0);
@@ -21,10 +22,11 @@ function weightedRandom(items) {
 
 export default function CaseDetail() {
   const { caseId } = useParams();
-  const { balance, headers, editBalance } = useAuth();
+  const { balance, headers, editBalance, onSound } = useAuth();
   const { addItem } = useInv();
   const frameRef = useRef(null);
   const trackRef = useRef(null);
+  const caseSound = useRef(null);
   const [c, setCase] = useState(null);
   const [items, setItems] = useState([]);
   const [rolling, setRolling] = useState(false);
@@ -79,6 +81,10 @@ export default function CaseDetail() {
     setIsOpen(false);
     setRolling(true);
     clearAnim();
+    if (caseSound.current) {
+      caseSound.current.currentTime = 0;
+      caseSound.current.play();
+    }
     // выбираем выигрыш
     const winItem = weightedRandom(items);
     // собираем очередь: baseRounds случайных + winItem + buffer
@@ -297,7 +303,7 @@ export default function CaseDetail() {
             }
           </div>
         </div>
-
+        <audio src={caseSoundFile} ref={caseSound} hidden={true}></audio>
       </main>
 
     </div >

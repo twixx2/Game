@@ -2,15 +2,17 @@
 import './sapper.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from 'react-hot-toast';
 import Loader from '../../components/Loader/Loader';
 import { useAuth } from '../../context/AuthContext';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import cashSoundFile from '../../sounds/cash.mp3';
 
 const SapperPage = () => {
     const url = import.meta.env.VITE_USER_API_URL;
     const navigate = useNavigate();
+    const cashSound = useRef(null);
     const [cells, setCells] = useState([]);
     const [bet, setBet] = useState("");
     const [win, setWin] = useState(0);
@@ -19,7 +21,7 @@ const SapperPage = () => {
     const [isPlay, setIsPlay] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const { balance, headers, editBalance } = useAuth();
+    const { balance, headers, editBalance, onSound } = useAuth();
     const [explodedCoins, setExplodedCoins] = useState([]);
     const [explodedMines, setExplodedMines] = useState([]);
     const [betError, setBetError] = useState("");
@@ -119,6 +121,10 @@ const SapperPage = () => {
             if (step === -1) return toast.error("Игра еще не начата");
             if (step === 0) return toast.error("Сделайте хотя бы 1 ход"); // если игра начата но не сделан первый ход
             // Предварительно забрать выигрыш 
+            if (cashSound.current && onSound) {
+                cashSound.current.currentTime = 0;
+                cashSound.current.play();
+            }
             await editBalance(Math.round((balance + win) * 100) / 100);
             localStorage.removeItem(STORAGE_KEY);
             setIsPlay(false);
@@ -178,6 +184,10 @@ const SapperPage = () => {
     }
 
     const finishGame = async (payout) => {
+        if (cashSound.current && onSound) {
+            cashSound.current.currentTime = 0;
+            cashSound.current.play();
+        }
         const newBalance = Math.round((balance + payout) * 100) / 100;
         await editBalance(newBalance);
         setIsPlay(false);
@@ -322,6 +332,7 @@ const SapperPage = () => {
                         </div>
                     </div>
                 </section>
+                <audio src={cashSoundFile} ref={cashSound} hidden={true}></audio>
             </main>
         </div>
     );

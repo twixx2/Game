@@ -259,8 +259,6 @@
 
         }
 
-
-
         .home_auth {
             display: flex;
             flex-direction: column;
@@ -410,6 +408,13 @@
 
 
             }
+        }
+
+        .disclaimer_text {
+            color: red;
+            font-size: 14px;
+            font-family: 'Rubik';
+            text-align: center;
         }
     }
 }

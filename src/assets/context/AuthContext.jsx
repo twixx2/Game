@@ -14,11 +14,11 @@ export const AuthProvider = ({ children }) => {
     const [balance, setBalance] = useState(0);
     const [avatar, setAvatar] = useState("");
     const [username, setUsername] = useState('');
+    const [onSound, setOnSound] = useState(false);
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [userItems, setUserItems] = useState([]);
     const headers = { Authorization: `Bearer ${token}` };
     const url = import.meta.env.VITE_USER_API_URL;
-
 
     useEffect(() => {
         const cancelToken = axios.CancelToken;
@@ -41,8 +41,13 @@ export const AuthProvider = ({ children }) => {
                     logout();
                 })
         };
-
         fetchUser();
+
+        if (localStorage.getItem("onSound") === "true") {
+            setOnSound(true);
+        } else {
+            setOnSound(false);
+        }
 
         return () => {
             source.cancel();
@@ -94,6 +99,7 @@ export const AuthProvider = ({ children }) => {
             logout,
             editBalance,
             userItems,
+            onSound, setOnSound
         }}>
             {children}
         </AuthContext.Provider>

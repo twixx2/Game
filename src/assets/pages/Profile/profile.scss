@@ -246,6 +246,17 @@
 
                 .pr_tabs_content {
                     width: 100%;
+
+                    .sound_btn {
+                        color: white;
+                        font-family: 'Rubik';
+                        font-size: 14px;
+                        padding: 8px 12px;
+                        cursor: pointer;
+                        border-radius: 8px;
+                        background: #4d4d4d;
+                        margin-bottom: 10px;
+                    }
                 }
             }
         }

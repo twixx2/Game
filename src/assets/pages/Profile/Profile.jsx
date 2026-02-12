@@ -17,7 +17,7 @@ const Profile = () => {
     const [min, setMin] = useState(false);
     const [openSelected, setOpenSelected] = useState(false);
     const [searchController, setSearchController] = useState('');
-    const { balance, username, avatar, setAvatar, isAuth } = useAuth();
+    const { balance, username, avatar, setAvatar, isAuth, onSound, setOnSound } = useAuth();
     const { items, selected, isSelecting, handleSelection, handleSelectItem, decSelectedItem, incSelectedItem, minSelectItem, maxSelectItem, selectedArr, totalPrice, selectAllItems, clearAllItems, sellItems } = useInv();
     const navigate = useNavigate();
     const MAX_FILE_SIZE = 2 * 1024 * 1024;
@@ -197,10 +197,17 @@ const Profile = () => {
                                         <p style={{ color: "white", fontFamily: 'Rubik', fontSize: '16px', textAlign: "center" }}>
                                             Функционал магазина будет внедрён в рамках перехода проекта на собственное API. До завершения этого перехода появление значимых обновлений является невозможным. Автор проекта просит отнестись к ситуации с пониманием и проявить терпение.
                                         </p>}
-                                    {activeIndex === 2 &&
+                                    {activeIndex === 2 && (<div>
+                                        <button className='sound_btn' onClick={() => {
+                                            setOnSound(!onSound);
+                                            localStorage.setItem("onSound", !onSound);
+                                        }}>
+                                            {onSound ? "Отключить звук" : "Включить звук"}
+                                        </button>
                                         <p style={{ color: "white", fontFamily: 'Rubik', fontSize: '16px', textAlign: "center" }}>
                                             Изменение данных профиля будет реализовано в рамках перехода проекта на собственное API. До завершения этого перехода появление значимых обновлений является невозможным. Автор проекта просит отнестись к ситуации с пониманием и проявить терпение.
-                                        </p>}
+                                        </p>
+                                    </div>)}
 
 
                                 </div>

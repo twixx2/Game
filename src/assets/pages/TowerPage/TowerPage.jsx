@@ -1,11 +1,13 @@
 import './tower.scss'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { useAuth } from '../../context/AuthContext';
+import cashSoundFile from '../../sounds/cash.mp3';
 
 const TowerPage = () => {
+    const cashSound = useRef(null);
     const [bet, setBet] = useState("");
     const [win, setWin] = useState(0);
     const [step, setStep] = useState(-1);
@@ -14,7 +16,7 @@ const TowerPage = () => {
     const [correctPicks, setCorrectPicks] = useState([]);
     const [loseStep, setLoseStep] = useState(null);
     const [betError, setBetError] = useState("");
-    const { balance, editBalance, isAuth } = useAuth();
+    const { balance, editBalance, isAuth, onSound } = useAuth();
     const STORAGE_KEY = "tower-game-state";
     const coeffs = [1.9, 3.8, 7.6, 15.2, 30.4, 60.8, 121.6, 243.2]
     const totalSteps = 8;
@@ -45,6 +47,10 @@ const TowerPage = () => {
     };
 
     const finishGame = async (payout) => {
+        if (onSound && cashSound.current) {
+            cashSound.current.currentTime = 0;
+            cashSound.current.play();
+        }
         const newBalance = Math.round((balance + payout) * 100) / 100;
         await editBalance(newBalance);
         setIsPlay(false);
@@ -83,6 +89,10 @@ const TowerPage = () => {
             if (step === -1) return toast.error("Подождите");
             if (step === 0) return toast.error("Сделайте хотя бы 1 ход"); // если игра начата но не сделан первый ход
             // Предварительно забрать выигрыш 
+            if (onSound && cashSound.current) {
+                cashSound.current.currentTime = 0;
+                cashSound.current.play();
+            }
             await editBalance(Math.round((balance + win) * 100) / 100);
             setIsPlay(false);
             clearAll();
@@ -231,6 +241,7 @@ const TowerPage = () => {
                         ? `Забрать ${step > 0 ? win.toFixed(2) : bet}`
                         : "Начать игру"}
                 </button>
+                <audio src={cashSoundFile} ref={cashSound} hidden={true}></audio>
 
             </main>
         </div>
