@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './RegisterUsername.scss';
+
 const RegisterUsername = ({ onNext, login, setLogin }) => {
     const [status, setStatus] = useState('');
     const url = import.meta.env.VITE_USER_API_URL;
@@ -78,9 +79,9 @@ const RegisterUsername = ({ onNext, login, setLogin }) => {
 
                     <p className='register_username_hint'>you can always change it later</p>
                     <button disabled={status !== "available"} onClick={confirmLogin} className='register_username_btn'>
-                        Proceed
+                        proceed
                     </button>
-                    <Link className='register_username_btn_back' to="/">Main</Link>
+                    <Link className='register_username_btn_back' to="/">main</Link>
 
                 </div>
 

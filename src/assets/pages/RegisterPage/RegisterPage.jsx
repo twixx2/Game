@@ -19,7 +19,7 @@ const RegisterPage = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [step, setStep] = useState(0);
-    const [direction, setDirection] = useState(1); // -1 back, 1 next
+    const [direction, setDirection] = useState(1);
     const [loading, setLoading] = useState(false);
     const [fail, setFail] = useState(false);
     const [success, setSuccess] = useState(false);
@@ -87,13 +87,13 @@ const RegisterPage = () => {
 
     const variants = {
         enter: (direction) => ({
-            y: direction > 0 ? "100%" : "-100%", // если вперед, вход снизу; назад — сверху
+            y: direction > 0 ? "100%" : "-100%",
         }),
         center: {
             y: 0,
         },
         exit: (direction) => ({
-            y: direction > 0 ? "-100%" : "100%", // если вперед — уходит вверх; назад — вниз
+            y: direction > 0 ? "-100%" : "100%",
         }),
     };
 
@@ -104,7 +104,6 @@ const RegisterPage = () => {
 
     return (
         <>
-
             <div className="register_container">
                 <AnimatePresence custom={direction}>
 
