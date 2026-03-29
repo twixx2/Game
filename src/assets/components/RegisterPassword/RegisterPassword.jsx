@@ -78,10 +78,10 @@ const RegisterPassword = ({ onNext, onBack, password, setPassword }) => {
 
 
                     <button disabled={!password} onClick={confirmPassword} className='register_password_btn'>
-                        Proceed
+                        proceed
                     </button>
                     <button onClick={onBack} className='register_password_btn_back'>
-                        Back
+                        back
                     </button>
                 </div>
 

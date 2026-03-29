@@ -27,10 +27,10 @@ const RegisterConfirm = ({ onNext, onBack, login, password }) => {
 
 
                     <button onClick={onNext} className='register_confirm_btn'>
-                        Create
+                        create
                     </button>
                     <button onClick={onBack} className='register_confirm_btn_back'>
-                        I am not done
+                        i am not done
                     </button>
                 </div>
 

@@ -8,10 +8,10 @@ const RegisterAlready = () => {
         <>
             <div className="register_already">
                 <h2 className="register_already_title">
-                    aren't you {username} 
+                    aren't you {username}
                 </h2>
 
-                <Link className='register_already_btn' to="/">yes i am</Link>
+                <Link className='register_already_btn' to="/">i am indeed</Link>
             </div>
         </>
     );

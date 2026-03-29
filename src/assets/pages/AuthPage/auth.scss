@@ -1,121 +1,109 @@
 @import '../../style/reset.scss';
 
-.auth-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f5f7fa 0%, #e0eafc 50%, #c3cfe2 100%);
+@mixin font($weight, $size) {
+    font-family: 'Inter';
+    font-size: $size;
+    font-weight: $weight;
+}
+
+.login_container {
+    height: 100%;
     padding: 0 15px;
+}
 
+.login_content {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+}
 
-    &__card {
-        background: #fff;
-        width: 100%;
-        max-width: 360px;
-        padding: 40px;
-        border-radius: 40px;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-    }
+.login_title {
+    color: #fff;
+    @include font(700, 56px);
+}
 
-    &__title {
-        font-weight: 600;
-        font-size: 30px;
-        line-height: 120%;
-        color: #000;
-        margin-bottom: 8px;
-        text-align: center;
-    }
+.login_text {
+    color: #9E9E9E;
+    @include font(600, 24px);
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
 
-    &__subtitle {
-        font-weight: 400;
-        font-size: 16px;
-        color: #555;
-        margin-bottom: 24px;
-        text-align: center;
-    }
+.login_main_input_block {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-top: 20px;
+}
 
-    &__field {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 24px;
+.login_btn {
+    color: #000;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include font(600, 20px);
+    border-radius: 6px;
+    margin-top: 200px;
+    width: 100%;
+    cursor: pointer;
+    background: #fff;
+    box-shadow: 0px 0px 80px 21px rgba(255, 255, 255, 0.2);
+}
 
-        label {
-            font-weight: 400;
-            font-size: 16px;
-            color: #5b5b5e;
-            margin-bottom: 6px;
-        }
+.login_btn_back {
+    color: #fff;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    @include font(600, 20px);
+    border-radius: 6px;
+    width: 100%;
+    cursor: pointer;
+    background: #010101;
+    margin-top: 12px;
+}
 
-        .error {
-            display: none;
-            font-weight: 400;
-            font-size: 16px;
-            color: red;
+.login_username_input_block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
 
-            &.active {
-                display: inline-block;
-            }
-        }
-    }
+.login_username_input {
+    color: #fff;
+    background: transparent;
+    min-height: 60px;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid white;
+    @include font(600, 18px)
+}
 
-    &__input {
-        border: 1px solid #eee;
-        border-radius: 8px;
-        height: 50px;
-        box-shadow: 0 5px 15px rgba(233, 233, 233, 0.25);
-        background: #fff;
-        padding: 14px;
-        font-weight: 400;
-        font-size: 16px;
-        color: #000;
+.login_password_input_block {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid white;
+    border-radius: 16px;
+    min-height: 60px;
+    padding: 0 5px;
+}
 
-        &::placeholder {
-            color: #c4c4c4;
-        }
-    }
+.login_password_input {
+    width: 100%;
+    color: #fff;
+    background: transparent;
+    padding: 16px 11px;
+    @include font(600, 18px);
+}
 
-    &__btn {
-        display: block;
-        box-shadow: 0 10px 40px rgba(108, 99, 255, 0.4);
-        background: #6c63ff;
-        border-radius: 28px;
-        width: 100%;
-        height: 50px;
-        font-weight: 600;
-        font-size: 16px;
-        color: #fff;
-        cursor: pointer;
-        border: none;
-        transition: 0.5s;
-        margin: 16px 0 32px;
-
-        &:hover {
-            background: #5b55d9;
-        }
-    }
-
-    &__footer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-
-        p {
-            font-weight: 600;
-            font-size: 14px;
-            color: #5b5b5e;
-            margin: 0;
-        }
-
-        a {
-            font-weight: 600;
-            font-size: 14px;
-            color: #6c63ff;
-            text-decoration: none;
-        }
-    }
+.login_password_input_block_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    padding: 3px;
+    cursor: pointer;
 }
