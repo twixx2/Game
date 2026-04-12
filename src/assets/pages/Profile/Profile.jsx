@@ -1,13 +1,12 @@
-import './profile.scss';
+import { FiltersModal } from '../../components/FiltersModal/FiltersModal';
+import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
+import ProfileStats from '../../components/Profile/ProfileStats';
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useInv } from '../../context/InvContext';
-import toast from 'react-hot-toast';
 import upload from '../../img/upload-avatar.png';
-import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
-import { FiltersModal } from '../../components/FiltersModal/FiltersModal';
-import ProfileStats from '../../components/Profile/ProfileStats';
+import toast from 'react-hot-toast';
+import './profile.scss';
 
 const Profile = () => {
     const inputRef = useRef();
@@ -17,11 +16,9 @@ const Profile = () => {
     const [min, setMin] = useState(false);
     const [openSelected, setOpenSelected] = useState(false);
     const [searchController, setSearchController] = useState('');
-    const { balance, username, avatar, setAvatar, isAuth, onSound, setOnSound } = useAuth();
+    const { balance, username, avatar, setAvatar, isAuth, } = useAuth();
     const { items, selected, isSelecting, handleSelection, handleSelectItem, decSelectedItem, incSelectedItem, minSelectItem, maxSelectItem, selectedArr, totalPrice, selectAllItems, clearAllItems, sellItems } = useInv();
-    const navigate = useNavigate();
     const MAX_FILE_SIZE = 2 * 1024 * 1024;
-    const API = import.meta.env.VITE_USER_API_URL;
     const tabs = [
         { id: "profile", label: "Профиль" },
         { id: "shop", label: "Магазин" },
@@ -77,18 +74,6 @@ const Profile = () => {
 
             <div className="profile">
                 <div className="profle_overlay">
-                    <nav className="pr_nav">
-                        <div className="pr_nav_content container">
-                            <div className="pr_nav_back" onClick={() => navigate("/")}>
-                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15 19L8 12L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                            <h2 className="pr_nav_title">
-                                Is that you?
-                            </h2>
-                        </div>
-                    </nav>
 
                     <main className="pr_main">
                         <div className="pr_main_card">
@@ -197,23 +182,18 @@ const Profile = () => {
                                         <p style={{ color: "white", fontFamily: 'Rubik', fontSize: '16px', textAlign: "center" }}>
                                             Функционал магазина будет внедрён в рамках перехода проекта на собственное API. До завершения этого перехода появление значимых обновлений является невозможным. Автор проекта просит отнестись к ситуации с пониманием и проявить терпение.
                                         </p>}
-                                    {activeIndex === 2 && (<div>
-                                        <button className='sound_btn' onClick={() => {
-                                            setOnSound(!onSound);
-                                            localStorage.setItem("onSound", !onSound);
-                                        }}>
-                                            {onSound ? "Отключить звук" : "Включить звук"}
-                                        </button>
+                                    {activeIndex === 2 && (
                                         <p style={{ color: "white", fontFamily: 'Rubik', fontSize: '16px', textAlign: "center" }}>
                                             Изменение данных профиля будет реализовано в рамках перехода проекта на собственное API. До завершения этого перехода появление значимых обновлений является невозможным. Автор проекта просит отнестись к ситуации с пониманием и проявить терпение.
                                         </p>
-                                    </div>)}
+                                    )}
 
 
                                 </div>
                             </div>
                         </div>
                     </main>
+
                 </div >
             </div >
         </>

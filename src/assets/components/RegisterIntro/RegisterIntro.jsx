@@ -1,6 +1,9 @@
-import './RegisterIntro.scss';
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import './RegisterIntro.scss';
+
 const RegisterIntro = ({ onNext }) => {
+    const nav = useNavigate();
 
     return (
         <>
@@ -40,7 +43,17 @@ const RegisterIntro = ({ onNext }) => {
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 1, delay: 3 }}
                 >
-                    Let's go
+                    let's go
+                </motion.button>
+
+                <motion.button
+                    onClick={() => nav("/login")}
+                    className='register_intro_btn2'
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 1, delay: 3 }}
+                >
+                    i do have an account
                 </motion.button>
 
             </div>

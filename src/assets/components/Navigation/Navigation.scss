@@ -1,0 +1,52 @@
+@import '../../style/mixins.scss';
+
+.navigation {
+    width: 100%;
+
+    margin-bottom: 40px;
+
+    padding: 0 15px;
+    border-radius: 20px;
+
+    &_content {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+
+        .nav_text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .nav_title {
+                @include font(700, 44px);
+                color: #fff;
+            }
+
+            .nav_subtitle {
+                @include font(700, 18px);
+                color: #4d4d4d;
+            }
+        }
+
+        .nav_version {
+            @include font (900, 18px);
+
+            background: linear-gradient(to right, #870000 0%, #190a05 25%, #ff0000 50%, #190a05 75%, #870000 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+    }
+}
+
+.balance {
+    @include font (700, 18px);
+    text-align: center;
+    color: #fff;
+    margin-bottom: 25px;
+}

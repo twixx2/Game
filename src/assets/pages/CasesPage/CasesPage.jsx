@@ -41,26 +41,9 @@ export default function CasesPage() {
   return (
     <div className="cases_page">
 
-      <nav className="nav">
-        <div className="nav_content container">
-          <div className="nav_back" onClick={() => navigate("/")}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 19L8 12L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
-
-          <a href="#" className="nav_content_logo">All Cases</a>
-
-          <div className="balance_info">
-            <div className="balance_user">
-              <span className="balance_user_coins">
-                {balance} w$
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </nav>
+      <h2 className="balance">
+        {new Intl.NumberFormat("ru").format(balance)} w$
+      </h2>
 
       <div className="cases_grid">
         {cases.map(c => (
