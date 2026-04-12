@@ -9,11 +9,11 @@ const ErrorMessage = ({ message }) => {
             <h3 className="error_code">{message}</h3>
 
             <p className="error_message">
-                This page isnt allowed
+                looks like you got lost
             </p>
-            
+
             <button className="error_btn" onClick={() => navigate("/")}>
-                Go home
+                close this fucking error
             </button>
 
         </div>

@@ -1,0 +1,76 @@
+@import './mixins.scss';
+
+.main_layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main_layout_content {
+    flex: 1;
+    overflow: hidden;
+    padding: 0 15px 150px 15px;
+}
+
+.bottom_bar_container {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    z-index: 500;
+    min-height: 90px;
+    background: #0a0a0a;
+    display: flex;
+    padding: 10px;
+    border-radius: 28px 28px 0 0;
+}
+
+.bottom_bar_items {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+
+.bottom_bar_item {
+    display: block;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    gap: 6px;
+
+    &.current {
+        position: relative;
+
+        &::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            background: transparent;
+
+            box-shadow: 0 0 20px 20px white;
+
+            opacity: 0.4;
+        }
+
+        .bottom_bar_name {
+            color: #fff;
+        }
+    }
+}
+
+.bottom_bar_item img {
+    width: 34px;
+    height: 34px;
+}
+
+.bottom_bar_name {
+    color: #4d4d4d;
+    @include font(700, 16px);
+}

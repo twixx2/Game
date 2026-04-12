@@ -1,420 +1,467 @@
 @import '../../style/main.scss';
+@import '../../style/mixins.scss';
 
-:root {
-    --bg: #000000;
-    --clr-1: #00c2ff;
-    --clr-2: #33ff8c;
-    --clr-3: #ffc640;
-    --clr-4: #e54cff;
-
-    --blur: 1rem;
-    --fs: 2.5rem;
-    --ls: clamp(-1.75px, -0.25vw, -3.5px);
-}
-
-@keyframes aurora-1 {
+@keyframes shimmer {
     0% {
-        top: 0;
-        right: 0;
-    }
-
-    50% {
-        top: 100%;
-        right: 75%;
-    }
-
-    75% {
-        top: 100%;
-        right: 25%;
+        background-position: 0% center;
     }
 
     100% {
-        top: 0;
-        right: 0;
+        background-position: 200% center;
     }
-}
-
-@keyframes aurora-2 {
-    0% {
-        top: -50%;
-        left: 0%;
-    }
-
-    60% {
-        top: 100%;
-        left: 75%;
-    }
-
-    85% {
-        top: 100%;
-        left: 25%;
-    }
-
-    100% {
-        top: -50%;
-        left: 0%;
-    }
-}
-
-@keyframes aurora-3 {
-    0% {
-        bottom: 0;
-        left: 0;
-    }
-
-    40% {
-        bottom: 100%;
-        left: 75%;
-    }
-
-    65% {
-        bottom: 40%;
-        left: 50%;
-    }
-
-    100% {
-        bottom: 0;
-        left: 0;
-    }
-}
-
-@keyframes aurora-4 {
-    0% {
-        bottom: -50%;
-        right: 0;
-    }
-
-    50% {
-        bottom: 0%;
-        right: 40%;
-    }
-
-    90% {
-        bottom: 50%;
-        right: 25%;
-    }
-
-    100% {
-        bottom: -50%;
-        right: 0;
-    }
-}
-
-@keyframes aurora-border {
-    0% {
-        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
-    }
-
-    25% {
-        border-radius: 47% 29% 39% 49% / 61% 19% 66% 26%;
-    }
-
-    50% {
-        border-radius: 57% 23% 47% 72% / 63% 17% 66% 33%;
-    }
-
-    75% {
-        border-radius: 28% 49% 29% 100% / 93% 20% 64% 25%;
-    }
-
-    100% {
-        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
-    }
-}
-
-@keyframes bg-spin {
-    to {
-        --border-angle: 1turn;
-    }
-}
-
-@property --border-angle {
-    syntax: "<angle>";
-    inherits: true;
-    initial-value: 0turn;
 }
 
 .home {
     width: 100%;
-    min-height: 100vh;
     background: black;
 
-    &_nav {
-        width: 100%;
-        padding: 20px 0;
-        border-radius: 20px;
+    .tag_container {
+        display: flex;
+        align-items: center;
+        gap: 6px;
 
-        &_content {
+        .beta {
+            @include font(600, 12px);
+
             display: flex;
             align-items: center;
             justify-content: center;
 
-            &_logo {
-                font-size: 2.7rem;
-                color: #e71b36;
-                font-family: 'MrRobot';
-                white-space: nowrap;
-            }
+            padding: 4px 8px;
+            border-radius: 12px;
+
+            color: rgb(252, 15, 121);
+            background-color: rgba(252, 15, 121, 0.178);
+
+            text-transform: uppercase;
+        }
+
+        .new {
+            @include font(600, 12px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 4px 8px;
+            border-radius: 12px;
+
+            color: #0419fd;
+            background-color: rgba(4, 25, 253, 0.178);
+
+            text-transform: uppercase;
+        }
+
+        .preview {
+            @include font(600, 12px);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 4px 8px;
+            border-radius: 12px;
+
+            color: rgb(107, 107, 107);
+            background-color: rgba(107, 107, 107, 0.178);
+
+            text-transform: uppercase;
         }
     }
 
     &_main {
-        margin-top: 30px;
-        width: 100%;
-        padding: 0 25px;
-        border-radius: 30px;
-        background: black;
         display: flex;
         flex-direction: column;
-        gap: 30px;
+        gap: 20px;
 
-        .home_all_content {
+        .main_section_title {
+            max-width: fit-content;
+            @include font(700, 28px);
+            color: #fff;
+        }
+
+        .authorize {
+            width: 100%;
+
+            display: flex;
+            gap: 20px;
+
+
+            .authorize_btn {
+                @include font(600, 14px);
+
+                width: 100%;
+                padding: 8px 12px;
+                border-radius: 12px;
+
+                transition: .6s;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                cursor: pointer;
+
+                &.btn_register {
+                    background: #0f0f0f;
+                    color: #fff;
+                    transition: 600ms;
+
+                    &:hover {
+                        background: #2b2b2b;
+                    }
+                }
+
+                &.btn_login {
+                    color: #0f0f0f;
+                    background: #fff;
+
+                    &:hover {
+                        background: #b4b4b4;
+                    }
+                }
+            }
+        }
+
+        .games {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
 
-            .home_games {
+
+            .games_cards {
                 display: flex;
                 flex-direction: column;
                 gap: 15px;
-                width: 100%;
 
-                &_title {
-                    font-size: 34px;
-                    color: white;
-                    font-family: 'Rubik';
+                .games_card {
+                    position: relative;
+                    overflow: hidden;
+
+                    width: 100%;
+                    min-height: 130px;
+
+                    padding: 14px;
+                    background: #070707;
+                    border-radius: 22px;
+
+                    cursor: pointer;
+
+                    border: 1px solid #1a1a1a;
+
+                    .game_card_content {
+                        width: 100%;
+                        min-height: calc(130px - 28px);
+
+                        display: flex;
+                        justify-content: space-between;
+
+                        .game_card_content_info {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+
+                            min-height: 100%;
+
+                            .game_card_title {
+                                @include font(700, 22px);
+                                color: #fff;
+                            }
+
+                            .game_card_volume {
+                                display: flex;
+                                flex-direction: column;
+                                gap: 2px;
+
+                                span:nth-of-type(1) {
+                                    @include font(600, 14px);
+
+                                    width: 100%;
+                                    max-width: 74.8px;
+
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+
+                                    padding: 4px 8px;
+                                    border-radius: 12px;
+
+                                    color: #29e411;
+                                    background-color: rgba(17, 168, 12, 0.178);
+                                }
+
+                                span:nth-of-type(2) {
+                                    @include font(600, 14px);
+                                    color: #df1250;
+                                    margin-left: 8px;
+                                }
+                            }
+
+
+                        }
+
+                        .game_card_btn {
+                            @include font(600, 14px);
+
+                            width: 100%;
+                            max-width: 150px;
+                            padding: 8px 12px;
+                            border-radius: 12px;
+
+                            transition: .6s;
+
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            align-self: flex-end;
+
+                            color: #000;
+                            background: rgba(255, 255, 255, 0.82);
+
+                            &:hover {
+                                background: rgba(177, 177, 177, 0.82);
+                            }
+
+
+                        }
+                    }
+
+
                 }
 
-                &_content {
+                .games_card::before {
+                    content: "";
+
+                    position: absolute;
+                    inset: 0;
+
+                    pointer-events: none;
+                }
+
+                .game_card1::before {
+                    background: radial-gradient(circle at top right,
+                            rgba(255, 215, 0, 0.6) 0%,
+                            rgba(255, 165, 0, 0.3) 30%,
+                            rgba(218, 165, 32, 0.1) 60%,
+                            transparent 95%);
+                }
+
+                .game_card2::before {
+                    background: radial-gradient(circle at top right,
+                            rgba(255, 20, 147, 0.6) 0%,
+                            rgba(255, 0, 100, 0.3) 30%,
+                            rgba(199, 21, 133, 0.1) 60%,
+                            transparent 95%);
+                }
+
+                .game_card3::before {
+                    background: radial-gradient(circle at top right,
+                            rgba(0, 255, 240, 0.6) 0%,
+                            rgba(0, 206, 209, 0.3) 30%,
+                            rgba(0, 128, 128, 0.1) 60%,
+                            transparent 95%);
+                }
+
+                .game_card4::before {
+                    background: radial-gradient(circle at top right,
+                            rgba(157, 0, 255, 0.6) 0%,
+                            rgba(138, 43, 226, 0.3) 30%,
+                            rgba(75, 0, 130, 0.1) 60%,
+                            transparent 95%);
+                }
+
+            }
+        }
+
+        .bonuses {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .bonuses_card {
+                width: 100%;
+                padding: 14px;
+
+                border-radius: 22px;
+
+                background: #0f0f0f;
+
+                .bonuses_card_content {
                     display: flex;
                     flex-direction: column;
                     gap: 25px;
 
-                    .home_game_card {
+                    &.disabled {
+                        user-select: none;
+                        pointer-events: none;
+                        filter: brightness(40%);
+                    }
+
+
+
+                    .bonuses_card_title {
+                        @include font(700, 18px);
+                        color: #fff;
+                    }
+
+                    .bonuses_card_btn {
+                        @include font(600, 14px);
+
                         width: 100%;
-                        min-height: 70px;
-                        border-radius: 30px;
-                        padding: 20px;
+                        padding: 8px 12px;
+                        border-radius: 8px;
+
                         display: flex;
                         align-items: center;
-                        justify-content: space-between;
-                        font-size: 22px;
-                        color: white;
+                        justify-content: center;
+
+                        transition: .6s;
+
                         cursor: pointer;
-                        --border-angle: 0turn; // For animation.
-                        --main-bg: conic-gradient(from var(--border-angle),
-                                black);
-                        border: solid 5px transparent;
-                        border-radius: 2em;
-                        background:
-                            // padding-box clip this background in to the overall element except the border.
-                            var(--main-bg) padding-box,
-                            // border-box extends this background to the border space
-                            var(--gradient-border) border-box,
-                            // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
-                            var(--main-bg) border-box;
-                        background-position: center center;
-                        animation: bg-spin 3s linear infinite;
-                        font-family: 'Rubik';
 
-                        &.home_card_one {
-                            --gradient-border:
-                                conic-gradient(from var(--border-angle), transparent 50%, #7e00a6, #d2ff28 70%, transparent);
-                        }
-
-                        &.home_card_two {
-                            --gradient-border:
-                                conic-gradient(from var(--border-angle), transparent 50%, #ffffff, #cb0000 70%, transparent);
-                        }
-
-                        &.home_card_three {
-                            --gradient-border:
-                                conic-gradient(from var(--border-angle), transparent 50%, #00ff99, #ff6600 70%, transparent);
-                        }
-
-                        &.home_card_four {
-                            --gradient-border:
-                                conic-gradient(from var(--border-angle), transparent 50%, #ffffff, #3b3b3b 70%, transparent);
-                        }
+                        color: #000;
+                        background: rgba(255, 255, 255, 0.82);
 
                         &:hover {
-                            animation-play-state: paused;
-                        }
-
-                        & svg {
-                            transition: 0.5s;
-                            transform: translateX(-20px);
-                            opacity: 0;
-                            pointer-events: none;
-                        }
-
-                        &:hover svg {
-                            transform: translateX(0);
-                            opacity: 1;
-                            pointer-events: auto;
+                            background: rgba(177, 177, 177, 0.82);
                         }
                     }
                 }
             }
-
         }
 
-        .home_auth {
+        .redirect {
+            width: 100%;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            width: 100%;
+            gap: 20px;
 
-            .home_games_title {
-                font-size: 34px;
-                color: white;
-                font-family: 'Rubik';
-            }
-
-            &_content {
+            .redirect_items {
                 display: flex;
                 flex-direction: column;
-                gap: 25px;
+                gap: 10px;
 
-                .home_auth_card {
+                overflow: hidden;
+
+                .redirect_item {
                     width: 100%;
-                    min-height: 70px;
-                    border-radius: 30px;
-                    padding: 20px;
+                    min-height: 50px;
+                    padding: 4px 8px;
+
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
-                    font-size: 22px;
-                    color: white;
+
                     cursor: pointer;
-                    --border-angle: 0turn; // For animation.
-                    --main-bg: conic-gradient(from var(--border-angle),
-                            black);
-                    border: solid 5px transparent;
-                    border-radius: 2em;
-                    background:
-                        // padding-box clip this background in to the overall element except the border.
-                        var(--main-bg) padding-box,
-                        // border-box extends this background to the border space
-                        var(--gradient-border) border-box,
-                        // Duplicate main background to fill in behind the gradient border. You can remove this if you want the border to extend "outside" the box background.
-                        var(--main-bg) border-box;
-                    background-position: center center;
-                    animation: bg-spin 3s linear infinite;
-                    font-family: 'Rubik';
 
+                    transition: .6s;
 
-                    &.home_auth_one {
-                        --gradient-border:
-                            conic-gradient(from var(--border-angle), transparent 50%, #5b55d9, #fff 70%, transparent);
+                    background: #0f0f0f;
+                    border-radius: 22px;
+
+                    span {
+                        @include font(600, 14px);
+                        color: #696969;
+
+                        transition: .3s;
                     }
 
-                    &.home_auth_two {
-                        --gradient-border:
-                            conic-gradient(from var(--border-angle), transparent 50%, #fff, #5b55d9 70%, transparent);
+                    .redirect_item_title {
+                        @include font (700, 18px);
+                        color: #696969;
+
+                        transition: .3s;
                     }
 
                     &:hover {
-                        animation-play-state: paused;
-                    }
+                        transform: translateX(10px);
 
-                    & svg {
-                        transition: 0.5s;
-                        transform: translateX(-15px);
-                        opacity: 0;
-                        pointer-events: none;
-                    }
-
-                    &:hover svg {
-                        transform: translateX(0);
-                        opacity: 1;
-                        pointer-events: auto;
+                        .redirect_item span,
+                        .redirect_item_title {
+                            color: #8f8f8f !important;
+                        }
                     }
                 }
             }
-
-
         }
 
-        .home_title_section {
+        .stats {
+            width: 100%;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 50px;
-            text-align: center;
+            flex-direction: column;
+            gap: 20px;
 
-            .home_title {
-                font-size: var(--fs);
-                font-weight: 800;
-                letter-spacing: var(--ls);
-                position: relative;
-                overflow: hidden;
-                background: var(--bg);
-                color: white;
-                font-family: 'Glitch';
+            .stats_items {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
 
-                .aurora {
-                    position: absolute;
-                    top: 0;
-                    left: 0;
+                .stats_item {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+
+                    border-radius: 22px;
+
                     width: 100%;
-                    height: 100%;
-                    z-index: 2;
-                    mix-blend-mode: darken;
-                    pointer-events: none;
+                    padding: 4px 6px;
 
-                    .aurora__item {
-                        overflow: hidden;
-                        position: absolute;
-                        width: 60vw;
-                        height: 60vw;
-                        background-color: var(--clr-1);
-                        border-radius: 37% 29% 27% 27% / 28% 25% 41% 37%;
-                        // filter: blur(var(--blur));
-                        filter: blur(0.3rem);
-                        mix-blend-mode: overlay;
+                    transition: .6s;
+
+                    .stats_item_left {
+                        @include font (700, 14px);
+                        color: #696969;
                     }
 
-                    .aurora__item:nth-of-type(1) {
-                        top: -50%;
-                        animation: aurora-border 6s ease-in-out infinite,
-                            aurora-1 12s ease-in-out infinite alternate;
-                    }
+                    .stats_item_right {
+                        @include font(900, 12px);
 
-                    .aurora__item:nth-of-type(2) {
-                        background-color: var(--clr-3);
-                        right: 0;
-                        top: 0;
-                        animation: aurora-border 6s ease-in-out infinite,
-                            aurora-2 12s ease-in-out infinite alternate;
-                    }
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
 
-                    .aurora__item:nth-of-type(3) {
-                        background-color: var(--clr-2);
-                        left: 0;
-                        bottom: 0;
-                        animation: aurora-border 6s ease-in-out infinite,
-                            aurora-3 8s ease-in-out infinite alternate;
-                    }
+                        padding: 4px 8px;
+                        border-radius: 12px;
 
-                    .aurora__item:nth-of-type(4) {
-                        background-color: var(--clr-4);
-                        right: 0;
-                        bottom: -50%;
-                        animation: aurora-border 6s ease-in-out infinite,
-                            aurora-4 24s ease-in-out infinite alternate;
+                        color: rgb(252, 230, 0);
+                        background-color: rgba(252, 230, 0, 0.178);
+
                     }
                 }
-
-
             }
         }
 
-        .disclaimer_text {
-            color: red;
-            font-size: 14px;
-            font-family: 'Rubik';
-            text-align: center;
+        .about {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .about_content {
+                width: 100%;
+
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+
+                padding: 4px;
+                border-radius: 22px;
+
+
+
+                .about_main_text {
+                    @include font (600, 16px);
+                    color: #696969;
+
+                }
+
+                .about_main_made {
+                    @include font (900, 14px);
+                    color: #fff;
+                    margin-top: 6px;
+                }
+            }
         }
     }
 }

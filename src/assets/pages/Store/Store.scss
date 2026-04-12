@@ -1,0 +1,14 @@
+@import '../../style/mixins.scss';
+
+.store {
+
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    .store_title {
+        @include font (700, 18px);
+        color: #fff;
+    }
+
+}

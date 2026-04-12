@@ -1,11 +1,5 @@
-@import url('../../style/mixins.scss');
+@import '../../style/mixins.scss';
 
-
-@mixin font($weight, $size) {
-    font-family: 'Inter';
-    font-size: $size;
-    font-weight: $weight;
-}
 
 .register_intro {
     height: 100%;
@@ -26,7 +20,7 @@
 
 .register_intro_btn {
     color: #000;
-    background: white;
+    background: #fff;
     min-height: 50px;
     display: flex;
     align-items: center;
@@ -37,4 +31,23 @@
     margin-top: 200px;
     cursor: pointer;
     box-shadow: 0px 0px 80px 21px rgba(255, 255, 255, 0.2);
+}
+
+.register_intro_btn2 {
+    @include font(600, 20px);
+
+    width: 100%;
+    min-height: 50px;
+
+    color: #fff;
+    background: #0f0f0f;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 6px;
+    margin-top: 30px;
+    cursor: pointer;
+
 }

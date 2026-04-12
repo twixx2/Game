@@ -1,0 +1,14 @@
+@import '../../style/mixins.scss';
+
+.minehunt {
+
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    .minehunt_title {
+        @include font (700, 18px);
+        color: #fff;
+    }
+
+}

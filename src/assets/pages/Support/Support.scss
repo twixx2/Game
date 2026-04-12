@@ -1,0 +1,14 @@
+@import '../../style/mixins.scss';
+
+.support {
+
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    .support_title {
+        @include font (700, 18px);
+        color: #fff;
+    }
+
+}

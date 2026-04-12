@@ -1,0 +1,14 @@
+@import '../../style/mixins.scss';
+
+.leaderboard {
+
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    .leaderboard_title {
+        @include font (700, 18px);
+        color: #fff;
+    }
+
+}

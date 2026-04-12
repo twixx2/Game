@@ -1,0 +1,14 @@
+@import '../../style/mixins.scss';
+
+.haveanidea {
+
+    display: flex;
+    align-self: center;
+    justify-content: center;
+
+    .haveanidea_title {
+        @include font (700, 18px);
+        color: #fff;
+    }
+
+}

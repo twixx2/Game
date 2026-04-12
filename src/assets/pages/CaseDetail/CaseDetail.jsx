@@ -8,7 +8,6 @@ import Loader from '../../components/Loader/Loader';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import { useAuth } from '../../context/AuthContext';
 import { useInv } from '../../context/InvContext';
-import caseSoundFile from '../../sounds/case.mp3'
 
 function weightedRandom(items) {
   const total = items.reduce((sum, i) => sum + (i.weight || 0), 0);
@@ -22,11 +21,10 @@ function weightedRandom(items) {
 
 export default function CaseDetail() {
   const { caseId } = useParams();
-  const { balance, headers, editBalance, onSound } = useAuth();
+  const { balance, headers, editBalance } = useAuth();
   const { addItem } = useInv();
   const frameRef = useRef(null);
   const trackRef = useRef(null);
-  const caseSound = useRef(null);
   const [c, setCase] = useState(null);
   const [items, setItems] = useState([]);
   const [rolling, setRolling] = useState(false);
@@ -81,10 +79,6 @@ export default function CaseDetail() {
     setIsOpen(false);
     setRolling(true);
     clearAnim();
-    if (caseSound.current) {
-      caseSound.current.currentTime = 0;
-      caseSound.current.play();
-    }
     // выбираем выигрыш
     const winItem = weightedRandom(items);
     // собираем очередь: baseRounds случайных + winItem + buffer
@@ -144,36 +138,10 @@ export default function CaseDetail() {
 
   return (
     <div className="case_detail">
-      <nav className="nav">
-        <div className="nav_content container">
-          <div className="nav_back" onClick={() => {
-            if (rolling) return toast.error("Дождитесь прокрутки кейса");
-            if (isOpen) {
-              addItem(received);
-              clearAnim();
-              setRolling(false);
-              setIsOpen(false);
-              setWin(null);
-            }
-            navigate(-1);
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15 19L8 12L15 5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
 
-          <a href="#" className="nav_content_logo">{c.title}</a>
-
-          <div className="balance_info">
-            <div className="balance_user">
-              <span className="balance_user_coins">
-                {balance} w$
-              </span>
-            </div>
-          </div>
-
-        </div>
-      </nav>
+      <h2 className="balance">
+        {new Intl.NumberFormat("ru").format(balance)} w$
+      </h2>
 
       <main className="case_detail_main">
 
@@ -303,7 +271,6 @@ export default function CaseDetail() {
             }
           </div>
         </div>
-        <audio src={caseSoundFile} ref={caseSound} hidden={true}></audio>
       </main>
 
     </div >

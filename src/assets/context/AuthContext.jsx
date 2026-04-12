@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
     const [balance, setBalance] = useState(0);
     const [avatar, setAvatar] = useState("");
     const [username, setUsername] = useState('');
-    const [onSound, setOnSound] = useState(false);
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [userItems, setUserItems] = useState([]);
     const headers = { Authorization: `Bearer ${token}` };
@@ -42,12 +41,6 @@ export const AuthProvider = ({ children }) => {
                 })
         };
         fetchUser();
-
-        if (localStorage.getItem("onSound") === "true") {
-            setOnSound(true);
-        } else {
-            setOnSound(false);
-        }
 
         return () => {
             source.cancel();
@@ -98,8 +91,7 @@ export const AuthProvider = ({ children }) => {
             headers,
             logout,
             editBalance,
-            userItems,
-            onSound, setOnSound
+            userItems
         }}>
             {children}
         </AuthContext.Provider>
