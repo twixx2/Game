@@ -1,0 +1,84 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.case {
+    width: 100%;
+    min-height: 250px;
+
+    padding: 6px;
+    border-radius: 15px;
+
+    cursor: pointer;
+
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+        .bg {
+            background: rgba(28, 28, 28, 0.753);
+        }
+    }
+
+    .bg {
+        transition: .5s;
+
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+
+        width: 100%;
+        height: 100%;
+
+        border-radius: 15px;
+
+        background: rgba(15, 15, 15, 0.897);
+    }
+
+    .content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        height: 100%;
+
+
+        .name {
+            @include font(700, 16px);
+            color: $white;
+            text-align: center;
+        }
+
+        .image {
+            height: 180px;
+            border-radius: 15px;
+
+            overflow: hidden;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            & img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                display: block;
+            }
+        }
+
+        .price {
+            @include font(800, 14px);
+            width: 100%;
+            max-width: fit-content;
+
+            padding: 4px 6px;
+            border-radius: 16px;
+
+            margin: 0 auto;
+
+            color: $yellow;
+            background-color: rgba($yellow, 0.178);
+        }
+    }
+}

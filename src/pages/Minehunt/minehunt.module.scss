@@ -1,0 +1,7 @@
+@use "@shared/styles/mixins.scss" as *;
+
+.minehunt {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}

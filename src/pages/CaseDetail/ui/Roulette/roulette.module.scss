@@ -1,0 +1,108 @@
+@use "@shared/styles/mixins.scss" as *;
+
+.roulette_frame {
+    width: 100%;
+    max-width: 648px;
+    height: auto;
+
+    margin: 1rem auto;
+    border-radius: 8px;
+
+    overflow: hidden;
+
+
+    .roulette_track {
+        display: flex;
+        transform: translateX(0);
+
+        :global(.slot) {
+            width: 195px;
+            height: 170px;
+
+            margin: 4px;
+            border-radius: 6px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            flex-direction: column;
+
+            .image {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                width: 100%;
+                height: 150px;
+
+                & img {
+                    max-width: 100%;
+                    max-height: 100%;
+
+                    object-fit: contain;
+                }
+            }
+
+            .info {
+                width: 100%;
+
+                padding: 0 5px;
+                margin-bottom: 5px;
+
+                & span {
+                    @include font(800, 14px);
+                    color: white;
+                }
+            }
+
+            &.common {
+                background: linear-gradient(135deg, rgba(100, 100, 100, 0.4) 0%, rgba(60, 60, 60, 0.6) 100%);
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            }
+
+            &.uncommon {
+                background: linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(0, 140, 255, 0.5) 100%);
+                box-shadow: 0 0 5px rgba(0, 200, 255, 0.2);
+            }
+
+            &.rare {
+                background: linear-gradient(135deg, rgba(0, 80, 255, 0.3) 0%, rgba(0, 40, 200, 0.6) 100%);
+                box-shadow: 0 0 5px rgba(0, 80, 255, 0.3);
+            }
+
+            &.epic {
+                background: linear-gradient(135deg, rgba(160, 30, 255, 0.3) 0%, rgba(110, 0, 220, 0.6) 100%);
+                box-shadow: 0 0 5px rgba(160, 30, 255, 0.3);
+            }
+
+            &.legendary {
+                background: linear-gradient(135deg, rgba(255, 0, 150, 0.3) 0%, rgba(200, 0, 100, 0.6) 100%);
+                box-shadow: 0 0 5px rgba(255, 0, 150, 0.4);
+            }
+
+            &.mythic {
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.5) 100%);
+                box-shadow: 0 0 5px rgba(255, 165, 0, 0.4);
+            }
+
+            &.divine {
+                background: linear-gradient(120deg,
+                        rgba(0, 0, 0, 0.9) 10%,
+                        rgba(100, 100, 100, 0.5) 50%,
+                        rgba(0, 0, 0, 0.9) 90%);
+
+                box-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+            }
+
+            &.prismatic {
+                background: linear-gradient(45deg,
+                        rgba(130, 50, 255, 0.25),
+                        rgba(50, 150, 255, 0.25),
+                        rgba(50, 255, 150, 0.25),
+                        rgba(255, 50, 150, 0.25));
+                box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+
+            }
+        }
+    }
+}

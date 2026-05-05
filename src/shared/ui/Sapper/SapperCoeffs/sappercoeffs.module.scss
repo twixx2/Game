@@ -1,0 +1,29 @@
+@use "@shared/styles/mixins.scss" as *;
+
+.coeffs {
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    .coeff {
+        @include flex-center();
+        @include font(900, 18px);
+        flex: 0 0 auto;
+        width: 100px;
+        height: 45px;
+        margin-right: 8px;
+        background: #141414;
+        border-radius: 15px;
+        color: white;
+
+        &.prev {
+            background: rgba(31, 74, 57, .38);
+            color: #36c971;
+        }
+
+        &.current {
+            background: #36c971;
+        }
+    }
+}

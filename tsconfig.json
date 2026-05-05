@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "skipLibCheck": true,
+
+    "noEmit": true,
+    "allowJs": true,
+    "isolatedModules": true,
+
+    "moduleSuffixes": [".tsx", ".ts", ".jsx", ".js", ""],
+
+    "types": ["node"],
+
+    "paths": {
+      "@/*": ["./src/*"],
+      "@": ["./src"],
+
+      "@pages/*": ["./src/pages/*"],
+      "@pages": ["./src/pages"],
+
+      "@shared/*": ["./src/shared/*"],
+      "@shared": ["./src/shared"],
+
+      "@context/*": ["./src/app/providers/*"],
+      "@context": ["./src/app/providers"],
+
+      "@layouts/*": ["./src/app/layouts/*"],
+      "@layouts": ["./src/app/layouts"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

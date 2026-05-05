@@ -1,0 +1,80 @@
+@use './fonts.scss';
+@use './reset.scss';
+@use "./mixins.scss" as *;
+@use "./variables" as *;
+
+::selection {
+    background: $yellow;
+    color: $black;
+}
+
+.container {
+    width: 100%;
+    max-width: 1530px;
+    padding: 0 15px;
+    margin: 0 auto;
+}
+
+.maintenance_title {
+    @include font (700, 18px);
+    color: $white;
+    text-align: center;
+}
+
+.section_title {
+    max-width: fit-content;
+    @include font(700, 28px);
+    color: $white;
+}
+
+.tag_container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .beta {
+        @include font(600, 12px);
+        @include flex-center();
+
+        padding: 4px 8px;
+        border-radius: 12px;
+
+        color: rgb(252, 15, 121);
+        background-color: rgba(252, 15, 121, 0.178);
+
+        text-transform: uppercase;
+    }
+
+    .new {
+        @include font(600, 12px);
+        @include flex-center();
+
+        padding: 4px 8px;
+        border-radius: 12px;
+
+        color: #0419fd;
+        background-color: rgba(4, 25, 253, 0.178);
+
+        text-transform: uppercase;
+    }
+
+    .preview {
+        @include font(600, 12px);
+        @include flex-center();
+
+        padding: 4px 8px;
+        border-radius: 12px;
+
+        color: rgb(107, 107, 107);
+        background-color: rgba(107, 107, 107, 0.178);
+
+        text-transform: uppercase;
+    }
+}
+
+.balance {
+    @include font(700, 18px);
+    text-align: center;
+    color: $white;
+    margin-bottom: 25px;
+}

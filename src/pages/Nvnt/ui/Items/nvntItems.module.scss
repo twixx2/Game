@@ -1,0 +1,24 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.items {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    -webkit-overflow-scrolling: touch;
+    gap: 8px;
+
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.title {
+    @include font(800, 18px);
+    text-align: center;
+    color: $white;
+}

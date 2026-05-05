@@ -1,0 +1,16 @@
+.inventory {
+
+    .invCont {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+
+            margin-top: 10px;
+        }
+    }
+}

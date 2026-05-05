@@ -1,0 +1,39 @@
+@use "@shared/styles/mixins.scss" as *;
+
+.bet {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+
+    .text {
+        @include font(700, 18px);
+        color: white;
+        text-align: center;
+    }
+
+    .input {
+        width: 100%;
+
+        background: #141414;
+
+        border-radius: 20px;
+        padding: 15px;
+
+        color: white;
+        @include font(700, 16px);
+    }
+
+    .error {
+        display: none;
+
+        color: red;
+        @include font(700, 16px);
+
+        &.active {
+            display: inline-block;
+        }
+    }
+}

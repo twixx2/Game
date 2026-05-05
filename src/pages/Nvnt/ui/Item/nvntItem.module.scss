@@ -1,0 +1,141 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.item {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 130px;
+    padding: 5px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    position: relative;
+
+    .bg {
+        border-radius: 8px;
+        position: absolute;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+
+
+        &.common {
+            @include common();
+        }
+
+        &.uncommon {
+            @include uncommon();
+        }
+
+        &.rare {
+            @include rare();
+        }
+
+        &.epic {
+            @include epic();
+        }
+
+        &.legendary {
+            @include legendary();
+        }
+
+        &.mythic {
+            @include mythic();
+        }
+
+        &.divine {
+            @include divine();
+        }
+
+        &.unreal {
+            @include unreal();
+        }
+
+    }
+
+    .content {
+        position: absolute;
+        z-index: 2;
+        inset: 5px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        .count {
+            @include flex-center();
+            @include font(800, 16px);
+            color: $white;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+
+        .header {
+            display: flex;
+
+            & span {
+                @include font(800, 14px);
+                color: $aqua;
+                margin-left: auto;
+                margin-top: auto;
+            }
+
+            .image {
+                width: 60px;
+                height: 60px;
+
+                & img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                }
+            }
+
+        }
+
+        .main {
+
+            & span {
+                @include font(800, 12px);
+                color: $white;
+            }
+
+        }
+
+        .range {
+            width: 100%;
+            @include flex-between();
+
+            position: absolute;
+            z-index: 3;
+            bottom: 0;
+
+
+            .options {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+
+                .optButton {
+                    @include flex-center();
+
+                    width: 22px;
+                    height: 22px;
+
+                    background: transparent;
+                    cursor: pointer;
+                }
+
+            }
+
+            & span {
+                @include font(800, 12px);
+                color: $white;
+            }
+        }
+    }
+}

@@ -1,0 +1,64 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+
+.login {
+    display: flex;
+    flex-direction: column;
+
+    height: 100%;
+
+    padding: 0 15px;
+    margin-top: 60px;
+}
+
+.title {
+    @include font(700, 56px);
+    color: $white;
+}
+
+.text {
+    @include font(600, 22px);
+    color: $light-grey;
+
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.inputContent {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+
+    margin-top: 20px;
+}
+
+.loginBtn {
+    @include flex-center();
+    width: 100%;
+    min-height: 50px;
+
+    margin-top: 200px;
+    border-radius: 6px;
+    box-shadow: 0px 0px 80px 21px rgba(255, 255, 255, 0.2);
+
+    @include font(600, 20px);
+    background: $white;
+    color: $black;
+}
+
+.back {
+    @include flex-center();
+
+    width: 100%;
+    min-height: 50px;
+
+    margin-top: 12px;
+    border-radius: 6px;
+
+    @include font(600, 20px);
+    background: $black;
+    color: $white;
+
+    cursor: pointer;
+}

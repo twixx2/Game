@@ -1,0 +1,42 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.options {
+    @include flex-between();
+
+    .search {
+        height: 100%;
+
+        display: flex;
+        align-items: center;
+        gap: 5px;
+
+        border: 2px solid $white;
+        border-radius: 8px;
+        padding: 2px 6px;
+
+        & input {
+            height: 100%;
+            background: transparent;
+
+            @include font(700, 18px);
+            color: $white;
+
+            &::placeholder {
+                color: $light-grey;
+            }
+        }
+    }
+
+    .optBtn {
+        @include flex-center();
+
+        width: 40px;
+        height: 100%;
+
+        border-radius: 10px;
+
+        background: transparent;
+        cursor: pointer;
+    }
+}
