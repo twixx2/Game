@@ -1,0 +1,60 @@
+@use "@shared/styles/mixins.scss" as *;
+
+.cells {
+    width: 100%;
+    min-height: 500px;
+    max-width: 375px;
+
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+
+    margin: 0 auto;
+
+    .row {
+        display: flex;
+        gap: 10px;
+
+        .cell {
+            @include font(800, 18px);
+
+            width: 100%;
+            max-width: 180px;
+            min-height: 64px;
+
+            border-radius: 30px;
+
+            background: #272727;
+            color: #fff;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            transition: .5s;
+            cursor: pointer;
+
+            &:hover {
+                background: #575757;
+            }
+
+            &.passed {
+                cursor: not-allowed;
+            }
+
+            &.safe {
+                background: #fce600 !important;
+                color: #000;
+            }
+
+            &.error {
+                background: #B22222 !important;
+                cursor: not-allowed;
+            }
+
+            &.disabled {
+                cursor: not-allowed;
+            }
+        }
+    }
+}

@@ -1,0 +1,42 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.item {
+    width: 100%;
+    min-height: 50px;
+    padding: 4px 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    cursor: pointer;
+
+    transition: .6s;
+
+    background: $super-dark;
+    border-radius: 22px;
+
+    span {
+        @include font(600, 14px);
+        color: $light-grey;
+
+        transition: .3s;
+    }
+
+    .title {
+        @include font(700, 18px);
+        color: $light-grey;
+
+        transition: .3s;
+    }
+
+    &:hover {
+        transform: translateX(10px);
+
+        .item span,
+        .title {
+            color: #8f8f8f !important;
+        }
+    }
+}

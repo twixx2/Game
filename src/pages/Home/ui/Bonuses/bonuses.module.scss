@@ -1,0 +1,59 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.bonuses {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .card {
+        width: 100%;
+        padding: 14px;
+
+        border-radius: 22px;
+
+        background: $super-dark;
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+
+            &.disabled {
+                user-select: none;
+                pointer-events: none;
+                filter: brightness(40%);
+            }
+
+
+
+            .title {
+                @include font(700, 18px);
+                color: $white;
+            }
+
+            .button {
+                @include font(600, 14px);
+
+                width: 100%;
+                padding: 8px 12px;
+                border-radius: 8px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                transition: .6s;
+
+                cursor: pointer;
+
+                color: $black;
+                background: rgba($white, 0.82);
+
+                &:hover {
+                    background: rgba(177, 177, 177, 0.82);
+                }
+            }
+        }
+    }
+}

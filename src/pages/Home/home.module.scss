@@ -1,0 +1,54 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.home {
+    width: 100%;
+
+    background: $black;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .authorize {
+        width: 100%;
+
+        display: flex;
+        gap: 20px;
+
+
+        .authorize_btn {
+            @include font(600, 14px);
+
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 12px;
+
+            transition: .6s;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            &.btn_register {
+                background: $dark-grey;
+                color: $white;
+
+                &:hover {
+                    background: #2b2b2b;
+                }
+            }
+
+            &.btn_login {
+                color: $dark-grey;
+                background: $white;
+
+                &:hover {
+                    background: #b4b4b4;
+                }
+            }
+        }
+    }
+}

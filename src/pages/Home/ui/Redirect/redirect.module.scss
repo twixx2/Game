@@ -1,0 +1,14 @@
+.redirect {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .items {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        overflow: hidden;
+    }
+}

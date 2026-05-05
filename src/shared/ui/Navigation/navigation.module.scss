@@ -1,0 +1,55 @@
+@use '@shared/styles/mixins.scss' as *;
+@use "@shared/styles/variables" as *;
+
+@keyframes shimmer {
+    0% {
+        background-position: 0% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.navigation {
+    width: 100%;
+
+    margin-bottom: 40px;
+
+    padding: 0 15px;
+    border-radius: 20px;
+
+    .content {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+
+
+        .text {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .title {
+                @include font(700, 42px);
+                color: $white;
+            }
+
+            .subtitle {
+                @include font(700, 18px);
+                color: $light-grey;
+            }
+        }
+
+        .version {
+            @include font (900, 18px);
+
+            background: linear-gradient(to right, #870000 0%, #190a05 25%, #ff0000 50%, #190a05 75%, #870000 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+    }
+}

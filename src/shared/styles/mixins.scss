@@ -1,0 +1,67 @@
+@use "./variables" as *;
+
+@mixin font($weight, $size) {
+    font-family: 'Inter';
+    font-size: $size;
+    font-weight: $weight;
+}
+
+@mixin flex-center() {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin flex-between() {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+@mixin common() {
+    background: linear-gradient(135deg, rgba(100, 100, 100, 0.11) 0%, rgba(60, 60, 60, 0.6) 100%);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+@mixin uncommon() {
+    background: linear-gradient(135deg, rgba(0, 200, 255, 0.11) 0%, rgba(0, 140, 255, 0.5) 100%);
+    box-shadow: 0 0 5px rgba(0, 200, 255, 0.2);
+}
+
+@mixin rare() {
+    background: linear-gradient(135deg, rgba(0, 80, 255, 0.11) 0%, rgba(0, 40, 200, 0.6) 100%);
+    box-shadow: 0 0 5px rgba(0, 80, 255, 0.3);
+}
+
+@mixin epic() {
+    background: linear-gradient(135deg, rgba(160, 30, 255, 0.11) 0%, rgba(110, 0, 220, 0.6) 100%);
+    box-shadow: 0 0 5px rgba(160, 30, 255, 0.3);
+}
+
+@mixin legendary() {
+    background: linear-gradient(135deg, rgba(255, 0, 149, 0.11) 0%, rgba(200, 0, 100, 0.6) 100%);
+    box-shadow: 0 0 5px rgba(255, 0, 150, 0.4);
+}
+
+@mixin mythic() {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.11) 0%, rgba(255, 170, 0, 0.5) 100%);
+    box-shadow: 0 0 5px rgba(255, 165, 0, 0.4);
+}
+
+@mixin divine() {
+    background: linear-gradient(120deg,
+            rgba(0, 0, 0, 0.9) 10%,
+            rgba(100, 100, 100, 0.5) 50%,
+            rgba(0, 0, 0, 0.9) 90%);
+
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+}
+
+@mixin unreal() {
+    background: linear-gradient(135deg,
+            rgba($yellow, 0.25),
+            rgba($yellow, 0.25),
+            rgba($dark-grey, 0.20),
+            rgba($dark-grey, 0.20));
+    box-shadow: 0 0 5px rgba($yellow, 0.2);
+}

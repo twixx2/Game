@@ -1,0 +1,29 @@
+.cells {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    max-width: max-content;
+    margin: 0 auto;
+    transition: .5s;
+
+    .cell {
+        width: 60px;
+        height: 60px;
+        background: #292929;
+        transition: .5s;
+        border-radius: 15px;
+        cursor: pointer;
+
+        &:hover {
+            background: #575757;
+        }
+
+        &.mine {
+            background: #B22222;
+        }
+
+        &.coin {
+            background: #fce600;
+        }
+    }
+}
