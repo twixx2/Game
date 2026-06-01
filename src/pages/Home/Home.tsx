@@ -15,7 +15,7 @@ export const HomePage = () => {
 
 
     return (
-        <Page title='chncd' subtitle='brutal'>
+        <Page title='chncd' subtitle='as in chanced'>
             <div className={s.home}>
 
                 {isAuth === false && (
