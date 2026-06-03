@@ -46,7 +46,18 @@ const App = () => {
                 <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
                 <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             </Routes>
-            <Toaster position="top-right" reverseOrder={false} />
+            <Toaster
+                position="top-right"
+                reverseOrder={false}
+                toastOptions={{
+                        style: {
+                            fontFamily: "Inter",
+                            fontSize: "14px",
+                            fontWeight: "800",
+                            color: "#fff",
+                            background: "#0f0f0f",
+                        }
+                }} />
         </>
     );
 };
