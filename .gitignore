@@ -27,3 +27,6 @@ stats.html
 
 # Ignore api files
 .env
+.env.development
+.env.production
+.env*
