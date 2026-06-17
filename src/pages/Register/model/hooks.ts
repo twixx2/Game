@@ -1,4 +1,5 @@
 import { useAuth } from '@context';
+import { MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH } from '@shared/constants';
 import { fetcherRegister } from '../api';
 
 import { useNavigate } from 'react-router-dom';
@@ -28,8 +29,10 @@ export const useHelperRegister = () => {
     const register = (): void => {
         setLoading(true);
         nextStep();
-        const loginRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{1,20}$/;
-        if (username && password && loginRegex.test(username)) {
+        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}}$`;
+
+        const regex = new RegExp(regexPattern);
+        if (username && password && regex.test(username)) {
             const user = {
                 username: username,
                 password: password

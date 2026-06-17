@@ -19,7 +19,7 @@ export const RegisterUsername = ({ onNext, username, setUsername }: RegisterUser
 
     const typeUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
-        const regexPattern = `^[a-zA-Z0-9._-]{0,${MAX_USERNAME_LENGTH}$`;
+        const regexPattern = `^[a-zA-Z0-9._-]{0,${MAX_USERNAME_LENGTH}}$`;
         const regex = new RegExp(regexPattern)
 
         if (regex.test(value) || value === '') {
@@ -28,8 +28,8 @@ export const RegisterUsername = ({ onNext, username, setUsername }: RegisterUser
     };
 
     const confirmLogin = (): void => {
-        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}$`;
-        const regex = new RegExp(regexPattern)
+        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}}$`;
+        const regex = new RegExp(regexPattern);
         if (regex.test(username) && username) {
             onNext();
         } else {
@@ -43,8 +43,8 @@ export const RegisterUsername = ({ onNext, username, setUsername }: RegisterUser
             return;
         }
 
-        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}$`;
-        const regex = new RegExp(regexPattern)
+        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}}$`;
+        const regex = new RegExp(regexPattern);
 
         if (!regex.test(username)) {
             setStatus('invalid');
@@ -83,7 +83,7 @@ export const RegisterUsername = ({ onNext, username, setUsername }: RegisterUser
                     <div className="register_username_input_block">
                         <span className={`register_input_count ${username.length === MAX_USERNAME_LENGTH ? "danger" : username.length >= 28 ? "warning" : ""}`}>{username.length} / {MAX_USERNAME_LENGTH}</span>
                         <input onChange={(e) => typeUsername(e)} value={username} type="text" maxLength={MAX_USERNAME_LENGTH} className='register_username_input' placeholder='username' />
-                        <span className={`register_username_input_status ${status}`}>{status ? status : null}</span>
+                        <span className={`register_username_input_status ${status}`}>{status !== "idle" ? status : null}</span>
                     </div>
 
 
