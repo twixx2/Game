@@ -3,18 +3,20 @@ import { useHelperRegister } from './model';
 
 import { AnimatePresence, motion } from '@shared/motion';
 import { RegisterAlready } from '@shared/ui';
+import { useAuth } from "@context";
 
 import './register.scss';
 
 export const RegisterPage = () => {
-    const { variants, login, password, step, direction, loading, fail, success, isAuth, setLogin, setPassword, nextStep, prevStep, register } = useHelperRegister();
+    const { isAuth } = useAuth();
+    const { variants, username, password, step, direction, loading, fail, success, setUsername, setPassword, nextStep, prevStep, register } = useHelperRegister();
 
     const getStepComponent = (step: number): React.ReactNode | null => {
         switch (step) {
             case 0: return <RegisterIntro onNext={nextStep} />;
-            case 1: return <RegisterUsername onNext={nextStep} login={login} setLogin={setLogin} />;
+            case 1: return <RegisterUsername onNext={nextStep} username={username} setUsername={setUsername} />;
             case 2: return <RegisterPassword onNext={nextStep} onBack={prevStep} password={password} setPassword={setPassword} />;
-            case 3: return <RegisterConfirm onNext={register} onBack={prevStep} login={login} password={"*".repeat(password.length)} />;
+            case 3: return <RegisterConfirm onNext={register} onBack={prevStep} username={username} password={".".repeat(password.length)} />;
             default: return null;
         }
     };

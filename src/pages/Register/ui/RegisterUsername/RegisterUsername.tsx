@@ -1,3 +1,6 @@
+import { MIN_USERNAME_LENGTH, MAX_USERNAME_LENGTH } from '@/shared/constants';
+import { API_CONFIG, ROUTES } from '@/core/conf';
+
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -5,27 +8,29 @@ import './RegisterUsername.scss';
 
 interface RegisterUsernameProps {
     onNext: () => void;
-    login: string;
-    setLogin: React.Dispatch<React.SetStateAction<string>>;
+    username: string;
+    setUsername: React.Dispatch<React.SetStateAction<string>>;
 }
 
+type UsernameStatus = "idle" | "taken" | "invalid" | "available"
 
-export const RegisterUsername = ({ onNext, login, setLogin }: RegisterUsernameProps) => {
-    const [status, setStatus] = useState<string>('');
-    const url = import.meta.env.VITE_USER_API_URL;
+export const RegisterUsername = ({ onNext, username, setUsername }: RegisterUsernameProps) => {
+    const [status, setStatus] = useState<UsernameStatus>("idle");
 
-    const typeLogin = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const typeUsername = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
-        const regex = /^[a-zA-Z0-9._-]{0,20}$/;
+        const regexPattern = `^[a-zA-Z0-9._-]{0,${MAX_USERNAME_LENGTH}$`;
+        const regex = new RegExp(regexPattern)
 
         if (regex.test(value) || value === '') {
-            setLogin(value);
+            setUsername(value);
         }
     };
 
     const confirmLogin = (): void => {
-        const loginRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{1,20}$/;
-        if (loginRegex.test(login) && login) {
+        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}$`;
+        const regex = new RegExp(regexPattern)
+        if (regex.test(username) && username) {
             onNext();
         } else {
             setStatus('invalid');
@@ -33,35 +38,36 @@ export const RegisterUsername = ({ onNext, login, setLogin }: RegisterUsernamePr
     };
 
     useEffect(() => {
-        if (!login) {
-            setStatus('');
+        if (!username) {
+            setStatus("idle");
             return;
         }
 
-        const regex = /^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{1,20}$/;
+        const regexPattern = `^(?=.*[a-zA-Z])[a-zA-Z0-9._-]${MIN_USERNAME_LENGTH},${MAX_USERNAME_LENGTH}$`;
+        const regex = new RegExp(regexPattern)
 
-        if (!regex.test(login)) {
+        if (!regex.test(username)) {
             setStatus('invalid');
             return;
         }
 
-        setStatus('checking...');
+        setStatus('available');
 
-        const timeout = setTimeout(() => {
-            axios
-                .get(`${url}/users?fullName=${login}`)
-                .then(res => {
-                    if (res?.data?.length === 0) {
-                        setStatus("available");
-                    } else {
-                        setStatus("taken");
-                    }
-                })
-                .catch(() => setStatus('error. try again'))
-        }, 500);
+        // const timeout = setTimeout(() => {
+        //     axios
+        //         .get(`${API_CONFIG.BASE_URL}/users?fullName=${username}`)
+        //         .then(res => {
+        //             if (res?.data?.length === 0) {
+        //                 setStatus("available");
+        //             } else {
+        //                 setStatus("taken");
+        //             }
+        //         })
+        //         .catch(() => setStatus('error. try again'))
+        // }, 500);
 
-        return () => clearTimeout(timeout);
-    }, [login]);
+        // return () => clearTimeout(timeout);
+    }, [username]);
 
     return (
         <>
@@ -69,16 +75,14 @@ export const RegisterUsername = ({ onNext, login, setLogin }: RegisterUsernamePr
 
                 <span className='register_step'>Step 1 / 3</span>
 
-
-
                 <div className="register_username_content">
                     <h2 className='register_username_title'>
                         Pick a <span>name</span>
                     </h2>
                     <p className='register_username_text'>something people will remember you by</p>
                     <div className="register_username_input_block">
-                        <span className={`register_input_count ${login.length === 20 ? "danger" : login.length >= 16 ? "warning" : ""}`}>{login.length} / 20</span>
-                        <input onChange={(e) => typeLogin(e)} value={login} type="text" maxLength={20} className='register_username_input' placeholder='username' />
+                        <span className={`register_input_count ${username.length === MAX_USERNAME_LENGTH ? "danger" : username.length >= 28 ? "warning" : ""}`}>{username.length} / {MAX_USERNAME_LENGTH}</span>
+                        <input onChange={(e) => typeUsername(e)} value={username} type="text" maxLength={MAX_USERNAME_LENGTH} className='register_username_input' placeholder='username' />
                         <span className={`register_username_input_status ${status}`}>{status ? status : null}</span>
                     </div>
 
@@ -87,15 +91,10 @@ export const RegisterUsername = ({ onNext, login, setLogin }: RegisterUsernamePr
                     <button disabled={status !== "available"} onClick={confirmLogin} className='register_username_btn'>
                         proceed
                     </button>
-                    <Link className='register_username_btn_back' to="/">main</Link>
+                    <Link className='register_username_btn_back' to={ROUTES.HOME}>main</Link>
 
                 </div>
-
-
             </div>
         </>
     );
-
-
-
 };

@@ -8,13 +8,14 @@ interface RegisterPasswordProps {
     setPassword: React.Dispatch<React.SetStateAction<string>>;
 }
 
+type PasswordStatus = "idle" | "weak" | "medium" | "strong"
 
 export const RegisterPassword = ({ onNext, onBack, password, setPassword }: RegisterPasswordProps) => {
-    const [status, setStatus] = useState<string>('');
+    const [status, setStatus] = useState<PasswordStatus>('idle');
     const [shown, setShown] = useState<boolean>(false);
 
-    const checkPasswordStrength = (password: string): string => {
-        if (!password) return '';
+    const checkPasswordStrength = (password: string): PasswordStatus => {
+        if (!password) return 'idle';
         let score: number = 0;
 
         if (password.length >= 8) score++;

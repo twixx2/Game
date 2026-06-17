@@ -3,12 +3,12 @@ import './RegisterConfirm.scss';
 interface RegisterConfirmProps {
     onNext: () => void;
     onBack: () => void;
-    login: string;
+    username: string;
     password: string
 }
 
 
-export const RegisterConfirm = ({ onNext, onBack, login, password }: RegisterConfirmProps) => {
+export const RegisterConfirm = ({ onNext, onBack, username, password }: RegisterConfirmProps) => {
 
     return (
         <>
@@ -24,7 +24,7 @@ export const RegisterConfirm = ({ onNext, onBack, login, password }: RegisterCon
                     </h3>
                     <ul className='register_confirm_list'>
                         <li>
-                            name: <span>{login}</span>
+                            name: <span>{username}</span>
                         </li>
                         <li>
                             password: <span>{password}</span>

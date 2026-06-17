@@ -4,11 +4,8 @@ import { fetcherRegister } from '../api';
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 
-import { SHA256 } from 'crypto-js';
-
-
 export const useHelperRegister = () => {
-    const [login, setLogin] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [step, setStep] = useState<number>(0);
     const [direction, setDirection] = useState<number>(1);
@@ -16,7 +13,7 @@ export const useHelperRegister = () => {
     const [fail, setFail] = useState<boolean>(false);
     const [success, setSuccess] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { isAuth, setToken } = useAuth();
+    const { login } = useAuth();
 
     const nextStep = (): void => {
         setDirection(1);
@@ -32,19 +29,14 @@ export const useHelperRegister = () => {
         setLoading(true);
         nextStep();
         const loginRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9._-]{1,20}$/;
-        if (login && password && loginRegex.test(login)) {
+        if (username && password && loginRegex.test(username)) {
             const user = {
-                fullName: login,
-                password: SHA256(password).toString(),
-                email: `${login}@example.com`,
-                balance: 67000,
-                registeredAt: new Date().toISOString().slice(0, 16),
-                items: []
+                username: username,
+                password: password
             }
             fetcherRegister(user)
                 .then(res => {
-                    localStorage.setItem("token", res.data.token);
-                    setToken(res.data.token);
+                    login(res.data.token)
                     setSuccess(true);
                 })
                 .catch(err => {
@@ -75,5 +67,5 @@ export const useHelperRegister = () => {
         }),
     };
 
-    return { login, password, step, direction, loading, fail, success, isAuth, setLogin, setPassword, nextStep, prevStep, register, variants };
+    return { username, password, step, direction, loading, fail, success, setUsername, setPassword, nextStep, prevStep, register, variants };
 };

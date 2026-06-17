@@ -1,15 +1,10 @@
-import { RegisterResponse, InvItemInterface } from "@shared/types";
+import { RegisterResponse } from "@shared/types";
 import { API_CONFIG } from "@/core/conf";
 import axios from "axios";
 
-
 interface dataInterface {
-    fullName: string;
+    username: string;
     password: string;
-    email: string;
-    balance: number;
-    registeredAt: string;
-    items: InvItemInterface[];
 }
 
 export const fetcherRegister = (user: dataInterface) => {
