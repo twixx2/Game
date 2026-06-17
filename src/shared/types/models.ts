@@ -44,7 +44,5 @@ export interface cellInterface {
 export interface Player {
     hash: string;
     username: string;
-    avatar: string | null;
     wallet: { balance: Big; credits: Big; }
-    login_streak: number;   
 }

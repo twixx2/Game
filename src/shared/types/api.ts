@@ -1,40 +1,17 @@
-import { InvItemInterface } from "./models"
-
 export interface MeResponse {
-    fullName: string;
-    email: string;
-    password?: string;
-    balance: number;
-    registeredAt: string;
-    id: number;
-    items: InvItemInterface[];
+    hash: string;
+    username: string;
+    wallet: { balance: Big; credits: Big; }
 }
 
 export interface RegisterResponse {
     token: string;
-    data: {
-        fullName: string;
-        email: string;
-        password: string;
-        balance: number;
-        registeredAt: string;
-        token: string;
-        id: number;
-        items: InvItemInterface[];
-    }
+    user: MeResponse
 }
 
 export interface LoginResponse {
     token: string;
-    data: {
-        fullName: string;
-        email: string;
-        balance: number;
-        registeredAt: string;
-        token: string;
-        id: number;
-        items: InvItemInterface[];
-    }
+    user: MeResponse
 }
 
 export interface CaseResponse {
