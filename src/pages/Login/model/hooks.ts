@@ -49,13 +49,10 @@ export const useHelperLogin = () => {
         if (username && password) {
             setLoading(true);
 
-            const user = {
-                username: username,
-                password: password,
-            }
+            const user = { username, password }
             fetcherLogin(user)
                 .then(res => {
-                    login(res.data.token)
+                    login(res.token)
                     navigate("/");
                 })
                 .catch(err => {

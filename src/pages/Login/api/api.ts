@@ -1,13 +1,6 @@
 import { LoginResponse } from "@shared/types";
-import { API_CONFIG } from "@/core/conf";
-import axios from "axios";
+import { publicApi } from "@shared/api";
 
-interface LoginDataInterface {
-    username: string;
-    password: string;
-}
+interface LoginDataInterface { username: string; password: string; }
 
-export const fetcherLogin = (user: LoginDataInterface) => {
-    return axios
-        .post<LoginResponse>(`${API_CONFIG.BASE_URL}/login/`, { ...user })
-};
+export const fetcherLogin = (user: LoginDataInterface) => publicApi.post<LoginResponse>("/login/", user).then(r => r.data)

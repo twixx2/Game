@@ -33,13 +33,10 @@ export const useHelperRegister = () => {
 
         const regex = new RegExp(regexPattern);
         if (username && password && regex.test(username)) {
-            const user = {
-                username: username,
-                password: password
-            }
+            const user = { username, password }
             fetcherRegister(user)
                 .then(res => {
-                    login(res.data.token)
+                    login(res.token)
                     setSuccess(true);
                 })
                 .catch(err => {

@@ -1,17 +1,15 @@
 export interface MeResponse {
     hash: string;
     username: string;
-    wallet: { balance: Big; credits: Big; }
+    wallet: { balance: string; credits: string; }
 }
 
 export interface RegisterResponse {
     token: string;
-    user: MeResponse
 }
 
 export interface LoginResponse {
     token: string;
-    user: MeResponse
 }
 
 export interface CaseResponse {

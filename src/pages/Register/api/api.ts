@@ -1,13 +1,6 @@
 import { RegisterResponse } from "@shared/types";
-import { API_CONFIG } from "@/core/conf";
-import axios from "axios";
+import { publicApi } from "@shared/api";
 
-interface dataInterface {
-    username: string;
-    password: string;
-}
+interface dataInterface { username: string; password: string; }
 
-export const fetcherRegister = (user: dataInterface) => {
-    return axios
-        .post<RegisterResponse>(`${API_CONFIG.BASE_URL}/register/`, { ...user });
-};
+export const fetcherRegister = (user: dataInterface) => publicApi.post<RegisterResponse>("/register/", user).then(r => r.data)

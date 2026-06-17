@@ -1,17 +1,24 @@
-import { cellInterface, Player } from "@shared/types";
+import { cellInterface, Player, MeResponse } from "@shared/types";
 import { API_CONFIG } from "@/core/conf";
-import { useAuth } from "@context";
 import axios from "axios";
+import Big from "big.js";
 
-export const fetcherCells = (headers: any) => {
-    return axios
-        .get<cellInterface[]>(`${API_CONFIG.BASE_URL}/cells`, { headers })
-        .then(r => r.data);
-};
+export const publicApi = axios.create({
+    baseURL: API_CONFIG.BASE_URL,
+});
 
-export const fetcherMe = () => {
-    const { token } = useAuth();
-    return axios
-        .get<Player>(`${API_CONFIG.BASE_URL}/me/`, { headers: { Authorization: `Bearer ${token}` } })
-        .then(r => r.data)
-}
+export const privateApi = axios.create({
+    baseURL: API_CONFIG.BASE_URL,
+});
+
+privateApi.interceptors.request.use((config) => {
+    const token = localStorage.getItem("token")
+    if (token) config.headers.Authorization = `Bearer ${token}`
+    return config;
+});
+
+
+export const fetcherCells = () => privateApi.get<cellInterface[]>("/cells/").then(r => r.data);
+
+
+export const fetcherMe = (): Promise<Player> => privateApi.get<MeResponse>("/me/").then(r => r.data).then(data => ({ ...data, wallet: { balance: new Big(data.wallet.balance), credits: new Big(data.wallet.credits) } }));
