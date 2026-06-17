@@ -1,6 +1,7 @@
 export * from "./Balance/Balance";
 export * from "./Icon/Icon";
 export * from "./ErrorMessage/ErrorMessage";
+export { NotFound } from "./NotFound/NotFound";
 export * from "./FiltersModal/FiltersModal";
 export * from "./Loader/Loader";
 export * from "./Navigation/Navigation";

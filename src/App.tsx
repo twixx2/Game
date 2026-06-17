@@ -1,7 +1,7 @@
 import { LoginPage, CaseDetail, CasesPage, RatePage, IdeaPage, HomePage, NvntPage, TopsPage, ProfilePage, RegisterPage, SapperPage, MrktPage, CarePage, TowerPage, SwapPage, MinehuntPage } from "@pages";
 import { MainLayout } from "@layouts/MainLayout";
 
-import { ErrorMessage, Loader, ToastContainer } from "@shared/ui";
+import { Loader, NotFound, ToastContainer } from "@shared/ui";
 import { usePlayer } from "@shared/hooks";
 import { useAuth } from "@context";
 import { ROUTES } from "@/core/conf";
@@ -49,11 +49,11 @@ const App = () => {
                     <Route path={ROUTES.TOPS} element={<TopsPage />} />
                     <Route path={ROUTES.IDEA} element={<IdeaPage />} />
                     <Route path={ROUTES.RATE} element={<RatePage />} />
-                    <Route path="*" element={<ErrorMessage message="404 Not Found" />} />
                 </Route>
 
                 <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
                 <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
             <ToastContainer />
             <Toaster
