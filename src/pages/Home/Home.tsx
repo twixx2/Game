@@ -8,10 +8,12 @@ import { Link } from 'react-router-dom';
 
 import s from './home.module.scss';
 import clsx from 'clsx';
+import { useAuth } from "@context";
+
 
 export const HomePage = () => {
 
-    const { isAuth } = useHelperHome();
+    const { isAuth } = useAuth();
 
 
     return (
