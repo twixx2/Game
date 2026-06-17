@@ -9,5 +9,5 @@ interface dataInterface {
 
 export const fetcherRegister = (user: dataInterface) => {
     return axios
-        .post<RegisterResponse>(`${API_CONFIG.BASE_URL}/register`, { ...user });
+        .post<RegisterResponse>(`${API_CONFIG.BASE_URL}/register/`, { ...user });
 };

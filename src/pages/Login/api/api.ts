@@ -9,5 +9,5 @@ interface LoginDataInterface {
 
 export const fetcherLogin = (user: LoginDataInterface) => {
     return axios
-        .post<LoginResponse>(`${API_CONFIG.BASE_URL}/login`, { ...user })
+        .post<LoginResponse>(`${API_CONFIG.BASE_URL}/login/`, { ...user })
 };
