@@ -12,3 +12,6 @@ export const MAX_BET: number = 5_000_000 as const;
 
 export const coeffsTower: number[] = [1.9, 3.8, 7.6, 15.2, 30.4, 60.8, 121.6, 243.2] as const;
 export const totalTowerSteps: number = 8 as const;
+
+export const MIN_USERNAME_LENGTH = 2 as const;
+export const MAX_USERNAME_LENGTH = 32 as const;

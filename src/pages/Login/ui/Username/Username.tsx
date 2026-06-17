@@ -1,8 +1,10 @@
 import s from "./loginUsername.module.scss";
+import { MAX_USERNAME_LENGTH } from "@shared/constants";
+
 interface LoginUsernameProps {
-    login: string;
+    username: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
-export const LoginUsername = ({ login, onChange }: LoginUsernameProps) => (
-    <input value={login} type="text" onChange={(e) => onChange(e)} maxLength={20} className={s.usernameInput} placeholder='username' />
+export const LoginUsername = ({ username, onChange }: LoginUsernameProps) => (
+    <input value={username} type="text" onChange={(e) => onChange(e)} maxLength={MAX_USERNAME_LENGTH} className={s.usernameInput} placeholder='username' />
 );
