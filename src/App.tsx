@@ -1,7 +1,7 @@
 import { LoginPage, CaseDetail, CasesPage, RatePage, IdeaPage, HomePage, NvntPage, TopsPage, ProfilePage, RegisterPage, SapperPage, MrktPage, CarePage, TowerPage, SwapPage, MinehuntPage } from "@pages";
 import { MainLayout } from "@layouts/MainLayout";
 
-import { ErrorMessage, Loader } from "@shared/ui";
+import { ErrorMessage, Loader, ToastContainer } from "@shared/ui";
 import { usePlayer } from "@shared/hooks";
 import { useAuth } from "@context";
 import { ROUTES } from "@/core/conf";
@@ -55,6 +55,7 @@ const App = () => {
                 <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
                 <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             </Routes>
+            <ToastContainer />
             <Toaster
                 position="top-right"
                 reverseOrder={false}

@@ -8,3 +8,4 @@ export * from "./RegisterAlready/RegisterAlready";
 export * from "./Page/Page";
 export * from "./Sapper";
 export * from "./LoginRequired/LoginRequired";
+export * from "./Toast";
