@@ -1,3 +1,5 @@
+import Big from "big.js";
+
 export interface InvItemInterface {
     id: number;
     caseId: number;
@@ -37,4 +39,12 @@ export interface CaseDetailInterface {
 
 export interface cellInterface {
     id: number
+}
+
+export interface Player {
+    hash: string;
+    username: string;
+    avatar: string | null;
+    wallet: { balance: Big; credits: Big; }
+    login_streak: number;   
 }

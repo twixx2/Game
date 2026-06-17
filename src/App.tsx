@@ -2,15 +2,25 @@ import { LoginPage, CaseDetail, CasesPage, RatePage, IdeaPage, HomePage, NvntPag
 import { MainLayout } from "@layouts/MainLayout";
 
 import { ErrorMessage, Loader } from "@shared/ui";
-import { Toaster } from "react-hot-toast";
-
-import { Routes, Route } from "react-router-dom";
-import { ROUTES } from "@/core/conf";
+import { usePlayer } from "@shared/hooks";
 import { useAuth } from "@context";
+import { ROUTES } from "@/core/conf";
+
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import axios from "axios";
 
 
 const App = () => {
-    const { isLoading } = useAuth();
+    const { isLoading, isError, error } = usePlayer();
+    const { logout } = useAuth();
+
+    useEffect(() => {
+        if (!isError || !error) return;
+        if (!axios.isAxiosError(error)) return;
+        if (error.response?.status === 401) logout();
+    }, [isError, error])
 
     if (isLoading) {
         return <Loader />
@@ -42,7 +52,6 @@ const App = () => {
                     <Route path="*" element={<ErrorMessage message="404 Not Found" />} />
                 </Route>
 
-
                 <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
                 <Route path={ROUTES.LOGIN} element={<LoginPage />} />
             </Routes>
@@ -50,13 +59,13 @@ const App = () => {
                 position="top-right"
                 reverseOrder={false}
                 toastOptions={{
-                        style: {
-                            fontFamily: "Inter",
-                            fontSize: "14px",
-                            fontWeight: "800",
-                            color: "#fff",
-                            background: "#0f0f0f",
-                        }
+                    style: {
+                        fontFamily: "Inter",
+                        fontSize: "14px",
+                        fontWeight: "800",
+                        color: "#fff",
+                        background: "#0f0f0f",
+                    }
                 }} />
         </>
     );
