@@ -23,8 +23,7 @@ $code-font-size: 9.25rem;
     gap: $digit-gap;
     max-width: calc(100vw - #{$corner-inset * 2});
     padding: 12px 18px;
-    background: $white;
-    color: $black;
+    color: $white;
 
     font-family: "Inter";
     font-size: $code-font-size;
@@ -67,8 +66,7 @@ $code-font-size: 9.25rem;
     display: inline;
     padding: 2px;
 
-    color: $black;
-    background-color: $white;
+    color: $white;
 
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
