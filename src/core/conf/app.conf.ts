@@ -4,8 +4,11 @@ export const APP_CONFIG = {
     version: "1.1.2-stable",
     maintenanceMessage: "do we hope the project didnt die?",
     currency: {
-        default: "$",
+        balance: "$",
         credits: "C",
     }
 
-} as const; 
+} as const;
+
+type CurrencyConfig = typeof APP_CONFIG.currency;
+export type CurrencyType = keyof CurrencyConfig;
