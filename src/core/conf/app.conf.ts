@@ -12,3 +12,4 @@ export const APP_CONFIG = {
 
 type CurrencyConfig = typeof APP_CONFIG.currency;
 export type CurrencyType = keyof CurrencyConfig;
+export type CurrencySymbol = typeof APP_CONFIG.currency[keyof typeof APP_CONFIG.currency];

@@ -24,6 +24,10 @@ import decSelect from "@shared/assets/icons/svg/decSelect.svg?react";
 import incSelect from "@shared/assets/icons/svg/incSelect.svg?react";
 import maxSelect from "@shared/assets/icons/svg/maxSelect.svg?react";
 
+import copy from "@shared/assets/icons/svg/copy.svg?react";
+import copied from "@shared/assets/icons/svg/copied.svg?react";
+import reroll from "@shared/assets/icons/svg/reroll.svg?react";
+
 const ICON_LIST = {
     games_on: gamesOn,
     games_off: gamesOff,
@@ -50,7 +54,11 @@ const ICON_LIST = {
     minSelect: minSelect,
     decSelect: decSelect,
     incSelect: incSelect,
-    maxSelect: maxSelect
+    maxSelect: maxSelect, 
+
+    copy: copy,
+    copied: copied,
+    reroll: reroll,
 } as const;
 
 export type IconName = keyof typeof ICON_LIST;

@@ -1,18 +1,16 @@
-import { cellInterface } from "@shared/types";
 import s from "./sappercells.module.scss";
 import clsx from "clsx";
 
 interface SapperCellsProps {
-    handleClick: (id: number) => Promise<void>;
-    cells: cellInterface[];
-    explodedMines: number[];
-    explodedCoins: number[];
+    openCell: (id: number) => Promise<void>;
+    exploredMines: number[];
+    exploredCoins: number[];
 }
 
-export const SapperCells = ({ cells, explodedMines, explodedCoins, handleClick }: SapperCellsProps) => (
+export const SapperCells = ({ exploredMines, exploredCoins, openCell }: SapperCellsProps) => (
     <div className={s.cells}>
-        {cells.map((cell) => (
-            <div key={cell.id} className={clsx(s.cell, explodedCoins.includes(cell.id) && s.coin, explodedMines.includes(cell.id) && s.mine)} onClick={() => handleClick(cell.id)}> </div>
+        {Array.from({ length: 25 }).map((_, i) => (
+            <div key={i+1}  className={clsx(s.cell, exploredCoins.includes(i+1) && s.coin, exploredMines.includes(i+1) && s.mine)} onClick={() => openCell(i+1)}> </div>
         ))}
     </div>
 );

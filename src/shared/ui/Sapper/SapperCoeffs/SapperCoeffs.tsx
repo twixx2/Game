@@ -8,7 +8,7 @@ export const SapperCoeffs = ({ coeffs, step }: { coeffs: number[]; step: number 
             const isCurrent = step >= 0 && i === step;
             return (
                 <div key={i} className={clsx(s.coeff, isPrev && s.prev, isCurrent && s.current)}>
-                    x{coef}
+                    x{coef.toFixed(2)}
                 </div>
             );
         })}

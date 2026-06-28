@@ -10,3 +10,4 @@ export * from "./Page/Page";
 export * from "./Sapper";
 export * from "./LoginRequired/LoginRequired";
 export * from "./Toast";
+export * from "./RandomHex/RandomHex";

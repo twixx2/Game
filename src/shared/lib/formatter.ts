@@ -1,20 +1,13 @@
-import { APP_CONFIG } from "@/core/conf";
+import { APP_CONFIG, CurrencyType } from "@/core/conf";
+import Big from "big.js";
 
-interface formatProps {
-    type?: "default" | "credits";
-    isCompact?: boolean;
-}
+type FormatCurrencyProps = { type?: CurrencyType; isCompact?: boolean };
 
-export const formatCurrency = (
-    value: number,
-    { type = "default", isCompact = false }: formatProps = {}
-): string => {
-    const symbol = APP_CONFIG.currency[type];
+const cache = new Map<string, Intl.NumberFormat>();
 
-    const formatter = new Intl.NumberFormat("en", {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-        notation: isCompact ? "compact" : "standard",
-    });
-    return `${formatter.format(value)} ${symbol}`;
-};
+const getFormatter = (isCompact: boolean): Intl.NumberFormat =>
+    cache.get(isCompact ? "comp" : "std") ||
+    cache.set(isCompact ? "comp" : "std", new Intl.NumberFormat("fr", { minimumFractionDigits: 0, maximumFractionDigits: 2, notation: isCompact ? "compact" : "standard" })).get(isCompact ? "comp" : "std")!;
+
+export const formatCurrency = (value: Big, { type = "balance", isCompact = false }: FormatCurrencyProps = {}): string =>
+    `${getFormatter(isCompact).format(value.round(2, Big.roundDown).toString() as any)} ${APP_CONFIG.currency[type]}`;

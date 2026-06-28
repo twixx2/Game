@@ -46,3 +46,5 @@ export interface Player {
     username: string;
     wallet: { balance: Big; credits: Big; }
 }
+
+export type PhaseStatus = "idle" | "creating" | "taking" | "pulling";
