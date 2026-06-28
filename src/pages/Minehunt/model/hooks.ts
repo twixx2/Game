@@ -1,205 +1,196 @@
-import { useAuth } from '@context';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
-import { cellInterface } from "@shared/types";
-import { fetcherCells } from '@shared/api';
-import { coeffsMap, MAX_BET } from '@shared/constants';
+import Big from "big.js";
 
-import toast from 'react-hot-toast';
+import { SAPPER_COEEFS, MAX_BET, MIN_BET } from '@shared/constants';
+import { toast } from "@shared/ui";
+import { usePlayer } from "@shared/hooks";
+import { PhaseStatus } from "@shared/types";
+import { generateRawSeed } from "@shared/lib";
+
+import { MinehuntDetailResponse, MinehuntGameState, fetcherCreateMinehunt, fetcherCurrentMinehunt, fetcherMoveMinehunt, fetcherTakeMinehunt } from "../api";
+
+const coinsOptions: number[] = [22]
 
 export const useHelperMinehunt = () => {
-    const [cells, setCells] = useState<cellInterface[]>([]);
-    const [bet, setBet] = useState<number>(0);
-    const [win, setWin] = useState<number>(0);
-    const [step, setStep] = useState<number>(-1);
-    const [coins, setCoins] = useState<number[]>([]);
-    const [isPlay, setIsPlay] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-    const { balance, headers, isAuth, editBalance } = useAuth();
-    const [explodedCoins, setExplodedCoins] = useState<number[]>([]);
-    const [explodedMines, setExplodedMines] = useState<number[]>([]);
-    const [betError, setBetError] = useState<string>("");
-    const [cellCount, setCellCount] = useState<number>(22);
-    const coinsOptions: number[] = [22];
-    const coeffs: number[] = coeffsMap[cellCount] || [];
-    const STORAGE_KEY: string = "minehunt-game-state";
+    const [game, setGame] = useState<MinehuntGameState | null>(null);
 
+    const [bet, setBet] = useState<Big>(new Big("0"));
+    const [seed, setSeed] = useState<string>(generateRawSeed);
+    const [coinsCount, setCoinsCount] = useState<number>(22);
+
+    const [phase, setPhase] = useState<PhaseStatus>("idle");
+
+    const isPlay: boolean = !!game;
+    const navigate = useNavigate();
+    const { syncWallet } = usePlayer();
+
+    const coeffs = useMemo(() => {
+        return SAPPER_COEEFS[coinsCount] || [];
+    }, [coinsCount]);
+
+    const applyGame = (data: MinehuntDetailResponse): void => {
+        setGame({
+            bet: new Big(data.bet),
+            hash: data.hash,
+            clientSeed: data.client_seed,
+            exploredMines: data.explored_mines,
+            exploredCoins: [],
+            profit: new Big(data.profit),
+            salt: data.salt,
+            step: data.step,
+            coinsCount: data.coins_count
+        });
+        setBet(new Big(data.bet));
+        setSeed(data.client_seed);
+    };
 
     useEffect(() => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                const s = JSON.parse(saved);
-                setIsPlay(s.isPlay);
-                setCellCount(s.cellCount);
-                setBet(s.bet);
-                setCoins(s.coins);
-                setExplodedMines(s.explodedMines);
-                setStep(s.step);
-                setWin(s.win);
-            } catch {
-                localStorage.removeItem(STORAGE_KEY);
-            }
-        }
-        let timer: ReturnType<typeof setTimeout>;
-        setLoading(true);
-        fetcherCells(headers)
-            .then(res => {
-                if (res.length === 25) {
-                    setCells(res);
-                } else {
-                    throw new Error("Couldnt initialize sapper grid");
-                }
-
+        setPhase("pulling");
+        fetcherCurrentMinehunt()
+            .then(r => {
+                if (!r || r.status === 204) return;
+                return toast("You already have an active game", { text: "load game?", onClick: () => applyGame(r.data) })
             })
             .catch(err => {
-                if (err.response) {
-                    if (err.response?.status !== 401) {
-                        setError(err.response.status + " " + err.response.data.error);
-                    }
-                } else {
-                    setError(err.message);
-                }
+                if (!isAxiosError(err)) return toast("Failed to sync session");
             })
-            .finally(() => {
-                timer = setTimeout(() => setLoading(false), 500);
-            });
-
-        return () => clearTimeout(timer);
+            .finally(() => setPhase("idle"));
     }, []);
 
-    const typeBet = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        const value = e.target.value.replace(/\D/g, "");
-        const numericBet = Number(value);
-        if (isNaN(numericBet)) return;
-        if (numericBet > MAX_BET) return void setBet(MAX_BET);
-        setBet(numericBet);
-    };
-
-    const generateCoins = (): number[] => {
-        const mines: Set<number> = new Set();
-        while (mines.size < cellCount) {
-            const randomNum = Math.floor(Math.random() * 25) + 1;
-            mines.add(randomNum);
-        }
-        return Array.from(mines);
-    };
-
-    const startGame = async (): Promise<void> => {
-        if (!isPlay) {
-            if (!bet) return setBetError("Please enter a stake");
-            const numericBet = Number(bet);
-            if (isNaN(numericBet)) return setBetError("Incorrect bet");
-            if (numericBet < 1) return setBetError(`Minimum value is 1`);
-            if (numericBet > MAX_BET) return setBetError("Maximum value is 5M");
-            if (numericBet > balance) return void toast.error("Out of balance");
-            // Начало игры 
-            await editBalance(Math.round((balance - numericBet) * 100) / 100);
-            setWin(0);
-            setStep(0);
-            const newCoins = generateCoins();
-            setCoins(newCoins);
-            setIsPlay(true);
-            setExplodedCoins([]);
-            setExplodedMines([]);
-            setBetError("");
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                isPlay: true,
-                cellCount,
-                bet,
-                coins: newCoins,
-                explodedMines: [],
-                step: 0,
-                win: 0
-            }));
-        } else {
-            if (step === -1) return void toast.error("Игра еще не начата");
-            if (step === 0) return void toast.error("Сделайте хотя бы 1 ход"); // если игра начата но не сделан первый ход
-            // Предварительно забрать выигрыш 
-            await editBalance(Math.round((balance + win) * 100) / 100);
-            localStorage.removeItem(STORAGE_KEY);
-            setIsPlay(false);
-            setWin(0);
-            setStep(-1);
-            setExplodedCoins([]);
-            setExplodedMines([]);
-        }
-    };
+    const rollNewSeed = () => { const newSeed = generateRawSeed(); setSeed(newSeed); };
 
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-    const handleClick = async (cellId: number): Promise<void> => {
-        if (!isPlay) return;
-        if (explodedMines.includes(cellId)) return;
-        await delay(65);
+    const canStartGame = (): boolean => {
+        if (!bet) return toast("Please enter a stake"), false;
+        if (bet.lt(MIN_BET)) return toast(`Bet cannot be less than ${MIN_BET}`), false;
+        if (bet.gt(MAX_BET)) return toast(`Bet cannot be greater than ${MAX_BET}`), false;
+        if (!seed) return toast("Seed is required to ensure fairness", { text: "roll", onClick: rollNewSeed }), false;
+        return true
+    };
 
-        if (coins.includes(cellId)) {
-            // Если выбрана не мина игра заканчивается 
-            setExplodedCoins(coins);
-            setIsPlay(false);
-            setWin(0);
-            setStep(-1);
-            setTimeout(() => {
-                setExplodedCoins([]);
-                setExplodedMines([]);
-            }, 850);
-            localStorage.removeItem(STORAGE_KEY);  // Удаление игры полностью
+    const typeBet = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const value = e.target.value.replace(/\D/g, "");
+        const bigBet = new Big(value)
+        setBet(bigBet);
+    };
 
-
+    const createGame = (): void => {
+        if (!game) {
+            if (!canStartGame()) return;
+            setPhase("creating");
+            fetcherCreateMinehunt({ bet: bet.toString(), coins_count: coinsCount, client_seed: seed })
+                .then(r => {
+                    applyGame(r);
+                    setBet(new Big(r.bet));
+                    setCoinsCount(r.coins_count);
+                    syncWallet("balance", r.updated_balance);
+                })
+                .catch(err => {
+                    if (!isAxiosError(err)) return toast("Critical unexpected error");
+                    const statusCode = err.response?.status;
+                    const code = err.response?.data?.code
+                    switch (true) {
+                        case statusCode === 409 && code === "active_game_exists":
+                            return toast("You already have an active game", { text: "load game?", onClick: () => { applyGame(err.response?.data?.game) } })
+                        case statusCode === 402 && code === "not_enough_funds":
+                            return toast("Insufficient balance", { text: "see our bonuses", onClick: () => { navigate("/#bonuses") } })
+                        default:
+                            return toast("Critical server error occurred");
+                    };
+                })
+                .finally(() => setPhase("idle"));
         } else {
-            setExplodedMines(prev => {
-                const next = [...prev, cellId];
-                const newStep = step + 1;
-                const currentCoeff = coeffs[newStep - 1];
-
-                if (currentCoeff === undefined) {
-                    console.error("coeff for the actual step has not been found", newStep)
-                    return prev;
-                }
-
-                const newWin = Number(bet) * currentCoeff;
-                setStep(newStep);
-                setWin(newWin);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                    isPlay: true,
-                    cellCount,
-                    bet,
-                    coins,
-                    explodedMines: next,
-                    step: newStep,
-                    win: newWin
-                }));  // Обновление состояния
-
-                // Если игрок прошел игру 
-                if (next.length === cells.length - coins.length) {
-                    finishGame(newWin);
-                }
-                return next;
-            });
+            setPhase("taking");
+            fetcherTakeMinehunt(game.hash)
+                .then(r => {
+                    syncWallet("balance", r.updated_balance);
+                    setGame(null);
+                    rollNewSeed();
+                })
+                .catch(err => {
+                    if (!isAxiosError(err)) return toast("Critical unexpected error");
+                    const statusCode = err.response?.status;
+                    const code = err.response?.data?.code
+                    switch (true) {
+                        case statusCode === 409 && code === "no_steps_made":
+                            return toast("No steps made");
+                        case statusCode === 403 && code === "game_already_finished":
+                            return toast("This game already has been finished");
+                        default:
+                            return toast("Critical server error occurred, try reloading this page");
+                    };
+                })
+                .finally(() => setPhase("idle"));
         }
     };
 
-    const finishGame = async (payout: number): Promise<void> => {
-        const newBalance = Math.round((balance + payout) * 100) / 100;
-        await editBalance(newBalance);
-        setIsPlay(false);
-        setWin(0);
-        setStep(-1);
-        setTimeout(() => {
-            setExplodedCoins([]);
-            setExplodedMines([]);
-        }, 850);
-        localStorage.removeItem(STORAGE_KEY);
+    const openCell = async (cellId: number): Promise<void> => {
+        if (!game) return;
+        if (game.exploredMines.includes(cellId)) return;
+        fetcherMoveMinehunt({ cellId }, game.hash)
+            .then(r => {
+                if (r.finished && r.is_win) {
+                    // r === MinehuntTakeResponse (ended win game)
+
+                    syncWallet("balance", r.updated_balance);
+                    setGame(null);
+                    rollNewSeed();
+                } else if (r.finished && !r.is_win) {
+                    // r === MinehuntLoseResponse (ended lose game)
+
+                    setGame(prev => {
+                        if (!prev) return prev;
+                        return { ...prev, exploredCoins: r.coins, salt: r.salt, coins: r.coins };
+                    });
+                    rollNewSeed();
+                    setTimeout(() => { setGame(null); }, 500);
+                } else {
+                    // r === MinehuntMoveInterface (not ended game)
+
+                    setGame(prev => {
+                        if (!prev) return prev;
+                        return { ...prev, exploredMines: r.explored_mines, step: r.step, profit: new Big(r.profit) };
+                    })
+                }
+            })
+            .catch(err => {
+                if (!isAxiosError(err)) return toast("Critical unexpected error");
+                const statusCode = err.response?.status;
+                const code = err.response?.data?.code
+                switch (true) {
+                    case statusCode === 403 && code === "game_already_finished":
+                        return toast("This game already has been finished");
+
+                    case statusCode === 423:
+                        return toast("This game is currently being updated");
+
+                    default:
+                        return toast("Critical server error occurred");
+                };
+            });
     };
 
-    const autoClick = (): void => {
-        let id;
-        do {
-            id = Math.floor(Math.random() * cells.length) + 1;
-        } while (explodedCoins.includes(id) || explodedMines.includes(id));
-        handleClick(id)
+    const blindShot = (): void => {
+        if (!game) return;
+
+        const allCellIds = Array.from({ length: 25 }, (_, i) => i + 1);
+
+        const availableCells = allCellIds.filter(id => !game.exploredCoins.includes(id) && !game.exploredMines.includes(id));
+        if (availableCells.length === 0) return;
+
+        const randomIndex = Math.floor(Math.random() * availableCells.length);
+        const targetCellId = availableCells[randomIndex];
+        if (!targetCellId) return;
+
+        openCell(targetCellId);
     };
 
-    return { cells, bet, win, step, isPlay, isAuth, loading, error, balance, explodedCoins, explodedMines, coinsOptions, betError, cellCount, coeffs, startGame, handleClick, autoClick, typeBet, setCellCount };
+    return { bet, phase, game, isPlay, coinsOptions, coinsCount, coeffs, seed, createGame, openCell, blindShot, setCoinsCount, typeBet, rollNewSeed, setSeed }
+
 };
+
+export type UseHelperMinehuntReturn = ReturnType<typeof useHelperMinehunt>;

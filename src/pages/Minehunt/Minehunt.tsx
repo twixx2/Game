@@ -1,30 +1,32 @@
-import { BalanceTitle, ErrorMessage, Loader, Page, SapperCoeffs, SapperButtons, Bet, SapperCells, LoginRequired } from "@shared/ui";
+import { BalanceTitle, Page, SapperCoeffs, SapperButtons, Bet, RandomHex, SapperCells, LoginRequired } from "@shared/ui";
+
+import { usePlayer } from "@shared/hooks";
+import { useAuth } from "@context";
 
 import { useHelperMinehunt } from './model';
-
 import s from './minehunt.module.scss';
+
+import Big from "big.js";
 
 export const MinehuntPage = () => {
 
-    const { step, win, balance, bet, betError, cellCount, cells, coeffs, coinsOptions, error, explodedCoins, explodedMines, isPlay, isAuth, loading, handleClick, startGame, autoClick, typeBet, setCellCount } = useHelperMinehunt();
-
-    if (loading) return <Loader />;
-    if (error) return <ErrorMessage message={error} />;
+    const { bet, phase, game, isPlay, coinsOptions, coinsCount, coeffs, seed, createGame, openCell, blindShot, setCoinsCount, typeBet, rollNewSeed, setSeed } = useHelperMinehunt();
+    const { data: player } = usePlayer();
+    const { isAuth } = useAuth();
 
     return (
         <Page title="minehunt" subtitle="?/3" >
-            <BalanceTitle balance={balance} />
+            <BalanceTitle balance={player?.wallet.balance ?? new Big("0")} />
             <div className={s.minehunt}>
+                <SapperCells openCell={openCell} exploredCoins={game?.exploredCoins ?? []} exploredMines={game?.exploredMines ?? []} />
 
-                <SapperCells cells={cells} explodedMines={explodedCoins} explodedCoins={explodedMines} handleClick={handleClick} />
-
-                <SapperCoeffs coeffs={coeffs} step={step} />
-
+                <SapperCoeffs coeffs={coeffs} step={game?.step ?? -1} />
 
                 {isAuth ?
                     <>
-                        <Bet error={betError} value={bet} readOnly={isPlay} onChange={typeBet} />
-                        <SapperButtons bet={bet} count={cellCount} step={step} win={win} options={coinsOptions} isPlay={isPlay} actions={{ autoClick: autoClick, setOpt: setCellCount, startGame: startGame }} />
+                        <Bet value={bet} readOnly={isPlay} onChange={typeBet} />
+                        <RandomHex value={seed} onChange={setSeed} reRoll={rollNewSeed} readOnly={isPlay} />
+                        <SapperButtons phase={phase} bet={bet} count={game?.coinsCount ?? coinsCount} step={game?.step ?? 0} profit={game?.profit ?? bet} options={coinsOptions} isPlay={isPlay} actions={{ blindShot: blindShot, setOpt: setCoinsCount, createGame: createGame }} />
                     </>
                     : <LoginRequired />}
 
