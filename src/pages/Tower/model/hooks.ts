@@ -1,155 +1,187 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
 
-import { MAX_BET, coeffsTower, totalTowerSteps } from '@shared/constants';
-import { useAuth } from '@context';
+import Big from "big.js";
 
-import toast from 'react-hot-toast';
+import { MAX_BET, MIN_BET } from '@shared/constants';
+import { toast } from "@shared/ui";
+import { usePlayer } from "@shared/hooks";
+import { PhaseStatus } from "@shared/types";
+import { generateRawSeed } from "@shared/lib";
+
+import { TowerDetailResponse, TowerGameState, fetcherCreateTower, fetcherCurrentTower, fetcherMoveTower, fetcherTakeTower } from "../api";
 
 export const useHelperTower = () => {
-    const [bet, setBet] = useState<number>(0);
-    const [win, setWin] = useState<number>(0);
-    const [step, setStep] = useState<number>(-1);
-    const [isPlay, setIsPlay] = useState<boolean>(false);
-    const [tower, setTower] = useState<string[]>([]);
-    const [correctPicks, setCorrectPicks] = useState<number[]>([]);
+    const [game, setGame] = useState<TowerGameState | null>(null);
     const [loseStep, setLoseStep] = useState<number | null>(null);
-    const [betError, setBetError] = useState<string>("");
-    const { balance, editBalance, isAuth } = useAuth();
-    const STORAGE_KEY: string = "tower-game-state";
+    const [loseChoice, setLoseChoice] = useState<number | null>(null);
+
+    const [bet, setBet] = useState<Big>(new Big("0"));
+    const [seed, setSeed] = useState<string>(generateRawSeed);
+
+    const [phase, setPhase] = useState<PhaseStatus>("idle");
+
+    const isPlay: boolean = !!game;
+    const navigate = useNavigate();
+    const { syncWallet } = usePlayer();
+
+    const applyGame = (data: TowerDetailResponse): void => {
+        setLoseStep(null);
+        setLoseChoice(null);
+        setGame({
+            bet: new Big(data.bet),
+            hash: data.hash,
+            clientSeed: data.client_seed,
+            picks: data.picks,
+            profit: new Big(data.profit),
+            salt: data.salt,
+            step: data.step
+        });
+        setBet(new Big(data.bet));
+        setSeed(data.client_seed);
+    };
 
     useEffect(() => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            try {
-                const s = JSON.parse(saved);
-                setIsPlay(s.isPlay);
-                setBet(s.bet);
-                setTower(s.tower);
-                setCorrectPicks(s.correctPicks);
-                setStep(s.step);
-                setWin(s.win);
-            } catch {
-                localStorage.removeItem(STORAGE_KEY);
-            }
-        }
+        setPhase("pulling");
+        fetcherCurrentTower()
+            .then(r => {
+                if (!r || r.status === 204) return;
+                return toast("You already have an active game", { text: "load game?", onClick: () => applyGame(r.data) })
+            })
+            .catch(err => {
+                if (!isAxiosError(err)) return toast("Failed to sync session");
+            })
+            .finally(() => setPhase("idle"));
     }, []);
+
+    const rollNewSeed = () => { const newSeed = generateRawSeed(); setSeed(newSeed); };
+
+    const canStartGame = (): boolean => {
+        if (!bet) return toast("Please enter a stake"), false;
+        if (bet.lt(MIN_BET)) return toast(`Bet cannot be less than ${MIN_BET}`), false;
+        if (bet.gt(MAX_BET)) return toast(`Bet cannot be greater than ${MAX_BET}`), false;
+        if (!seed) return toast("Seed is required to ensure fairness", { text: "roll", onClick: rollNewSeed }), false;
+        return true
+    };
 
     const typeBet = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value.replace(/\D/g, "");
-        const numericBet = Number(value);
-        if (isNaN(numericBet)) return;
-        if (numericBet > MAX_BET) return setBet(MAX_BET);
-        setBet(numericBet);
+        const bigBet = new Big(value)
+        setBet(bigBet);
     };
 
-    const clearAll = (): void => {
-        setWin(0);
-        setStep(-1);
-        setCorrectPicks([]);
-        setLoseStep(null);
-    };
-
-    const finishGame = async (payout: number): Promise<void> => {
-        const newBalance = Math.round((balance + payout) * 100) / 100;
-        await editBalance(newBalance);
-        setIsPlay(false);
-        localStorage.removeItem(STORAGE_KEY);
-        clearAll();
-    };
-
-    const startGame = async (): Promise<void> => {
-        if (!isPlay) {
-            if (!bet) return setBetError("Please enter a stake");
-            const numericBet = Number(bet);
-            if (isNaN(numericBet)) return setBetError("Incorrect bet");
-            if (numericBet < 1) return setBetError(`Minimum value is 1`);
-            if (numericBet > MAX_BET) return setBetError("Maximum value is 5M");
-            if (numericBet > balance) return void toast.error("Out of balance");
-            await editBalance(Math.round((balance - numericBet) * 100) / 100);
-            const newTower = Array.from({ length: totalTowerSteps }, () =>
-                Math.random() < 0.5 ? "left" : "right"
-            );
-            setTower(newTower);
-            setWin(0);
-            setStep(0);
-            setIsPlay(true);
-            setBetError("");
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                isPlay: true,
-                bet,
-                tower: newTower,
-                correctPicks,
-                step: 0,
-                win: 0
-            }));
+    const createGame = (): void => {
+        if (!game) {
+            if (!canStartGame()) return;
+            setPhase("creating");
+            fetcherCreateTower({ bet: bet.toString(), client_seed: seed })
+                .then(r => {
+                    setLoseStep(null);
+                    setLoseChoice(null);
+                    applyGame(r);
+                    setBet(new Big(r.bet));
+                    syncWallet("balance", r.updated_balance);
+                })
+                .catch(err => {
+                    if (!isAxiosError(err)) return toast("Critical unexpected error");
+                    const statusCode = err.response?.status;
+                    const code = err.response?.data?.code
+                    switch (true) {
+                        case statusCode === 409 && code === "active_game_exists":
+                            return toast("You already have an active game", { text: "load game?", onClick: () => { applyGame(err.response?.data?.game) } })
+                        case statusCode === 402 && code === "not_enough_funds":
+                            return toast("Insufficient balance", { text: "see our bonuses", onClick: () => { navigate("/#bonuses") } })
+                        default:
+                            return toast("Critical server error occurred");
+                    };
+                })
+                .finally(() => setPhase("idle"));
         } else {
-            if (step === -1) return void toast.error("Wait");
-            if (step === 0) return void toast.error("Make sure you did at least one move"); 
-            // Предварительно забрать выигрыш 
-            await editBalance(Math.round((balance + win) * 100) / 100);
-            setIsPlay(false);
-            clearAll();
-            localStorage.removeItem(STORAGE_KEY);
+            setPhase("taking");
+            fetcherTakeTower(game.hash)
+                .then(r => {
+                    syncWallet("balance", r.updated_balance);
+                    setLoseStep(null);
+                    setLoseChoice(null);
+                    setGame(null);
+                    rollNewSeed();
+                })
+                .catch(err => {
+                    if (!isAxiosError(err)) return toast("Critical unexpected error");
+                    const statusCode = err.response?.status;
+                    const code = err.response?.data?.code
+                    switch (true) {
+                        case statusCode === 409 && code === "no_steps_made":
+                            return toast("No steps made");
+                        case statusCode === 403 && code === "game_already_finished":
+                            return toast("This game already has been finished");
+                        default:
+                            return toast("Critical server error occurred, try reloading this page");
+                    };
+                })
+                .finally(() => setPhase("idle"));
         }
     };
 
-    const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    const openCell = (idx: number, choice: number): void => {
+        if (!game) return;
+        if (game.step + 1 !== idx) return;
+        fetcherMoveTower({ idx, choice }, game.hash)
+            .then(r => {
+                if (r.finished && r.is_win) {
+                    // r === TowerTakeResponse (ended win game)
 
-    const handlePick = async (idx: number, choise: string): Promise<void> => {
-        if (!isPlay || idx !== step) return;
-        const safeSide = tower[idx];
-        await delay(65);
+                    syncWallet("balance", r.updated_balance);
+                    setLoseStep(null);
+                    setLoseChoice(null);
+                    setGame(null);
+                    rollNewSeed();
+                } else if (r.finished && !r.is_win) {
+                    // r === TowerLoseResponse (ended lose game)
 
-        if (choise === safeSide) {
-            setCorrectPicks(prev => {
-                const next = [...prev, idx];
-                const nextStep = step + 1;
-                const currentCoeff = coeffsTower[nextStep - 1];
+                    setLoseStep(game.step);
+                    setLoseChoice(choice);
+                    setGame(prev => {
+                        if (!prev) return prev;
+                        return { ...prev, picks: r.picks, salt: r.salt, tower: r.tower };
+                    });
+                    rollNewSeed();
+                    setTimeout(() => { setGame(null); setLoseStep(null); setLoseChoice(null); }, 500);
+                } else {
+                    // r === TowerMoveInterface (not ended game)
 
-                if (currentCoeff === undefined) {
-                    console.error("coeff for the actual step has not been found", nextStep)
-                    return prev;
+                    setGame(prev => {
+                        if (!prev) return prev;
+                        return { ...prev, picks: r.picks, step: r.step, profit: new Big(r.profit) };
+                    })
                 }
-
-                const newWin = Number(bet) * currentCoeff;
-                setStep(nextStep);
-                setWin(newWin);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                    isPlay: true,
-                    bet,
-                    tower,
-                    correctPicks: next,
-                    step: nextStep,
-                    win: newWin
-                })); // Обновление состояния
-
-                if (nextStep === totalTowerSteps) {
-                    finishGame(newWin); // Полный проход игры
-                }
-                return next;
+            })
+            .catch(err => {
+                if (!isAxiosError(err)) return toast("Critical unexpected error");
+                const statusCode = err.response?.status;
+                const code = err.response?.data?.code
+                switch (true) {
+                    case statusCode === 403 && code === "game_already_finished":
+                        return toast("This game already has been finished");
+                    case statusCode === 423:
+                        return toast("This game is currently being updated");
+                    case statusCode === 422:
+                        return toast("Make sure you press the right floor");
+                    default:
+                        return toast("Critical server error occurred");
+                };
             });
-
-        } else {
-            // Если выбрана неправильная сторона
-            setLoseStep(idx);
-            setWin(0);
-            setStep(-1);
-            setTimeout(() => {
-                setCorrectPicks([]);
-                setLoseStep(null);
-                setIsPlay(false);
-            }, 850);
-            localStorage.removeItem(STORAGE_KEY);
-        }
-
     };
 
-    const autoPick = (): void => {
-        const r = Math.random();
-        const side = r > 0.5 ? "left" : "right";
-        handlePick(step, side);
+    const blindShot = (): void => {
+        if (!game) return;
+        const idx = game.step + 1;
+        const target = Math.random() > 0.5 ? 0 : 1;
+        openCell(idx, target);
     };
 
-    return { bet, win, step, isPlay, tower, correctPicks, loseStep, betError, balance, isAuth, startGame, handlePick, autoPick, typeBet, coeffsTower, totalTowerSteps };
-
+    return { bet, phase, game, isPlay, seed, loseStep, loseChoice, createGame, openCell, blindShot, typeBet, rollNewSeed, setSeed }
 };
+
+export type UseHelperTowerReturn = ReturnType<typeof useHelperTower>;

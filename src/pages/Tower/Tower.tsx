@@ -1,24 +1,47 @@
-import { BalanceTitle, ErrorMessage, Page, Bet, LoginRequired } from '@shared/ui';
+import { BalanceTitle, Page, Bet, LoginRequired, RandomHex } from '@shared/ui';
+import { usePlayer } from '@shared/hooks';
+import { useAuth } from '@context/AuthContext';
+import { TOWER_COEFFS } from '@shared/constants';
 
-import { useHelperTower } from './model';
 import { TowerButtons, TowerCells } from "./ui"
+import { useHelperTower } from './model';
 
 import s from './tower.module.scss';
+import Big from 'big.js';
 
 export const TowerPage = () => {
-    const { coeffsTower, totalTowerSteps, bet, win, step, isPlay, tower, correctPicks, loseStep, betError, balance, isAuth, startGame, handlePick, autoPick, typeBet } = useHelperTower();
+    const { bet, phase, game, isPlay, seed, loseStep, loseChoice, createGame, openCell, blindShot, typeBet, rollNewSeed, setSeed } = useHelperTower();
+    const { data: player } = usePlayer();
+    const { isAuth } = useAuth();
 
     return (
         <Page title="tower" subtitle='higher means riskier'>
-            <BalanceTitle balance={balance} />
+            <BalanceTitle balance={player?.wallet.balance ?? new Big("0")} />
 
             <div className={s.tower}>
-                <TowerCells bet={bet} coeffs={coeffsTower} correctPicks={correctPicks} totalSteps={totalTowerSteps} tower={tower} isPlay={isPlay} step={step} loseStep={loseStep} handlePick={handlePick} />
+                <TowerCells
+                    bet={bet}
+                    coeffs={TOWER_COEFFS}
+                    picks={game?.picks ?? []}
+                    step={game?.step ?? 0}
+                    loseStep={loseStep}
+                    loseChoice={loseChoice}
+                    isPlay={isPlay}
+                    openCell={openCell}
+                />
 
                 {isAuth ?
                     <>
-                        <Bet error={betError} onChange={typeBet} readOnly={isPlay} value={bet} />
-                        <TowerButtons bet={bet} isPlay={isPlay} step={step} win={win} startGame={startGame} autoPick={autoPick} />
+                        <Bet onChange={typeBet} readOnly={isPlay} value={bet} />
+                        <RandomHex value={seed} onChange={setSeed} reRoll={rollNewSeed} readOnly={isPlay} />
+                        <TowerButtons
+                            bet={bet}
+                            profit={game?.profit ?? bet}
+                            step={game?.step ?? 0}
+                            isPlay={isPlay}
+                            phase={phase}
+                            actions={{ createGame, blindShot }}
+                        />
                     </>
                     : <LoginRequired />}
 

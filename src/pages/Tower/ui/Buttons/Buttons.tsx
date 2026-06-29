@@ -1,24 +1,40 @@
 import { formatCurrency } from "@shared/lib";
+import { PhaseStatus } from "@shared/types";
 import s from "./buttons.module.scss";
+import Big from "big.js";
 
 interface ButtonProps {
     isPlay: boolean;
     step: number;
-    win: number;
-    bet: number;
+    bet: Big;
+    profit: Big;
+    phase: PhaseStatus;
 
-    startGame: () => Promise<void>;
-    autoPick: () => void;
+    actions: {
+        createGame: () => void;
+        blindShot: () => void;
+    };
 };
 
-export const TowerButtons = ({ isPlay, bet, step, win, autoPick, startGame }: ButtonProps) => (
-    <div className={s.buttons}>
-        <button className={s.autoButton} disabled={!isPlay} onClick={autoPick} >
-            Random
-        </button>
+const labels: Record<ButtonProps["phase"], string> = { pulling: "Pulling..", creating: "Creating..", taking: "Taking cash..", idle: "Pay nd Play" }
 
-        <button className={s.startButton} onClick={startGame}>
-            {isPlay ? `Take ${formatCurrency(step > 0 ? win : bet)}` : "Pay nd Play"}
-        </button>
-    </div>
-); 
+export const TowerButtons = ({ isPlay, bet, step, profit, phase, actions: { blindShot, createGame } }: ButtonProps) => {
+    const render = {
+        main: () => {
+            if (isPlay && phase === "idle") return `Take ${formatCurrency(step > 0 ? profit : bet)}`;
+            return labels[phase];
+        }
+    }
+
+    return (
+        <div className={s.buttons}>
+            <button className={s.autoButton} disabled={!isPlay || phase !== "idle"} onClick={blindShot} >
+                Random
+            </button>
+
+            <button className={s.startButton} disabled={phase !== "idle"} onClick={createGame}>
+                {render.main()}
+            </button>
+        </div>
+    );
+};
