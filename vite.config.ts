@@ -15,17 +15,6 @@ export default defineConfig({
       gzipSize: true,
     }),
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
-        },
-      },
-    },
-  },
   css: {
     preprocessorOptions: {
       scss: {
@@ -34,7 +23,6 @@ export default defineConfig({
       },
     },
   },
-
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
