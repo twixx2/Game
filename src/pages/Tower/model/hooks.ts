@@ -22,7 +22,8 @@ export const useHelperTower = () => {
 
     const [phase, setPhase] = useState<PhaseStatus>("idle");
 
-    const isPlay: boolean = !!game;
+    const isRevealing = loseStep !== null;
+    const isPlay: boolean = !!game && !isRevealing;
     const navigate = useNavigate();
     const { syncWallet } = usePlayer();
 
@@ -72,7 +73,7 @@ export const useHelperTower = () => {
     };
 
     const createGame = (): void => {
-        if (!game) {
+        if (!game || isRevealing) {
             if (!canStartGame()) return;
             setPhase("creating");
             fetcherCreateTower({ bet: bet.toString(), client_seed: seed })
@@ -125,7 +126,7 @@ export const useHelperTower = () => {
     };
 
     const openCell = (idx: number, choice: number): void => {
-        if (!game) return;
+        if (!game || isRevealing) return;
         if (game.step + 1 !== idx) return;
         fetcherMoveTower({ idx, choice }, game.hash)
             .then(r => {
@@ -147,7 +148,12 @@ export const useHelperTower = () => {
                         return { ...prev, picks: r.picks, salt: r.salt, tower: r.tower };
                     });
                     rollNewSeed();
-                    setTimeout(() => { setGame(null); setLoseStep(null); setLoseChoice(null); }, 500);
+                    const finishedHash = game.hash;
+                    setTimeout(() => {
+                        setGame(prev => (prev?.hash === finishedHash ? null : prev));
+                        setLoseStep(prev => (prev !== null ? null : prev));
+                        setLoseChoice(prev => (prev !== null ? null : prev));
+                    }, 500);
                 } else {
                     // r === TowerMoveInterface (not ended game)
 

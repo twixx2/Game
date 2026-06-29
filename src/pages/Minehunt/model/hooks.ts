@@ -23,7 +23,8 @@ export const useHelperMinehunt = () => {
 
     const [phase, setPhase] = useState<PhaseStatus>("idle");
 
-    const isPlay: boolean = !!game;
+    const isRevealing = game?.coins !== undefined;
+    const isPlay: boolean = !!game && !isRevealing;
     const navigate = useNavigate();
     const { syncWallet } = usePlayer();
 
@@ -79,7 +80,7 @@ export const useHelperMinehunt = () => {
     };
 
     const createGame = (): void => {
-        if (!game) {
+        if (!game || isRevealing) {
             if (!canStartGame()) return;
             setPhase("creating");
             fetcherCreateMinehunt({ bet: bet.toString(), coins_count: coinsCount, client_seed: seed })
@@ -129,7 +130,7 @@ export const useHelperMinehunt = () => {
     };
 
     const openCell = async (cellId: number): Promise<void> => {
-        if (!game) return;
+        if (!game || isRevealing) return;
         if (game.exploredMines.includes(cellId)) return;
         fetcherMoveMinehunt({ cellId }, game.hash)
             .then(r => {
@@ -147,7 +148,10 @@ export const useHelperMinehunt = () => {
                         return { ...prev, exploredCoins: r.coins, salt: r.salt, coins: r.coins };
                     });
                     rollNewSeed();
-                    setTimeout(() => { setGame(null); }, 500);
+                    const finishedHash = game.hash;
+                    setTimeout(() => {
+                        setGame(prev => (prev?.hash === finishedHash ? null : prev));
+                    }, 500);
                 } else {
                     // r === MinehuntMoveInterface (not ended game)
 

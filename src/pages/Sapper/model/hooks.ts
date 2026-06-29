@@ -23,7 +23,8 @@ export const useHelperSapper = () => {
 
     const [phase, setPhase] = useState<PhaseStatus>("idle");
 
-    const isPlay: boolean = !!game;
+    const isRevealing = game?.mines !== undefined;
+    const isPlay: boolean = !!game && !isRevealing;
     const navigate = useNavigate();
     const { syncWallet } = usePlayer();
 
@@ -79,7 +80,7 @@ export const useHelperSapper = () => {
     };
 
     const createGame = (): void => {
-        if (!game) {
+        if (!game || isRevealing) {
             if (!canStartGame()) return;
             setPhase("creating");
             fetcherCreateSapper({ bet: bet.toString(), mines_count: minesCount, client_seed: seed })
@@ -129,7 +130,7 @@ export const useHelperSapper = () => {
     };
 
     const openCell = async (cellId: number): Promise<void> => {
-        if (!game) return;
+        if (!game || isRevealing) return;
         if (game.exploredCoins.includes(cellId)) return;
         fetcherMoveSapper({ cellId }, game.hash)
             .then(r => {
@@ -147,7 +148,10 @@ export const useHelperSapper = () => {
                         return { ...prev, exploredMines: r.mines, salt: r.salt, mines: r.mines };
                     });
                     rollNewSeed();
-                    setTimeout(() => { setGame(null); }, 500);
+                    const finishedHash = game.hash;
+                    setTimeout(() => {
+                        setGame(prev => (prev?.hash === finishedHash ? null : prev));
+                    }, 500);
                 } else {
                     // r === SapperMoveInterface (not ended game)
 
