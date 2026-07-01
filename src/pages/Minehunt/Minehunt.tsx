@@ -1,4 +1,4 @@
-import { BalanceTitle, Page, SapperCoeffs, SapperButtons, Bet, RandomHex, SapperCells, LoginRequired } from "@shared/ui";
+import { BalanceTitle, Page, SapperCoeffs, SapperButtons, Bet, RandomHex, SapperCells, LoginRequired, ProvablyFairPanel } from "@shared/ui";
 
 import { usePlayer } from "@shared/hooks";
 import { useAuth } from "@context";
@@ -10,7 +10,7 @@ import Big from "big.js";
 
 export const MinehuntPage = () => {
 
-    const { bet, phase, game, isPlay, coinsOptions, coinsCount, coeffs, seed, createGame, openCell, blindShot, setCoinsCount, typeBet, rollNewSeed, setSeed } = useHelperMinehunt();
+    const { bet, phase, game, isPlay, coinsOptions, coinsCount, coeffs, seed, provablyFairData, createGame, openCell, blindShot, setCoinsCount, typeBet, rollNewSeed, setSeed } = useHelperMinehunt();
     const { data: player } = usePlayer();
     const { isAuth } = useAuth();
 
@@ -27,6 +27,7 @@ export const MinehuntPage = () => {
                         <Bet value={bet} readOnly={isPlay} onChange={typeBet} />
                         <RandomHex value={seed} onChange={setSeed} reRoll={rollNewSeed} readOnly={isPlay} />
                         <SapperButtons phase={phase} bet={bet} count={game?.coinsCount ?? coinsCount} step={game?.step ?? 0} profit={game?.profit ?? bet} options={coinsOptions} isPlay={isPlay} actions={{ blindShot: blindShot, setOpt: setCoinsCount, createGame: createGame }} />
+                        <ProvablyFairPanel data={provablyFairData} />
                     </>
                     : <LoginRequired />}
 

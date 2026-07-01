@@ -84,7 +84,7 @@ export function positionsMatch(a: number[], b: number[]): boolean {
     return sortedA.every((value, index) => value === sortedB[index]);
 }
 
-export function verifySapperMines(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
+function verifyPositions(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
     const { salt, clientSeed, count, revealedPositions, saltStatus } = data;
 
     if (saltStatus !== 'revealed') {
@@ -102,4 +102,12 @@ export function verifySapperMines(data: ProvablyFairData): { computed: number[];
     } catch {
         return { computed: [], status: 'error' };
     }
+}
+
+export function verifySapperMines(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
+    return verifyPositions(data);
+}
+
+export function verifyMinehuntCoins(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
+    return verifyPositions(data);
 }

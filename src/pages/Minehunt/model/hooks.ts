@@ -7,12 +7,42 @@ import Big from "big.js";
 import { SAPPER_COEEFS, MAX_BET, MIN_BET } from '@shared/constants';
 import { toast } from "@shared/ui";
 import { usePlayer } from "@shared/hooks";
-import { PhaseStatus } from "@shared/types";
+import { PhaseStatus, ProvablyFairData } from "@shared/types";
 import { generateRawSeed } from "@shared/lib";
 
 import { MinehuntDetailResponse, MinehuntGameState, fetcherCreateMinehunt, fetcherCurrentMinehunt, fetcherMoveMinehunt, fetcherTakeMinehunt } from "../api";
 
-const coinsOptions: number[] = [22]
+const coinsOptions: number[] = [22];
+
+const mapMinehuntGameToProvablyFair = (game: MinehuntGameState): ProvablyFairData => {
+    const isRevealed = game.coins !== undefined || game.finished;
+
+    return {
+        gameType: 'minehunt',
+        hash: game.hash,
+        clientSeed: game.clientSeed,
+        salt: game.salt,
+        saltStatus: isRevealed ? 'revealed' : 'hashed',
+        count: game.coinsCount,
+        finished: isRevealed,
+        ...(game.coins !== undefined ? { revealedPositions: game.coins } : {}),
+    };
+};
+
+const buildMinehuntSnapshot = (
+    game: MinehuntGameState,
+    salt: string,
+    coins: number[],
+): ProvablyFairData => ({
+    gameType: 'minehunt',
+    hash: game.hash,
+    clientSeed: game.clientSeed,
+    salt,
+    saltStatus: 'revealed',
+    count: game.coinsCount,
+    revealedPositions: coins,
+    finished: true,
+});
 
 export const useHelperMinehunt = () => {
     const [game, setGame] = useState<MinehuntGameState | null>(null);
@@ -22,6 +52,7 @@ export const useHelperMinehunt = () => {
     const [coinsCount, setCoinsCount] = useState<number>(22);
 
     const [phase, setPhase] = useState<PhaseStatus>("idle");
+    const [verificationSnapshot, setVerificationSnapshot] = useState<ProvablyFairData | null>(null);
 
     const isRevealing = game?.coins !== undefined;
     const isPlay: boolean = !!game && !isRevealing;
@@ -31,6 +62,11 @@ export const useHelperMinehunt = () => {
     const coeffs = useMemo(() => {
         return SAPPER_COEEFS[coinsCount] || [];
     }, [coinsCount]);
+
+    const provablyFairData = useMemo((): ProvablyFairData | null => {
+        if (game) return mapMinehuntGameToProvablyFair(game);
+        return verificationSnapshot;
+    }, [game, verificationSnapshot]);
 
     const applyGame = (data: MinehuntDetailResponse): void => {
         setGame({
@@ -42,7 +78,8 @@ export const useHelperMinehunt = () => {
             profit: new Big(data.profit),
             salt: data.salt,
             step: data.step,
-            coinsCount: data.coins_count
+            coinsCount: data.coins_count,
+            finished: data.finished,
         });
         setBet(new Big(data.bet));
         setSeed(data.client_seed);
@@ -82,6 +119,7 @@ export const useHelperMinehunt = () => {
     const createGame = (): void => {
         if (!game || isRevealing) {
             if (!canStartGame()) return;
+            setVerificationSnapshot(null);
             setPhase("creating");
             fetcherCreateMinehunt({ bet: bet.toString(), coins_count: coinsCount, client_seed: seed })
                 .then(r => {
@@ -108,6 +146,7 @@ export const useHelperMinehunt = () => {
             setPhase("taking");
             fetcherTakeMinehunt(game.hash)
                 .then(r => {
+                    setVerificationSnapshot(buildMinehuntSnapshot(game, r.salt, r.coins));
                     syncWallet("balance", r.updated_balance);
                     setGame(null);
                     rollNewSeed();
@@ -137,15 +176,17 @@ export const useHelperMinehunt = () => {
                 if (r.finished && r.is_win) {
                     // r === MinehuntTakeResponse (ended win game)
 
+                    setVerificationSnapshot(buildMinehuntSnapshot(game, r.salt, r.coins));
                     syncWallet("balance", r.updated_balance);
                     setGame(null);
                     rollNewSeed();
                 } else if (r.finished && !r.is_win) {
                     // r === MinehuntLoseResponse (ended lose game)
 
+                    setVerificationSnapshot(buildMinehuntSnapshot(game, r.salt, r.coins));
                     setGame(prev => {
                         if (!prev) return prev;
-                        return { ...prev, exploredCoins: r.coins, salt: r.salt, coins: r.coins };
+                        return { ...prev, exploredCoins: r.coins, salt: r.salt, coins: r.coins, finished: true };
                     });
                     rollNewSeed();
                     const finishedHash = game.hash;
@@ -193,7 +234,7 @@ export const useHelperMinehunt = () => {
         openCell(targetCellId);
     };
 
-    return { bet, phase, game, isPlay, coinsOptions, coinsCount, coeffs, seed, createGame, openCell, blindShot, setCoinsCount, typeBet, rollNewSeed, setSeed }
+    return { bet, phase, game, isPlay, coinsOptions, coinsCount, coeffs, seed, provablyFairData, createGame, openCell, blindShot, setCoinsCount, typeBet, rollNewSeed, setSeed }
 
 };
 

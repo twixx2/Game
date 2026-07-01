@@ -67,7 +67,7 @@ export const ProvablyFairPanel = ({ data, defaultExpanded = false }: ProvablyFai
                                     saltStatus={data.saltStatus}
                                 />
 
-                                {data.gameType === 'sapper' && (
+                                {(data.gameType === 'sapper' || data.gameType === 'minehunt') && (
                                     <ProvablyFairVerify data={data} />
                                 )}
                             </>

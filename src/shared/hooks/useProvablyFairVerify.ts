@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { verifySapperMines } from "@shared/lib";
+import { verifyMinehuntCoins, verifySapperMines } from "@shared/lib";
 import type { ProvablyFairData, VerifyStatus } from "@shared/types";
 
 export const useProvablyFairVerify = (data: ProvablyFairData | null) => {
@@ -26,6 +26,10 @@ export const useProvablyFairVerify = (data: ProvablyFairData | null) => {
 
         if (data.gameType === 'sapper') {
             return verifySapperMines(data);
+        }
+
+        if (data.gameType === 'minehunt') {
+            return verifyMinehuntCoins(data);
         }
 
         return { computed: [] as number[], status: 'idle' as VerifyStatus };

@@ -67,6 +67,7 @@ export interface MinehuntGameState {
     coins?: number[];
     salt: string;
     clientSeed: string;
+    finished: boolean;
 }
 
 export type MinehuntMoveResponse = MinehuntMoveInterface | MinehuntLoseResponse | MinehuntTakeResponse;

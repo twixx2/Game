@@ -11,6 +11,11 @@ interface ProvablyFairVerifyProps {
     data: ProvablyFairData | null;
 }
 
+const VERIFY_TRIGGER_LABEL: Record<string, string> = {
+    sapper: 'verify mines',
+    minehunt: 'verify coins',
+};
+
 const VERIFY_LABELS: Record<string, string> = {
     idle: 'run check to compare',
     pending: 'checking...',
@@ -40,7 +45,7 @@ export const ProvablyFairVerify = ({ data }: ProvablyFairVerifyProps) => {
                 onClick={() => canVerify && setIsExpanded(prev => !prev)}
                 disabled={!canVerify}
             >
-                <span>verify mines</span>
+                <span>{VERIFY_TRIGGER_LABEL[data?.gameType ?? 'sapper'] ?? 'verify'}</span>
                 <Icon
                     name="arrow"
                     size={14}
