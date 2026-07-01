@@ -6,4 +6,4 @@ declare module '*.json' {
     export default value;
 }
 
-declare module 'crypto-js';
+declare module 'crypto-js*';

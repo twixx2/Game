@@ -1,0 +1,239 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.panel {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: transparent;
+
+    width: 100%;
+    padding: 8px 4px;
+    cursor: pointer;
+    transition: color 0.3s;
+
+    &:hover {
+        .triggerText {
+            color: $yellow;
+        }
+    }
+}
+
+.triggerText {
+    @include font(700, 14px);
+    color: $light-grey;
+    text-transform: lowercase;
+    transition: color 0.3s;
+}
+
+.triggerHint {
+    @include font(700, 12px);
+    color: $light-grey;
+    opacity: 0.6;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.arrow {
+    flex-shrink: 0;
+    color: $light-grey;
+    transition: transform 0.25s ease;
+}
+
+.arrow_open {
+    transform: rotate(180deg);
+}
+
+.content {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0 8px;
+}
+
+.empty {
+    @include font(700, 13px);
+    color: $light-grey;
+    text-align: center;
+    padding: 12px 0;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.fieldHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.fieldLabel {
+    @include font(700, 16px);
+    color: $white;
+}
+
+.badge {
+    @include font(700, 11px);
+    padding: 4px 8px;
+    border-radius: 8px;
+    text-transform: lowercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.badge_hashed {
+    color: $light-grey;
+    background: rgba($light-grey, 0.15);
+}
+
+.badge_revealed {
+    color: $yellow;
+    background: rgba($yellow, 0.15);
+}
+
+.hexRow {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.hexValue {
+    flex: 1;
+    background: $dark-grey;
+    border-radius: 12px;
+    padding: 10px 12px;
+    color: $white;
+    @include font(700, 13px);
+    letter-spacing: 0.04em;
+    word-break: break-all;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+.hexValue_empty {
+    color: $light-grey;
+    opacity: 0.5;
+}
+
+.copyButton {
+    @include flex-center();
+
+    flex: 0 0 44px;
+    background: $dark-grey;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:hover:not(:disabled) {
+        background: #575757;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+    }
+}
+
+.verify {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 4px;
+    border-top: 1px solid rgba($light-grey, 0.2);
+}
+
+.verifyTrigger {
+    @include flex-between();
+
+    width: 100%;
+    padding: 6px 4px;
+    cursor: pointer;
+    @include font(700, 13px);
+    color: $light-grey;
+    background: transparent;
+    transition: color 0.3s;
+
+    &:hover:not(:disabled) {
+        color: $yellow;
+    }
+}
+
+.verifyTrigger_disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.verifyHint {
+    @include font(700, 12px);
+    color: $light-grey;
+    opacity: 0.5;
+    text-align: center;
+}
+
+.verifyContent {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.verifyRow {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.verifyRowLabel {
+    @include font(700, 12px);
+    color: $light-grey;
+    text-transform: lowercase;
+}
+
+.verifyRowValue {
+    @include font(700, 13px);
+    color: $white;
+    background: $dark-grey;
+    border-radius: 10px;
+    padding: 8px 10px;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+}
+
+.verifyBadge {
+    align-self: center;
+    @include font(700, 12px);
+    padding: 6px 12px;
+    border-radius: 8px;
+    text-transform: lowercase;
+}
+
+.verifyBadge_verified {
+    color: $yellow;
+    background: rgba($yellow, 0.15);
+}
+
+.verifyBadge_mismatch,
+.verifyBadge_error {
+    color: #ff4d4d;
+    background: rgba(#ff4d4d, 0.15);
+}
+
+.verifyBadge_idle,
+.verifyBadge_pending {
+    color: $light-grey;
+    background: rgba($light-grey, 0.15);
+}

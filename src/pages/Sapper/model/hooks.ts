@@ -7,12 +7,42 @@ import Big from "big.js";
 import { SAPPER_COEEFS, MAX_BET, MIN_BET } from '@shared/constants';
 import { toast } from "@shared/ui";
 import { usePlayer } from "@shared/hooks";
-import { PhaseStatus } from "@shared/types";
+import { PhaseStatus, ProvablyFairData } from "@shared/types";
 import { generateRawSeed } from "@shared/lib";
 
 import { SapperDetailResponse, SapperGameState, fetcherCreateSapper, fetcherCurrentSapper, fetcherMoveSapper, fetcherTakeSapper } from "../api";
 
-const mineOptions: number[] = [3, 5, 7, 13, 19, 24]
+const mineOptions: number[] = [3, 5, 7, 13, 19, 24];
+
+const mapSapperGameToProvablyFair = (game: SapperGameState): ProvablyFairData => {
+    const isRevealed = game.mines !== undefined || game.finished;
+
+    return {
+        gameType: 'sapper',
+        hash: game.hash,
+        clientSeed: game.clientSeed,
+        salt: game.salt,
+        saltStatus: isRevealed ? 'revealed' : 'hashed',
+        count: game.minesCount,
+        finished: isRevealed,
+        ...(game.mines !== undefined ? { revealedPositions: game.mines } : {}),
+    };
+};
+
+const buildSapperSnapshot = (
+    game: SapperGameState,
+    salt: string,
+    mines: number[],
+): ProvablyFairData => ({
+    gameType: 'sapper',
+    hash: game.hash,
+    clientSeed: game.clientSeed,
+    salt,
+    saltStatus: 'revealed',
+    count: game.minesCount,
+    revealedPositions: mines,
+    finished: true,
+});
 
 export const useHelperSapper = () => {
     const [game, setGame] = useState<SapperGameState | null>(null);
@@ -22,6 +52,7 @@ export const useHelperSapper = () => {
     const [minesCount, setMinesCount] = useState<number>(3);
 
     const [phase, setPhase] = useState<PhaseStatus>("idle");
+    const [verificationSnapshot, setVerificationSnapshot] = useState<ProvablyFairData | null>(null);
 
     const isRevealing = game?.mines !== undefined;
     const isPlay: boolean = !!game && !isRevealing;
@@ -31,6 +62,11 @@ export const useHelperSapper = () => {
     const coeffs = useMemo(() => {
         return SAPPER_COEEFS[minesCount] || [];
     }, [minesCount]);
+
+    const provablyFairData = useMemo((): ProvablyFairData | null => {
+        if (game) return mapSapperGameToProvablyFair(game);
+        return verificationSnapshot;
+    }, [game, verificationSnapshot]);
 
     const applyGame = (data: SapperDetailResponse): void => {
         setGame({
@@ -42,7 +78,8 @@ export const useHelperSapper = () => {
             profit: new Big(data.profit),
             salt: data.salt,
             step: data.step,
-            minesCount: data.mines_count
+            minesCount: data.mines_count,
+            finished: data.finished,
         });
         setBet(new Big(data.bet));
         setSeed(data.client_seed);
@@ -82,6 +119,7 @@ export const useHelperSapper = () => {
     const createGame = (): void => {
         if (!game || isRevealing) {
             if (!canStartGame()) return;
+            setVerificationSnapshot(null);
             setPhase("creating");
             fetcherCreateSapper({ bet: bet.toString(), mines_count: minesCount, client_seed: seed })
                 .then(r => {
@@ -108,6 +146,7 @@ export const useHelperSapper = () => {
             setPhase("taking");
             fetcherTakeSapper(game.hash)
                 .then(r => {
+                    setVerificationSnapshot(buildSapperSnapshot(game, r.salt, r.mines));
                     syncWallet("balance", r.updated_balance);
                     setGame(null);
                     rollNewSeed();
@@ -137,15 +176,17 @@ export const useHelperSapper = () => {
                 if (r.finished && r.is_win) {
                     // r === SapperTakeResponse (ended win game)
 
+                    setVerificationSnapshot(buildSapperSnapshot(game, r.salt, r.mines));
                     syncWallet("balance", r.updated_balance);
                     setGame(null);
                     rollNewSeed();
                 } else if (r.finished && !r.is_win) {
                     // r === SapperLoseResponse (ended lose game)
 
+                    setVerificationSnapshot(buildSapperSnapshot(game, r.salt, r.mines));
                     setGame(prev => {
                         if (!prev) return prev;
-                        return { ...prev, exploredMines: r.mines, salt: r.salt, mines: r.mines };
+                        return { ...prev, exploredMines: r.mines, salt: r.salt, mines: r.mines, finished: true };
                     });
                     rollNewSeed();
                     const finishedHash = game.hash;
@@ -193,7 +234,7 @@ export const useHelperSapper = () => {
         openCell(targetCellId);
     };
 
-    return { bet, phase, game, isPlay, mineOptions, minesCount, coeffs, seed, createGame, openCell, blindShot, setMinesCount, typeBet, rollNewSeed, setSeed }
+    return { bet, phase, game, isPlay, mineOptions, minesCount, coeffs, seed, provablyFairData, createGame, openCell, blindShot, setMinesCount, typeBet, rollNewSeed, setSeed }
 };
 
 export type UseHelperSapperReturn = ReturnType<typeof useHelperSapper>;

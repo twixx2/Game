@@ -67,6 +67,7 @@ export interface SapperGameState {
     mines?: number[];
     salt: string;
     clientSeed: string;
+    finished: boolean;
 }
 
 export type SapperMoveResponse = SapperMoveInterface | SapperLoseResponse | SapperTakeResponse;
