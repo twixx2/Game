@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { isAxiosError } from "axios";
 
@@ -7,10 +7,38 @@ import Big from "big.js";
 import { MAX_BET, MIN_BET } from '@shared/constants';
 import { toast } from "@shared/ui";
 import { usePlayer } from "@shared/hooks";
-import { PhaseStatus } from "@shared/types";
+import { PhaseStatus, ProvablyFairData } from "@shared/types";
 import { generateRawSeed } from "@shared/lib";
 
 import { TowerDetailResponse, TowerGameState, fetcherCreateTower, fetcherCurrentTower, fetcherMoveTower, fetcherTakeTower } from "../api";
+
+const mapTowerGameToProvablyFair = (game: TowerGameState): ProvablyFairData => {
+    const isRevealed = game.tower !== undefined || game.finished;
+
+    return {
+        gameType: 'tower',
+        hash: game.hash,
+        clientSeed: game.clientSeed,
+        salt: game.salt,
+        saltStatus: isRevealed ? 'revealed' : 'hashed',
+        finished: isRevealed,
+        ...(game.tower !== undefined ? { revealedPositions: game.tower } : {}),
+    };
+};
+
+const buildTowerSnapshot = (
+    game: TowerGameState,
+    salt: string,
+    tower: number[],
+): ProvablyFairData => ({
+    gameType: 'tower',
+    hash: game.hash,
+    clientSeed: game.clientSeed,
+    salt,
+    saltStatus: 'revealed',
+    revealedPositions: tower,
+    finished: true,
+});
 
 export const useHelperTower = () => {
     const [game, setGame] = useState<TowerGameState | null>(null);
@@ -21,11 +49,17 @@ export const useHelperTower = () => {
     const [seed, setSeed] = useState<string>(generateRawSeed);
 
     const [phase, setPhase] = useState<PhaseStatus>("idle");
+    const [verificationSnapshot, setVerificationSnapshot] = useState<ProvablyFairData | null>(null);
 
     const isRevealing = loseStep !== null;
     const isPlay: boolean = !!game && !isRevealing;
     const navigate = useNavigate();
     const { syncWallet } = usePlayer();
+
+    const provablyFairData = useMemo((): ProvablyFairData | null => {
+        if (game) return mapTowerGameToProvablyFair(game);
+        return verificationSnapshot;
+    }, [game, verificationSnapshot]);
 
     const applyGame = (data: TowerDetailResponse): void => {
         setLoseStep(null);
@@ -37,7 +71,8 @@ export const useHelperTower = () => {
             picks: data.picks,
             profit: new Big(data.profit),
             salt: data.salt,
-            step: data.step
+            step: data.step,
+            finished: data.finished,
         });
         setBet(new Big(data.bet));
         setSeed(data.client_seed);
@@ -75,6 +110,7 @@ export const useHelperTower = () => {
     const createGame = (): void => {
         if (!game || isRevealing) {
             if (!canStartGame()) return;
+            setVerificationSnapshot(null);
             setPhase("creating");
             fetcherCreateTower({ bet: bet.toString(), client_seed: seed })
                 .then(r => {
@@ -102,6 +138,7 @@ export const useHelperTower = () => {
             setPhase("taking");
             fetcherTakeTower(game.hash)
                 .then(r => {
+                    setVerificationSnapshot(buildTowerSnapshot(game, r.salt, r.tower));
                     syncWallet("balance", r.updated_balance);
                     setLoseStep(null);
                     setLoseChoice(null);
@@ -133,6 +170,7 @@ export const useHelperTower = () => {
                 if (r.finished && r.is_win) {
                     // r === TowerTakeResponse (ended win game)
 
+                    setVerificationSnapshot(buildTowerSnapshot(game, r.salt, r.tower));
                     syncWallet("balance", r.updated_balance);
                     setLoseStep(null);
                     setLoseChoice(null);
@@ -141,11 +179,12 @@ export const useHelperTower = () => {
                 } else if (r.finished && !r.is_win) {
                     // r === TowerLoseResponse (ended lose game)
 
+                    setVerificationSnapshot(buildTowerSnapshot(game, r.salt, r.tower));
                     setLoseStep(game.step);
                     setLoseChoice(choice);
                     setGame(prev => {
                         if (!prev) return prev;
-                        return { ...prev, picks: r.picks, salt: r.salt, tower: r.tower };
+                        return { ...prev, picks: r.picks, salt: r.salt, tower: r.tower, finished: true };
                     });
                     rollNewSeed();
                     const finishedHash = game.hash;
@@ -187,7 +226,7 @@ export const useHelperTower = () => {
         openCell(idx, target);
     };
 
-    return { bet, phase, game, isPlay, seed, loseStep, loseChoice, createGame, openCell, blindShot, typeBet, rollNewSeed, setSeed }
+    return { bet, phase, game, isPlay, seed, loseStep, loseChoice, provablyFairData, createGame, openCell, blindShot, typeBet, rollNewSeed, setSeed }
 };
 
 export type UseHelperTowerReturn = ReturnType<typeof useHelperTower>;

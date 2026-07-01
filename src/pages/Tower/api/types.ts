@@ -68,6 +68,7 @@ export interface TowerGameState {
     tower?: number[];
     salt: string;
     clientSeed: string;
+    finished: boolean;
 }
 
 export type TowerMoveResponse = TowerMoveInterface | TowerLoseResponse | TowerTakeResponse;

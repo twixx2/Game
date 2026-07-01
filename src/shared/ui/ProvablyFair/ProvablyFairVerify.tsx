@@ -14,6 +14,7 @@ interface ProvablyFairVerifyProps {
 const VERIFY_TRIGGER_LABEL: Record<string, string> = {
     sapper: 'verify mines',
     minehunt: 'verify coins',
+    tower: 'verify tower',
 };
 
 const VERIFY_LABELS: Record<string, string> = {
@@ -34,8 +35,13 @@ export const ProvablyFairVerify = ({ data }: ProvablyFairVerifyProps) => {
         }
     }, [isExpanded, canVerify, hasRun, runVerify]);
 
-    const formatPositions = (positions: number[]) =>
-        sortPositions(positions).join(', ');
+    const formatPositions = (positions: number[]) => {
+        if (data?.gameType === 'tower') {
+            return positions.join(', ');
+        }
+
+        return sortPositions(positions).join(', ');
+    };
 
     return (
         <div className={s.verify}>

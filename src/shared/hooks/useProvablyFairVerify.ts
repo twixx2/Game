@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { verifyMinehuntCoins, verifySapperMines } from "@shared/lib";
+import { verifyMinehuntCoins, verifySapperMines, verifyTowerPath } from "@shared/lib";
 import type { ProvablyFairData, VerifyStatus } from "@shared/types";
 
 export const useProvablyFairVerify = (data: ProvablyFairData | null) => {
@@ -11,12 +11,13 @@ export const useProvablyFairVerify = (data: ProvablyFairData | null) => {
     }, [data?.hash, data?.salt, data?.clientSeed]);
 
     const canVerify = useMemo(() => {
-        if (!data) return false;
-        return (
-            data.saltStatus === 'revealed' &&
-            !!data.count &&
-            !!data.revealedPositions?.length
-        );
+        if (!data || data.saltStatus !== 'revealed' || !data.revealedPositions?.length) {
+            return false;
+        }
+
+        if (data.gameType === 'tower') return true;
+
+        return !!data.count;
     }, [data]);
 
     const result = useMemo(() => {
@@ -30,6 +31,10 @@ export const useProvablyFairVerify = (data: ProvablyFairData | null) => {
 
         if (data.gameType === 'minehunt') {
             return verifyMinehuntCoins(data);
+        }
+
+        if (data.gameType === 'tower') {
+            return verifyTowerPath(data);
         }
 
         return { computed: [] as number[], status: 'idle' as VerifyStatus };

@@ -84,6 +84,10 @@ export function positionsMatch(a: number[], b: number[]): boolean {
     return sortedA.every((value, index) => value === sortedB[index]);
 }
 
+export function arraysMatchOrdered(a: number[], b: number[]): boolean {
+    return a.length === b.length && a.every((value, index) => value === b[index]);
+}
+
 function verifyPositions(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
     const { salt, clientSeed, count, revealedPositions, saltStatus } = data;
 
@@ -110,4 +114,24 @@ export function verifySapperMines(data: ProvablyFairData): { computed: number[];
 
 export function verifyMinehuntCoins(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
     return verifyPositions(data);
+}
+
+export function verifyTowerPath(data: ProvablyFairData): { computed: number[]; status: VerifyStatus } {
+    const { salt, clientSeed, revealedPositions, saltStatus } = data;
+
+    if (saltStatus !== 'revealed') {
+        return { computed: [], status: 'idle' };
+    }
+
+    if (!revealedPositions?.length) {
+        return { computed: [], status: 'idle' };
+    }
+
+    try {
+        const computed = trueTower(salt, clientSeed);
+        const status = arraysMatchOrdered(computed, revealedPositions) ? 'verified' : 'mismatch';
+        return { computed, status };
+    } catch {
+        return { computed: [], status: 'error' };
+    }
 }

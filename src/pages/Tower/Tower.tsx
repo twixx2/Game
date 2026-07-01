@@ -1,4 +1,4 @@
-import { BalanceTitle, Page, Bet, LoginRequired, RandomHex } from '@shared/ui';
+import { BalanceTitle, Page, Bet, LoginRequired, RandomHex, ProvablyFairPanel } from '@shared/ui';
 import { usePlayer } from '@shared/hooks';
 import { useAuth } from '@context/AuthContext';
 import { TOWER_COEFFS } from '@shared/constants';
@@ -10,7 +10,7 @@ import s from './tower.module.scss';
 import Big from 'big.js';
 
 export const TowerPage = () => {
-    const { bet, phase, game, isPlay, seed, loseStep, loseChoice, createGame, openCell, blindShot, typeBet, rollNewSeed, setSeed } = useHelperTower();
+    const { bet, phase, game, isPlay, seed, loseStep, loseChoice, provablyFairData, createGame, openCell, blindShot, typeBet, rollNewSeed, setSeed } = useHelperTower();
     const { data: player } = usePlayer();
     const { isAuth } = useAuth();
 
@@ -42,6 +42,7 @@ export const TowerPage = () => {
                             phase={phase}
                             actions={{ createGame, blindShot }}
                         />
+                        <ProvablyFairPanel data={provablyFairData} />
                     </>
                     : <LoginRequired />}
 
