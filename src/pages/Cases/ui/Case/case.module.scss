@@ -42,7 +42,6 @@
 
         height: 100%;
 
-
         .name {
             @include font(700, 16px);
             color: $white;
@@ -50,6 +49,9 @@
         }
 
         .image {
+            @include font(800, 12px);
+            color: $white;
+
             height: 180px;
             border-radius: 15px;
 

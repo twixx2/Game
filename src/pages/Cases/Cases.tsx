@@ -1,24 +1,25 @@
-import { BalanceTitle, Loader, ErrorMessage, Page } from '@shared/ui';
-import { ROUTES } from "@/core/conf";
+import { BalanceTitle, Loader, Page } from '@shared/ui';
+import { usePlayer } from '@shared/hooks';
 
 import { useHelperCases } from './model';
-import { Case } from './ui';
+import { CasesContent } from './ui';
 
 import s from './cases.module.scss';
+import Big from "big.js";
 
 export const CasesPage = () => {
-  const { loading, balance, cases, error } = useHelperCases();
+  const { loading, casesData } = useHelperCases();
+  const { data: player } = usePlayer()
 
   if (loading) return <Loader />;
-  if (error) return <ErrorMessage message={error} />;
 
   return (
-    <Page title='cases' subtitle='you were given a chance'>
+    <Page title='cases' subtitle='profit is just one click away'>
       <div className={s.cases}>
 
-        <BalanceTitle balance={balance} />
+        <BalanceTitle balance={player?.wallet.balance ?? new Big("0")} />
 
-        <div className={s.cases_container}> {cases.map(c => (<Case key={c.id} c={c} to={ROUTES.CASE(c.id)} />))} </div>
+        <CasesContent casesData={casesData} />
 
       </div>
     </Page>

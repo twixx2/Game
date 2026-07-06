@@ -1,10 +1,4 @@
-import { CaseResponse } from "@shared/types";
-import { API_CONFIG } from "@/core/conf";
-import axios from "axios";
+import { CasesListResponse } from "@shared/types";
+import { publicApi } from "@shared/api";
 
-
-export const fetcherCases = (headers: any) => {
-    return axios
-        .get<CaseResponse[]>(`${API_CONFIG.BASE_URL}/cases?_select=-items`, { headers })
-        .then(r => r.data)
-};
+export const fetcherCases = () => publicApi.get<CasesListResponse>(`/cases/`).then(r => r.data);

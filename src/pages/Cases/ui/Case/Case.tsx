@@ -4,21 +4,22 @@ import { formatCurrency } from "@shared/lib"
 import { Link } from "react-router-dom";
 
 import s from "./case.module.scss";
+import Big from "big.js";
 
 export const Case = ({ c, to }: { c: CaseInterface; to: string }) => (
     <Link to={to} className={s.case}>
         <div className={s.bg}></div>
         <div className={s.content}>
             <div className={s.image}>
-                <img src={c.image} alt={c.title} />
+                <img src={c.image} alt={c.name} />
             </div>
 
             <h2 className={s.name}>
-                {c.title}
+                {c.name}
             </h2>
 
             <span className={s.price}>
-                {formatCurrency(c.price)}
+                {formatCurrency(new Big(c.price))}
             </span>
         </div>
     </Link>

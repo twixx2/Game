@@ -18,10 +18,10 @@ export const ROUTES = {
     REGISTER: "/register",
 
     // dynamic
-    CASE: (id: string | number) => `/cases/${id}`,
+    CASE: (hash: string) => `/cases/${hash}`,
 
     // for router
     PATHS: {
-        CASE: "/cases/:caseId"
+        CASE: "/cases/:caseHash"
     }
 } as const;

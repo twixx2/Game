@@ -1,37 +1,29 @@
 import { useEffect, useState } from 'react';
 
-import { useAuth } from '@context';
-
-import { CaseInterface } from "@shared/types";
-
 import { fetcherCases } from "../api";
+import { CasesListResponse } from "@shared/types";
+import { toast } from "@shared/ui";
+
+import { isAxiosError } from 'axios';
 
 export const useHelperCases = () => {
-    const [cases, setCases] = useState<CaseInterface[]>([]);
+    const [casesData, setCasesData] = useState<CasesListResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-    const { balance, headers } = useAuth();
 
     useEffect(() => {
-        let timer: ReturnType<typeof setTimeout>;
         setLoading(true);
-        fetcherCases(headers)
+        fetcherCases()
             .then(r => {
-                setCases(r);
+                setCasesData(r);
             })
             .catch(err => {
-                if (err.response) {
-                    if (err?.response?.status) {
-                        setError(err.response.status + " " + err.response.data.error);
-                    }
-                } else {
-                    setError(err.message);
-                }
+                if (!isAxiosError(err)) return toast("Failed loading cases");
+                toast(err.response?.data?.detail ?? "Failed loading cases");
             })
-            .finally(() => { timer = setTimeout(() => setLoading(false), 500); });
-        return () => clearTimeout(timer);
+            .finally(() => setLoading(false));
     }, []);
 
-    return { cases, loading, error, balance }
-
+    return { casesData, loading }
 };
+
+export type UseHelperCasesReturn = ReturnType<typeof useHelperCases>;

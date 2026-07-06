@@ -1,0 +1,19 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.cases_section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .type {
+        @include font(900, 24px);
+        color: $white;
+    }
+
+    .cases_container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}

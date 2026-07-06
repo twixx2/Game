@@ -1,3 +1,6 @@
+export type CaseRarityName = string & { readonly __brand?: "Rarity" };
+export type CaseTypeName = string & { readonly __brand?: "Type" };
+
 export interface MeResponse {
     hash: string;
     username: string;
@@ -12,17 +15,28 @@ export interface LoginResponse {
     token: string;
 }
 
-export interface CaseResponse {
-    id: number;
-    title: string;
+export interface CaseInterface {
+    hash: string;
+    name: string;
     image: string;
-    price: number;
+    price: string;
 }
 
-export interface CaseDetailResponse {
-    id: number;
-    title: string;
+export interface CaseAsset {
+    name: string;
     image: string;
-    price: number;
-    items: number[];
+    price: string;
+    rarity: CaseRarityName;
+}
+
+export type CasesListResponse = Record<CaseTypeName, CaseInterface[]>
+
+export interface CaseDetailInterface {
+    hash: string;
+    name: string;
+    image: string;
+    price: string;
+
+    rarity_weights: Partial<Record<CaseRarityName, number>>
+    assets: CaseAsset[];
 }

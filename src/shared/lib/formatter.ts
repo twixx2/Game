@@ -10,4 +10,4 @@ const getFormatter = (isCompact: boolean): Intl.NumberFormat =>
     cache.set(isCompact ? "comp" : "std", new Intl.NumberFormat("fr", { minimumFractionDigits: 0, maximumFractionDigits: 2, notation: isCompact ? "compact" : "standard" })).get(isCompact ? "comp" : "std")!;
 
 export const formatCurrency = (value: Big, { type = "balance", isCompact = false }: FormatCurrencyProps = {}): string =>
-    `${getFormatter(isCompact).format(value.round(2, Big.roundDown).toString() as any)} ${APP_CONFIG.currency[type]}`;
+    `${APP_CONFIG.currency[type]} ${getFormatter(isCompact).format(value.round(2, Big.roundDown).toString() as any)}`;
