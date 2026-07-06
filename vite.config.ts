@@ -8,11 +8,22 @@ export default defineConfig({
   plugins: [
     react(),
     svgr(),
-    basicSsl()
+    basicSsl(),
   ],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://192.168.0.129:8000',
+        changeOrigin: true,
+        secure: false
+      },
+    },
+  },
   css: {
     preprocessorOptions: {
-      scss: {
+      sass: {
         // @ts-ignore
         api: 'modern-compiler'
       },
