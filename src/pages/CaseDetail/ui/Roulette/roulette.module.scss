@@ -1,4 +1,5 @@
 @use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
 
 .roulette_frame {
     width: 100%;
@@ -8,8 +9,22 @@
     margin: 1rem auto;
     border-radius: 8px;
 
+    position: relative;
     overflow: hidden;
 
+    .center_line {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        z-index: 2;
+
+        width: 2px;
+        height: 100%;
+
+        background: rgba($yellow, 0.6);
+        transform: translateX(-50%);
+        pointer-events: none;
+    }
 
     .roulette_track {
         display: flex;
@@ -33,7 +48,8 @@
                 justify-content: center;
 
                 width: 100%;
-                height: 150px;
+                height: 100%;
+                max-height: 130px;
 
                 & img {
                     max-width: 100%;
@@ -43,65 +59,51 @@
                 }
             }
 
-            .info {
-                width: 100%;
+            .name {
+                @include font(800, 14px);
+                color: white;
+                padding: 0 4px;
+                margin-top: 4px;
+            }
 
-                padding: 0 5px;
-                margin-bottom: 5px;
-
-                & span {
-                    @include font(800, 14px);
-                    color: white;
-                }
+            .price {
+                @include font(800, 14px);
+                color: white;
+                margin-left: auto;
+                padding: 0 4px;
+                margin-bottom: 4px;
             }
 
             &.common {
-                background: linear-gradient(135deg, rgba(100, 100, 100, 0.4) 0%, rgba(60, 60, 60, 0.6) 100%);
-                box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+                @include common();
             }
 
             &.uncommon {
-                background: linear-gradient(135deg, rgba(0, 200, 255, 0.2) 0%, rgba(0, 140, 255, 0.5) 100%);
-                box-shadow: 0 0 5px rgba(0, 200, 255, 0.2);
+                @include uncommon();
             }
 
             &.rare {
-                background: linear-gradient(135deg, rgba(0, 80, 255, 0.3) 0%, rgba(0, 40, 200, 0.6) 100%);
-                box-shadow: 0 0 5px rgba(0, 80, 255, 0.3);
+                @include rare();
             }
 
             &.epic {
-                background: linear-gradient(135deg, rgba(160, 30, 255, 0.3) 0%, rgba(110, 0, 220, 0.6) 100%);
-                box-shadow: 0 0 5px rgba(160, 30, 255, 0.3);
+                @include epic();
             }
 
             &.legendary {
-                background: linear-gradient(135deg, rgba(255, 0, 150, 0.3) 0%, rgba(200, 0, 100, 0.6) 100%);
-                box-shadow: 0 0 5px rgba(255, 0, 150, 0.4);
+                @include legendary();
             }
 
             &.mythic {
-                background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.5) 100%);
-                box-shadow: 0 0 5px rgba(255, 165, 0, 0.4);
+                @include mythic();
             }
 
             &.divine {
-                background: linear-gradient(120deg,
-                        rgba(0, 0, 0, 0.9) 10%,
-                        rgba(100, 100, 100, 0.5) 50%,
-                        rgba(0, 0, 0, 0.9) 90%);
-
-                box-shadow: 0 0 5px rgba(255, 255, 255, 0.15);
+                @include divine();
             }
 
-            &.prismatic {
-                background: linear-gradient(45deg,
-                        rgba(130, 50, 255, 0.25),
-                        rgba(50, 150, 255, 0.25),
-                        rgba(50, 255, 150, 0.25),
-                        rgba(255, 50, 150, 0.25));
-                box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
-
+            &.unreal {
+                @include unreal();
             }
         }
     }

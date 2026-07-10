@@ -40,3 +40,10 @@ export interface CaseDetailInterface {
     rarity_weights: Partial<Record<CaseRarityName, number>>
     assets: CaseAsset[];
 }
+
+export interface CaseOpenedInterface {
+    asset: CaseAsset;
+    updated_balance: string;
+    /** Asset's hash for instant sell (later)*/
+    hash: string;
+}

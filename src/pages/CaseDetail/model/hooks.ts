@@ -1,182 +1,199 @@
-import { CaseItemInterface, CaseDetailInterface } from "@shared/types"
+import { CaseAsset, CaseDetailInterface } from "@shared/types";
+import { toast } from "@shared/ui";
+import { usePlayer } from "@shared/hooks";
 
-import { useState, useEffect, useRef } from "react";
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useRef, type RefObject } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { isAxiosError } from "axios";
 
-import { useAuth, useInv } from '@context';
+import { fetcherCase, fetcherOpenCase } from "../api";
+import { ANIM_MS, buildQueue, getSlotOffset } from "./lottery";
 
-import { fetcherCase } from "../api";
+const REF_WAIT_MAX_FRAMES = 60;
 
-import toast from 'react-hot-toast';
+const waitForRefs = (
+    frameRef: RefObject<HTMLDivElement | null>,
+    trackRef: RefObject<HTMLDivElement | null>,
+): Promise<boolean> =>
+    new Promise(resolve => {
+        let attempts = 0;
 
+        const tick = (): void => {
+            if (frameRef.current && trackRef.current) return resolve(true);
+            if (++attempts >= REF_WAIT_MAX_FRAMES) return resolve(false);
+            requestAnimationFrame(tick);
+        };
+
+        requestAnimationFrame(tick);
+    });
 
 export const useHelperCase = () => {
-    const { caseId } = useParams<{ caseId: string }>();
-    const { balance, headers, isAuth, editBalance } = useAuth();
-    const { addItem } = useInv();
     const frameRef = useRef<HTMLDivElement | null>(null);
     const trackRef = useRef<HTMLDivElement | null>(null);
+    const animTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
     const [c, setCase] = useState<CaseDetailInterface | null>(null);
-    const [items, setItems] = useState<CaseItemInterface[]>([]);
-    const [rolling, setRolling] = useState<boolean>(false);
-    const [queue, setQueue] = useState<CaseItemInterface[]>([]);
+    const [queue, setQueue] = useState<CaseAsset[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string>("");
+
+    const [rolling, setRolling] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [win, setWin] = useState<number | null>(null);
-    const [received, setReceived] = useState<CaseItemInterface | null>(null);
 
+    const [received, setReceived] = useState<CaseAsset | null>(null);
+    const [openedHash, setOpenedHash] = useState<string | null>(null);
 
-    function weightedRandom(items: CaseItemInterface[]): CaseItemInterface | undefined {
-        const total = items.reduce((sum, i) => sum + (i.weight || 0), 0);
-        let r = Math.random() * total;
-        for (let it of items) {
-            if (r < (it.weight || 0)) return it;
-            r -= (it.weight || 0);
-        }
-        return items[0];
-    }
+    const { caseHash } = useParams<{ caseHash: string }>();
+    const navigate = useNavigate();
+    const { syncWallet } = usePlayer();
 
     useEffect(() => {
-        if (!caseId || isNaN(parseInt(caseId))) return;
+        if (!caseHash) return;
         setLoading(true);
-        let timer: ReturnType<typeof setTimeout>;
-        fetcherCase(caseId, headers)
-            .then(res => {
-                setCase(res.caseData);
-                setItems(res.itemsData)
-            })
+        fetcherCase(caseHash)
+            .then(r => setCase(r))
             .catch(err => {
-                if (err.response) {
-                    if (err.response?.status !== 401) {
-                        setError(err.response.status + " " + err.response.data.error);
-                    }
-                } else {
-                    setError(err.message);
-                }
+                if (!isAxiosError(err)) return toast("Failed loading case");
+                toast(err.response?.data?.detail ?? "Failed loading case");
             })
-            .finally(() => {
-                timer = setTimeout(() => setLoading(false), 500);
-            });
-        return () => clearTimeout(timer);
-    }, [caseId]);
+            .finally(() => setLoading(false));
+    }, [caseHash]);
+
+    const clearAnimTimer = (): void => {
+        if (animTimerRef.current) {
+            clearTimeout(animTimerRef.current);
+            animTimerRef.current = null;
+        }
+    };
+
+    const finishRoll = (): void => {
+        clearAnimTimer();
+        setRolling(false);
+        setIsOpen(true);
+    };
+
+    const onTransitionEnd = (e: TransitionEvent): void => {
+        if (e.propertyName !== "transform") return;
+        finishRoll();
+    };
+
+    const resetTrackStyles = (): void => {
+        const trackEl = trackRef.current;
+        if (!trackEl) return;
+
+        trackEl.removeEventListener("transitionend", onTransitionEnd);
+        trackEl.style.transition = "none";
+        trackEl.style.transform = "translateX(0px)";
+    };
 
     const clearAnim = (): void => {
+        clearAnimTimer();
+        resetTrackStyles();
         setQueue([]);
-        if (trackRef.current) {
-            trackRef.current.style.transition = 'none';
-            trackRef.current.style.transform = 'translateX(0px)';
-        }
-    }
+    };
 
-    const openAgain = async (): Promise<void> => {
-        if (received) {
-            addItem(received);
-            setWin(null);
-            setIsOpen(false);
-            openCase();
-            return;
-        }
-        toast.error("failed to receive the prize");
-        return;
-    }
-
-    const openCase = async (): Promise<void> => {
-        if (rolling || !c || !items.length) return;
-        if (c.price > balance) return void toast.error("out of balance");
-        editBalance(balance - c.price);
-        setIsOpen(false);
-        setRolling(true);
-        clearAnim();
-        // выбираем выигрыш
-        const winItem = weightedRandom(items);
-        // собираем очередь: baseRounds случайных + winItem + buffer
-        const baseRounds = 20;
-        const bufferAfter = 5;
-
-        const rnds = Array.from({ length: baseRounds }, () =>
-            items[Math.floor(Math.random() * items.length)]
-        );
-
-        const buf = Array.from({ length: bufferAfter }, () =>
-            items[Math.floor(Math.random() * items.length)]
-        );
-
-        const arr = [...rnds, winItem, ...buf];
-        if (arr && arr.length > 0) {
-            const cleanArr = arr.filter((item): item is CaseItemInterface => !!item);
-            setQueue(cleanArr)
-        } else {
-            toast.error("failed to set up the queue");
-            return;
-        }
-
-        // ждём, пока React вмонтирует все .slot
-        await new Promise(r => requestAnimationFrame(r));
-
-        // измеряем, где именно окажется нужный слот
-
+    const runAnimation = (): Promise<boolean> => {
         const frameEl = frameRef.current;
         const trackEl = trackRef.current;
-        const slotEls = trackEl?.querySelectorAll('.slot');
-        const winIndex = baseRounds;
-        const target = slotEls ? slotEls[winIndex] : undefined;
 
-        if (!target) {
-            console.error('Не нашли слот', winIndex);
-            setRolling(false);
-            return;
-        }
+        if (!frameEl || !trackEl) return Promise.resolve(false);
 
-        const frameRect = frameEl?.getBoundingClientRect();
-        const targetRect = target.getBoundingClientRect();
-        const slotW = targetRect.width;
-        // смещение: чтобы центр target совпал с центром frame
-        const offset = frameRect ? (targetRect.left - frameRect.left) - (frameRect.width - slotW) / 2 : undefined;
+        const offset = getSlotOffset(frameEl.clientWidth);
 
-        // сбрасываем и анимируем
-        if (trackEl) {
-            trackEl.style.transition = 'none';
-            trackEl.style.transform = 'translateX(0px)';
-        }
-        requestAnimationFrame(() =>
-            requestAnimationFrame(() => {
-                if (trackEl && offset) {
-                    trackEl.style.transition = 'transform 3s ease-out';
-                    trackEl.style.transform = `translateX(-${offset}px)`;
-                }
+        trackEl.removeEventListener("transitionend", onTransitionEnd);
+        trackEl.style.transition = "none";
+        trackEl.style.transform = "translateX(0px)";
+
+        void trackEl.offsetWidth;
+
+        return new Promise<void>(r => requestAnimationFrame(() => r()))
+            .then(() => {
+                trackEl.addEventListener("transitionend", onTransitionEnd);
+                trackEl.style.transition = `transform ${ANIM_MS}ms ease-out`;
+                trackEl.style.transform = `translateX(-${offset}px)`;
+                animTimerRef.current = setTimeout(finishRoll, ANIM_MS + 150);
+                return true;
+            });
+    };
+
+    const showResultWithoutAnimation = (): void => {
+        clearAnimTimer();
+        setRolling(false);
+        setIsOpen(true);
+    };
+
+    const resetResult = (): void => {
+        clearAnim();
+        setRolling(false);
+        setIsOpen(false);
+        setReceived(null);
+        setOpenedHash(null);
+    };
+
+    const openCase = (): void => {
+        if (rolling || !c || !caseHash || !c.assets.length) return;
+
+        setIsOpen(false);
+        setRolling(true);
+        clearAnimTimer();
+        resetTrackStyles();
+
+        fetcherOpenCase(caseHash)
+            .then(r => {
+                syncWallet("balance", r.updated_balance);
+                setReceived(r.asset);
+                setOpenedHash(r.hash);
+                setQueue(buildQueue(c, r.asset));
+
+                return waitForRefs(frameRef, trackRef);
             })
-        );
+            .then(refsReady => {
+                if (!refsReady) {
+                    showResultWithoutAnimation();
+                    return;
+                }
 
-        // когда закончится — выдаём результат
-        setTimeout(() => {
-            if (winItem) {
+                return runAnimation()
+                    .then(started => {
+                        if (!started) showResultWithoutAnimation();
+                    });
+            })
+            .catch(err => {
                 setRolling(false);
-                setIsOpen(true);
-                setWin(winItem.value);
-                setReceived(winItem);
-            } else {
-                toast.error("failed to find the prize");
-            }
-        }, 3200);
+
+                if (received) setIsOpen(true);
+
+                if (!isAxiosError(err)) return toast("Failed to open case");
+
+                const statusCode = err.response?.status;
+                const code = err.response?.data?.code;
+
+                switch (true) {
+                    case statusCode === 402 && code === "not_enough_funds":
+                        return toast("Insufficient balance", { text: "see our bonuses", onClick: () => navigate("/#bonuses") });
+                    default:
+                        return toast(err.response?.data?.detail ?? "Failed to open case");
+                }
+            });
+    };
+
+    const openAgain = (): void => {
+        openCase();
     };
 
     const sellReceived = (): void => {
-        win ? editBalance(balance + win) : toast.error("failed to update a balance");
-        clearAnim();
-        setRolling(false);
-        setIsOpen(false);
-        setWin(null);
-    }
+        // inventory / instant sell not wired yet
+    };
 
     const receive = (): void => {
-        received ? addItem(received) : toast.error("failed to receive the prize");
-        clearAnim();
-        setRolling(false);
-        setIsOpen(false);
-        setWin(null);
-    }
+        resetResult();
+    };
 
-    return { balance, frameRef, trackRef, c, items, rolling, queue, loading, error, isOpen, isAuth, win, received, openAgain, openCase, sellReceived, receive }
+    useEffect(() => () => {
+        clearAnimTimer();
+        resetTrackStyles();
+    }, []);
 
+    return { frameRef, trackRef, c, rolling, queue, loading, isOpen, received, openedHash, openAgain, openCase, sellReceived, receive };
 };
+
+export type UseHelperCaseReturn = ReturnType<typeof useHelperCase>;

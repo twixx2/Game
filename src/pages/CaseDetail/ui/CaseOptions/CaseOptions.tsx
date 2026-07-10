@@ -1,4 +1,6 @@
-import { CaseDetailInterface, CaseItemInterface } from "@shared/types";
+import Big from "big.js";
+
+import { CaseAsset, CaseDetailInterface } from "@shared/types";
 import { formatCurrency } from "@shared/lib";
 import s from "./caseOptions.module.scss";
 
@@ -6,17 +8,16 @@ interface CaseOptionsInterface {
     rolling: boolean;
     isOpen: boolean,
     c: CaseDetailInterface;
-    win: number | null;
-    received: CaseItemInterface | null;
+    received: CaseAsset | null;
     actions: {
-        openCase: () => Promise<void>;
-        openAgain: () => Promise<void>;
+        openCase: () => void;
+        openAgain: () => void;
         sellReceived: () => void;
         receive: () => void;
     }
 }
 
-export const CaseOptions = ({ rolling, isOpen, received, c, win, actions: { openCase, openAgain, sellReceived, receive } }: CaseOptionsInterface) => {
+export const CaseOptions = ({ rolling, isOpen, received, c, actions: { openCase, openAgain, sellReceived, receive } }: CaseOptionsInterface) => {
     const renderContent = () => {
         if (rolling) {
             return (
@@ -30,7 +31,7 @@ export const CaseOptions = ({ rolling, isOpen, received, c, win, actions: { open
             return (
                 <div className={s.result}>
                     <button className={s.sell} onClick={sellReceived}>
-                        Instant sell {formatCurrency(win!)}
+                        Instant sell {formatCurrency(new Big(received!.price))}
                     </button>
 
                     <button className={s.open} onClick={openAgain} disabled={rolling || !received}>
@@ -50,7 +51,7 @@ export const CaseOptions = ({ rolling, isOpen, received, c, win, actions: { open
                 onClick={openCase}
                 disabled={rolling}
             >
-                Pay nd Roll {formatCurrency(c.price)}
+                Pay nd Roll {formatCurrency(new Big(c.price))}
             </button>
         );
     }

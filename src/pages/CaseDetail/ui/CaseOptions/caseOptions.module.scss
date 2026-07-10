@@ -19,7 +19,7 @@
     }
 
     .loading {
-        @include font(700, 18px);
+        @include font(900, 18px);
         color: $yellow;
         text-align: center;
     }
