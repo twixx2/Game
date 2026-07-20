@@ -1,27 +1,57 @@
-import { useEffect, useRef, useState } from "react";
+import { useNvnt } from "@shared/hooks";
+import { filterAndSortAssets } from "@shared/lib";
+import { NvntFilters, NvntBaseAssetInterface, AllowedNvntModelNames } from "@shared/types";
 
-import { InvItemInterface } from '@shared/types';
-import { useInv } from '@context';
+import { useEffect, useState, useMemo } from "react";
 
+const NVNT_UI_TYPES: Record<AllowedNvntModelNames, string> = {
+    "caseasset": "Drops",
 
+    // "collectible": "Collectibles",
+    // "lottie": "Lotties",
+    // "prefix": "Prefixes",
+}
 
-export const useHelperInv = () => {
-    const [openModal, setOpenModal] = useState<boolean>(false);
+export type NvntFilterToggle = "all" | "yes" | "no";
+
+const initialFilters: NvntFilters = {
+    search: '',
+
+    viewMode: "grid",
+
+    tradeLocked: "all",
+    saleable: "all",
+    stackable: "all",
+
+    sortBy: "date_desc",
+}
+
+export const useHelperNvnt = () => {
+    const [filters, setFilters] = useState<NvntFilters>(initialFilters);
+    const [tab, setTab] = useState<AllowedNvntModelNames>("caseasset");
+
+    const [openFilters, setOpenFilters] = useState<boolean>(false);
     const [openSelected, setOpenSelected] = useState<boolean>(false);
-    const [searchController, setSearchController] = useState<string>('');
-    const { items, selected, isSelecting, handleSelection, handleSelectItem, decSelectedItem, incSelectedItem, minSelectItem, maxSelectItem, selectedArr, totalPrice, selectAllItems, clearAllItems, sellItems } = useInv();
 
-    let filteredItems: InvItemInterface[] = searchController.length > 0 ? items.filter(item => item.name.includes(searchController)) : items
+    const { data: nvnt } = useNvnt();
+
+    const changeTab = (val: AllowedNvntModelNames) => { setTab(val); };
+
+    const updateFilters = <K extends keyof NvntFilters>(key: K, value: NvntFilters[K]) => setFilters(prev => ({ ...prev, [key]: value }));
+
+    const resetFilters = (): void => { setFilters(initialFilters); };
+
+    const runFilters = (assets: NvntBaseAssetInterface[]): NvntBaseAssetInterface[] => { return filterAndSortAssets(assets, filters); };
+
+    const filteredAssets = useMemo(() => {
+        return filterAndSortAssets(nvnt?.[tab] ?? [], filters);
+    }, [nvnt, tab, filters]);
 
     useEffect(() => {
-        document.body.style.overflow = openModal ? 'hidden' : '';
-    }, [openModal]);
+        document.body.style.overflow = openFilters ? 'hidden' : '';
+    }, [openFilters]);
 
-    return {
-        openModal, setOpenModal,
-        openSelected, setOpenSelected,
-        searchController, setSearchController,
-        filteredItems, selected, isSelecting, selectedArr, totalPrice,
-        handleSelection, handleSelectItem, decSelectedItem, incSelectedItem, minSelectItem, maxSelectItem, selectAllItems, clearAllItems, sellItems
-    }
+    return { NVNT_UI_TYPES, filters, openFilters, openSelected, tab, changeTab, setOpenFilters, setOpenSelected, resetFilters, runFilters, updateFilters, filteredAssets };
 };
+
+export type UseHelperNvntReturn = ReturnType<typeof useHelperNvnt>;
