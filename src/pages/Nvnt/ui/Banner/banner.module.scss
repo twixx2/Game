@@ -1,0 +1,26 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.banner {
+    width: 100%;
+    min-height: 90px;
+
+    padding: 8px;
+    border-radius: 12px;
+    background-image: url("@shared/assets/icons/png/6.jpg");
+    background-size: cover;
+    color: $white;
+
+    .title {
+        @include font(900, 34px);
+    }
+
+    .text {
+        @include font(800, 24px);
+
+        span {
+            color: $black;
+        }
+    }
+
+}

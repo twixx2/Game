@@ -1,0 +1,82 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.filters {
+    height: 40px;
+
+    display: flex;
+    gap: 8px;
+
+    .search {
+        flex-grow: 1;
+        min-width: 0;
+
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        padding: 4px 6px;
+        border-radius: 12px;
+        border: 1px solid #4d4d4d;
+
+        background: #0a0a0a;
+
+        &:focus-within {
+            border-color: $yellow;
+        }
+
+        input {
+            @include font(700, 16px);
+            color: $white;
+
+            flex-grow: 1;
+            min-width: 0;
+            background: transparent;
+
+            -webkit-appearance: none;
+            appearance: none;
+
+            &::-webkit-search-decoration,
+            &::-webkit-search-cancel-button,
+            &::-webkit-search-results-button,
+            &::-webkit-search-results-decoration {
+                -webkit-appearance: none;
+                display: none;
+            }
+
+            &::placeholder {
+                color: #4d4d4d;
+            }
+        }
+
+        .cBtn {
+            @include flex-center();
+
+            background: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+    }
+
+    .options {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        button {
+            height: 100%;
+            width: 40px;
+
+            @include flex-center();
+
+            cursor: pointer;
+
+            border-radius: 12px;
+            background: #0a0a0a;
+            border: 1px solid #4d4d4d;
+
+        }
+
+    }
+}

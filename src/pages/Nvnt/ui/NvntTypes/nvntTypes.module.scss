@@ -1,0 +1,29 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.tabs {
+    display: flex;
+    gap: 15px;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+
+    width: 100%;
+
+    .tab {
+        @include font(800, 30px);
+        flex: 0 0 auto;
+
+        display: inline;
+        background: transparent;
+        cursor: pointer;
+        user-select: none;
+
+        color: #4d4d4d;
+
+        &.current {
+            color: $white;
+        }
+    }
+}

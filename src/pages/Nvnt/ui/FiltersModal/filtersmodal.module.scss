@@ -1,0 +1,17 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: $black;
+    z-index: 999;
+    border-radius: 16px 16px 0 0;
+
+    .modal {
+        @include font(800, 20px);
+        color: $white;
+        position: absolute;
+        inset: 0;
+    }
+}

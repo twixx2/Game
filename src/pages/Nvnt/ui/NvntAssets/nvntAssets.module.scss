@@ -1,0 +1,34 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+}
+
+.emptyTitle {
+    @include font(800, 18px);
+    color: $white;
+
+    a {
+        display: inline;
+        color: $yellow;
+        text-decoration: underline;
+    }
+}
+
+.reset {
+    @include font(600, 16px);
+    color: $white;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+        text-decoration: underline;
+    }
+}

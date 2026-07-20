@@ -1,0 +1,185 @@
+@use "@shared/styles/mixins.scss" as *;
+@use "@shared/styles/variables" as *;
+
+.drop {
+    width: 100%;
+    min-height: 100px;
+
+    $outer-radius: 16px;
+    $pad: 8px;
+
+    background: $dark-grey;
+
+    border-radius: $outer-radius;
+    padding: $pad;
+
+    display: flex;
+    gap: 8px;
+
+    .displayContent {
+        width: 100px;
+        flex-shrink: 0;
+        aspect-ratio: 1 / 1;
+        align-self: center;
+
+        border-radius: calc(#{$outer-radius} - #{$pad});
+        box-shadow: none !important;
+
+        @include flex-center();
+
+        overflow: hidden;
+        position: relative;
+
+        .displayImage {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .stackBadge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+
+            @include font(800, 12px);
+            color: $white;
+            background: rgba($black, 0.55);
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        &.common {
+            @include common();
+        }
+
+        &.uncommon {
+            @include uncommon();
+        }
+
+        &.rare {
+            @include rare();
+        }
+
+        &.epic {
+            @include epic();
+        }
+
+        &.legendary {
+            @include legendary();
+        }
+
+        &.mythic {
+            @include mythic();
+        }
+
+        &.divine {
+            @include divine();
+        }
+
+        &.unreal {
+            @include unreal();
+        }
+    }
+
+    .infoCont {
+        flex-grow: 1;
+        min-width: 0;
+        border-radius: calc(#{$outer-radius} - #{$pad});
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 8px;
+
+        .objectContent {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+
+            .name {
+                @include font(800, 16px);
+                color: $white;
+
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .price {
+                @include font(800, 12px);
+                color: $white;
+            }
+        }
+
+        .statusMsg {
+            @include font(600, 13px);
+            color: rgba($white, 0.55);
+            line-height: 1.35;
+            margin: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+
+            .countInput {
+                width: 40%;
+                flex-shrink: 0;
+                min-width: 0;
+
+                padding: 4px 6px;
+                border-radius: 10px;
+                border: 1px solid $white;
+                background: $black;
+
+                @include font(700, 14px);
+                color: $white;
+                text-align: center;
+
+                -webkit-appearance: none;
+                appearance: none;
+
+                &:focus {
+                    border-color: $yellow;
+                }
+
+                &:disabled {
+                    opacity: 0.4;
+                    cursor: not-allowed;
+                }
+            }
+
+            .btnGroup {
+                flex: 1 1 auto;
+                min-width: 0;
+                display: flex;
+                gap: 6px;
+
+                .actionBtn {
+                    flex: 1 1 0;
+                    min-width: 0;
+
+                    padding: 4px 6px;
+                    border-radius: 10px;
+                    border: none;
+
+                    @include font(800, 13px);
+                    color: $black;
+                    background: $white;
+                    cursor: pointer;
+                    transition: 0.2s ease;
+
+                    &:hover:not(:disabled) {
+                        background: #c8c8c8;
+                    }
+
+                    &:disabled {
+                        opacity: 0.4;
+                        cursor: not-allowed;
+                    }
+                }
+            }
+        }
+    }
+}
