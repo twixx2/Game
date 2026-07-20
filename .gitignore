@@ -18,6 +18,8 @@ stats.html
 !.vscode/extensions.json
 .VSCodeCounter
 .idea
+mcps
+
 .DS_Store
 *.suo
 *.ntvs*
@@ -31,4 +33,5 @@ stats.html
 .env.production
 .env*
 
+# Whatever the fuck this is
 dev.md
