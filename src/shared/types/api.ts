@@ -15,6 +15,8 @@ export interface LoginResponse {
     token: string;
 }
 
+
+// Case types
 export interface CaseInterface {
     hash: string;
     name: string;
@@ -37,13 +39,13 @@ export interface CaseDetailInterface {
     image: string;
     price: string;
 
-    rarity_weights: Partial<Record<CaseRarityName, number>>
+    rarity_weights: Partial<Record<CaseRarityName, unsigned>>
     assets: CaseAsset[];
 }
 
 export interface CaseOpenedInterface {
     asset: CaseAsset;
     updated_balance: string;
-    /** Asset's hash for instant sell (later)*/
+    /** Asset's hash for instant sell */
     hash: string;
 }
