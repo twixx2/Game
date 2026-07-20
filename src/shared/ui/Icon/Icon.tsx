@@ -28,6 +28,10 @@ import copy from "@shared/assets/icons/svg/copy.svg?react";
 import copied from "@shared/assets/icons/svg/copied.svg?react";
 import reroll from "@shared/assets/icons/svg/reroll.svg?react";
 
+import grid from "@shared/assets/icons/svg/grid.svg?react";
+import rows from "@shared/assets/icons/svg/rows.svg?react";
+import x from "@shared/assets/icons/svg/x.svg?react";
+
 const ICON_LIST = {
     games_on: gamesOn,
     games_off: gamesOff,
@@ -50,15 +54,19 @@ const ICON_LIST = {
     filter: filter,
     search: search,
     arrow: arrow,
-    
+
     minSelect: minSelect,
     decSelect: decSelect,
     incSelect: incSelect,
-    maxSelect: maxSelect, 
+    maxSelect: maxSelect,
 
     copy: copy,
     copied: copied,
     reroll: reroll,
+
+    grid: grid,
+    rows: rows,
+    x: x,
 } as const;
 
 export type IconName = keyof typeof ICON_LIST;
