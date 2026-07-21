@@ -1,6 +1,16 @@
 @use "@shared/styles/mixins.scss" as *;
 @use "@shared/styles/variables" as *;
 
+// Flex shell only — does NOT scroll. Passes height down to .scroll.
+.listRoot {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 0;
+    min-width: 0;
+    width: 100%;
+}
+
 .empty {
     display: flex;
     flex-direction: column;

@@ -15,6 +15,8 @@ export interface NvntInstantSellDropProps {
 export interface NvntAssetsViewProps {
     assets: NvntBaseAssetInterface[];
     tab: AllowedNvntModelNames;
+    /** Reset scroll when tab/filters change (not on sell / list length). */
+    listKey: string;
     getSellCount: (hash: string) => unsigned;
     setSellCount: (hash: string, max: unsigned, raw: string | number) => void;
     setSellCountMax: (hash: string, max: unsigned) => void;

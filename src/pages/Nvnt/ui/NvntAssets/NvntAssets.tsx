@@ -42,9 +42,19 @@ export const NvntAssets = ({ filters, nvnt, assets, tab, resetFilters }: NvntAss
         );
     }
 
+    const listKey = [
+        tab,
+        filters.search,
+        filters.sortBy,
+        filters.saleable,
+        filters.stackable,
+        filters.tradeLocked,
+    ].join("|");
+
     const viewProps = {
         assets,
         tab,
+        listKey,
         getSellCount,
         setSellCount,
         setSellCountMax,
@@ -52,9 +62,11 @@ export const NvntAssets = ({ filters, nvnt, assets, tab, resetFilters }: NvntAss
         selling,
     };
 
-    if (filters.viewMode === "grid") {
-        return <NvntGridAssets {...viewProps} />;
-    }
-
-    return <NvntRowsAssets {...viewProps} />;
+    return (
+        <div className={s.listRoot}>
+            {filters.viewMode === "grid"
+                ? <NvntGridAssets {...viewProps} />
+                : <NvntRowsAssets {...viewProps} />}
+        </div>
+    );
 };
