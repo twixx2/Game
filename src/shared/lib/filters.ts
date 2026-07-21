@@ -20,8 +20,7 @@ export function filterAndSortAssets(
     // 1. searhc
     const searchQuery = filters.search.trim();
     if (searchQuery.length > 0) {
-        const regex = new RegExp(searchQuery, 'i');
-        result = result.filter(asset => regex.test(asset.item.name));
+        result = result.filter(asset => asset.item.name.toLowerCase().includes(searchQuery.toLowerCase()))
     }
 
     // 2. tradeLocked

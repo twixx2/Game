@@ -75,8 +75,25 @@
             border-radius: 12px;
             background: #0a0a0a;
             border: 1px solid #4d4d4d;
-
         }
 
+        .filterBtn {
+            position: relative;
+
+            &.active {
+                border-color: $white;
+            }
+
+            .dot {
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: $white;
+                pointer-events: none;
+            }
+        }
     }
 }

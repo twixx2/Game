@@ -1,5 +1,6 @@
 import type { NvntFilters } from "@shared/types"
 import { Icon } from "@shared/ui"
+import clsx from "clsx"
 
 import s from "./nvntFilters.module.scss";
 
@@ -16,6 +17,13 @@ export const NvntFiltersView = ({ filters, updateFilters, openFilters }: NvntFil
         return <Icon name="rows" size={30} />
     }
 
+    // Badge only for drawer fields (search already visible in the bar)
+    const drawerActive =
+        filters.tradeLocked !== "all"
+        || filters.saleable !== "all"
+        || filters.stackable !== "all"
+        || filters.sortBy !== "date_desc";
+
     return (
         <div className={s.filters}>
             <div className={s.search}>
@@ -26,8 +34,11 @@ export const NvntFiltersView = ({ filters, updateFilters, openFilters }: NvntFil
                 )}
             </div>
             <div className={s.options}>
-                <button onClick={() => updateFilters("viewMode", filters.viewMode === "grid" ? "rows" : "grid")}>{renderGridRows()}</button>
-                <button onClick={openFilters}><Icon name="filter" size={32} /></button>
+                <button type="button" onClick={() => updateFilters("viewMode", filters.viewMode === "grid" ? "rows" : "grid")}>{renderGridRows()}</button>
+                <button type="button" className={clsx(s.filterBtn, drawerActive && s.active)} onClick={openFilters}>
+                    <Icon name="filter" size={32} />
+                    {drawerActive && <span className={s.dot} aria-hidden />}
+                </button>
             </div>
         </div>
     );

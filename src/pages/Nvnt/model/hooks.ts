@@ -6,10 +6,6 @@ import { useEffect, useState, useMemo } from "react";
 
 const NVNT_UI_TYPES: Record<AllowedNvntModelNames, string> = {
     "caseasset": "Drops",
-
-    // "collectible": "Collectibles",
-    // "lottie": "Lotties",
-    // "prefix": "Prefixes",
 }
 
 export type NvntFilterToggle = "all" | "yes" | "no";
@@ -41,6 +37,16 @@ export const useHelperNvnt = () => {
 
     const resetFilters = (): void => { setFilters(initialFilters); };
 
+    const resetDrawerFilters = (): void => {
+        setFilters((prev) => ({
+            ...prev,
+            tradeLocked: "all",
+            saleable: "all",
+            stackable: "all",
+            sortBy: "date_desc",
+        }));
+    };
+
     const runFilters = (assets: NvntBaseAssetInterface[]): NvntBaseAssetInterface[] => { return filterAndSortAssets(assets, filters); };
 
     const filteredAssets = useMemo(() => {
@@ -51,7 +57,7 @@ export const useHelperNvnt = () => {
         document.body.style.overflow = openFilters ? 'hidden' : '';
     }, [openFilters]);
 
-    return { NVNT_UI_TYPES, filters, openFilters, openSelected, tab, changeTab, setOpenFilters, setOpenSelected, resetFilters, runFilters, updateFilters, filteredAssets };
+    return { NVNT_UI_TYPES, filters, openFilters, openSelected, tab, changeTab, setOpenFilters, setOpenSelected, resetFilters, resetDrawerFilters, runFilters, updateFilters, filteredAssets, };
 };
 
 export type UseHelperNvntReturn = ReturnType<typeof useHelperNvnt>;

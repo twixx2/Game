@@ -11,11 +11,20 @@ import s from "./nvnt.module.scss";
 export const NvntPage = () => {
 
     const { data: nvnt } = useNvnt();
-    const { NVNT_UI_TYPES, filters, filteredAssets, openFilters, tab, changeTab, resetFilters, setOpenFilters, updateFilters } = useHelperNvnt();
+    const { NVNT_UI_TYPES, filters, filteredAssets, openFilters, tab, changeTab, resetFilters, resetDrawerFilters, setOpenFilters, updateFilters } = useHelperNvnt();
 
     return (
         <Page title="nvnt" subtitle="co11ect1on">
-            {openFilters && <AnimatePresence><FiltersModal onClose={() => setOpenFilters(false)} /></AnimatePresence>}
+            <AnimatePresence>
+                {openFilters && (
+                    <FiltersModal
+                        filters={filters}
+                        updateFilters={updateFilters}
+                        onClose={() => setOpenFilters(false)}
+                        onReset={resetDrawerFilters}
+                    />
+                )}
+            </AnimatePresence>
 
             <div className={s.nvnt}>
                 <NvntTempBanner />
